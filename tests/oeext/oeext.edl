@@ -11,6 +11,6 @@ enclave
 
         public void verify_ecall(
             [in, count=1] const struct _oe_ext_sigstruct* sigstruct,
-            [in, count=1] const struct _oe_ext_hash* exthash);
+            [in, count=1] const struct _oe_ext_hash* extmeasure);
     };
 };

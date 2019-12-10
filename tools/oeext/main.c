@@ -198,12 +198,12 @@ static int _get_opt(
     return -1;
 }
 
-static int _extend_main(int argc, const char* argv[])
+static int _register_main(int argc, const char* argv[])
 {
     int ret = 1;
     static const char _usage[] =
         "\n"
-        "Usage: %s extend pubkey=? extid=? enclave=? symbol=? [payload=?]\n"
+        "Usage: %s register pubkey=? extid=? enclave=? symbol=? [payload=?]\n"
         "\n";
     typedef struct
     {
@@ -493,13 +493,13 @@ static int _sign_main(int argc, const char* argv[])
 {
     static const char _usage[] =
         "\n"
-        "Usage: %s sign privkey=? extid=? exthash=? sigstructfile=?\n"
+        "Usage: %s sign privkey=? extid=? extmeasure=? sigstructfile=?\n"
         "\n";
     typedef struct
     {
         const char* privkey;
         oe_ext_hash_t extid;
-        oe_ext_hash_t exthash;
+        oe_ext_hash_t extmeasure;
         const char* sigstructfile;
     } opts_t;
     opts_t opts;
@@ -537,15 +537,15 @@ static int _sign_main(int argc, const char* argv[])
                 _err("bad extid option: %s", ascii);
         }
 
-        /* Get the exthash option. */
+        /* Get the extmeasure option. */
         {
             const char* ascii;
 
-            if (_get_opt(&argc, argv, "exthash", &ascii) != 0)
-                _err("missing exthash option");
+            if (_get_opt(&argc, argv, "extmeasure", &ascii) != 0)
+                _err("missing extmeasure option");
 
-            if (oe_ext_ascii_to_hash(ascii, &opts.exthash) != OE_OK)
-                _err("bad exthash option: %s", ascii);
+            if (oe_ext_ascii_to_hash(ascii, &opts.extmeasure) != OE_OK)
+                _err("bad extmeasure option: %s", ascii);
         }
 
         /* Get the sigstructfile option. */
@@ -576,14 +576,15 @@ static int _sign_main(int argc, const char* argv[])
         uint8_t signature[OE_EXT_KEY_SIZE];
         oe_ext_hash_t hash;
 
-        /* Combine the two hashes (extid and exthash) into one */
+        /* Combine the two hashes (extid and extmeasure) into one */
         {
             oe_sha256_context_t context;
             OE_SHA256 sha256;
 
             oe_sha256_init(&context);
             oe_sha256_update(&context, opts.extid.buf, sizeof(opts.extid));
-            oe_sha256_update(&context, opts.exthash.buf, sizeof(opts.exthash));
+            oe_sha256_update(
+                &context, opts.extmeasure.buf, sizeof(opts.extmeasure));
             oe_sha256_final(&context, &sha256);
 
             memcpy(hash.buf, sha256.buf, sizeof(hash));
@@ -630,9 +631,9 @@ static int _sign_main(int argc, const char* argv[])
             assert(sizeof sigstruct.extid == sizeof opts.extid);
             sigstruct.extid = opts.extid;
 
-            /* sign.exthash*/
-            assert(sizeof sigstruct.exthash == sizeof opts.exthash);
-            sigstruct.exthash = opts.exthash;
+            /* sign.extmeasure*/
+            assert(sizeof sigstruct.extmeasure == sizeof opts.extmeasure);
+            sigstruct.extmeasure = opts.extmeasure;
 
             /* sign.signature */
             assert(sizeof sigstruct.signature == sizeof signature);
@@ -671,7 +672,7 @@ int main(int argc, const char* argv[])
         "Usage: %s command options...\n"
         "\n"
         "Commands:\n"
-        "    extend - inject a policy into an enclave.\n"
+        "    register - inject a policy into an enclave.\n"
         "    sign - create a sigstruct file for a given signer and hash.\n"
         "    dump_policy - dump an enclave update sructure.\n"
         "\n";
@@ -688,9 +689,9 @@ int main(int argc, const char* argv[])
     /* Disable logging noise to standard output. */
     setenv("OE_LOG_LEVEL", "NONE", 1);
 
-    if (strcmp(argv[1], "extend") == 0)
+    if (strcmp(argv[1], "register") == 0)
     {
-        ret = _extend_main(argc, argv);
+        ret = _register_main(argc, argv);
         goto done;
     }
     else if (strcmp(argv[1], "sign") == 0)

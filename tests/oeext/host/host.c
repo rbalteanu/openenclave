@@ -22,7 +22,8 @@ int main(int argc, const char* argv[])
 
     if (argc != 4)
     {
-        fprintf(stderr, "Usage: %s ENCLAVE_PATH SIGSTRUCTFILE EXTHASH\n", arg0);
+        fprintf(
+            stderr, "Usage: %s ENCLAVE_PATH SIGSTRUCTFILE EXTMEASURE\n", arg0);
         return 1;
     }
 

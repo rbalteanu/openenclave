@@ -96,8 +96,8 @@ void oe_ext_dump_sigstruct(const oe_ext_sigstruct_t* sigstruct)
     _dump_hex(sigstruct->extid.buf, sizeof(sigstruct->extid));
     printf("\n");
 
-    printf("exthash=");
-    _dump_hex(sigstruct->exthash.buf, sizeof(sigstruct->exthash));
+    printf("extmeasure=");
+    _dump_hex(sigstruct->extmeasure.buf, sizeof(sigstruct->extmeasure));
     printf("\n");
 
     printf("signature=");

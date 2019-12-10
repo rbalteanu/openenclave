@@ -70,16 +70,16 @@ typedef struct _oe_ext_sigstruct
     oe_ext_hash_t extid;
 
     /* The hash of the extension. */
-    oe_ext_hash_t exthash;
+    oe_ext_hash_t extmeasure;
 
-    /* The signature of hash(exthash|extid). */
+    /* The signature of hash(extmeasure|extid). */
     oe_ext_signature_t signature;
 } oe_ext_sigstruct_t;
 
 oe_result_t oe_ext_verify_signature(
     oe_ext_pubkey_t* pubkey,
     const oe_ext_hash_t* extid,
-    const oe_ext_hash_t* exthash,
+    const oe_ext_hash_t* extmeasure,
     const oe_ext_signature_t* signature);
 
 oe_result_t oe_ext_ascii_to_hash(const char* ascii, oe_ext_hash_t* hash);

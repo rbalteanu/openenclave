@@ -163,10 +163,10 @@ oe_result_t oe_ext_load_sigstruct(
             OE_CHECK(_ascii_to_binary(
                 p, sigstruct->extid.buf, sizeof(sigstruct->extid)));
         }
-        else if (strcmp(name, "exthash") == 0)
+        else if (strcmp(name, "extmeasure") == 0)
         {
             OE_CHECK(_ascii_to_binary(
-                p, sigstruct->exthash.buf, sizeof(sigstruct->exthash)));
+                p, sigstruct->extmeasure.buf, sizeof(sigstruct->extmeasure)));
         }
         else if (strcmp(name, "signature") == 0)
         {
@@ -233,7 +233,7 @@ oe_result_t oe_ext_save_sigstruct(
 
     OE_CHECK(_put(os, "signer", p->signer.buf, sizeof(p->signer)));
     OE_CHECK(_put(os, "extid", p->extid.buf, sizeof(p->extid)));
-    OE_CHECK(_put(os, "exthash", p->exthash.buf, sizeof(p->exthash)));
+    OE_CHECK(_put(os, "extmeasure", p->extmeasure.buf, sizeof(p->extmeasure)));
     OE_CHECK(_put(os, "signature", p->signature.buf, sizeof(p->signature)));
 
     result = OE_OK;

@@ -19,17 +19,17 @@ void dump_policy_ecall(void)
 
 void verify_ecall(
     const struct _oe_ext_sigstruct* sigstruct,
-    const struct _oe_ext_hash* exthash)
+    const struct _oe_ext_hash* extmeasure)
 {
     oe_result_t r;
 
-    oe_ext_dump_hash("exthash", exthash);
+    oe_ext_dump_hash("extmeasure", extmeasure);
 
     /* Dump the structure. */
     oe_ext_dump_sigstruct(sigstruct);
 
     r = oe_ext_verify_signature(
-        &policy.pubkey, &policy.extid, exthash, &sigstruct->signature);
+        &policy.pubkey, &policy.extid, extmeasure, &sigstruct->signature);
     OE_TEST(r == OE_OK);
 
     printf("=== VERIFY OKAY\n");
