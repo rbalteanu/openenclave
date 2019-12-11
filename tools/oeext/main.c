@@ -85,95 +85,6 @@ static uint64_t _find_file_offset(elf64_t* elf, uint64_t vaddr)
     return (uint64_t)-1;
 }
 
-static void _compute_sha256_hash(
-    oe_ext_hash_t* hash,
-    const void* data,
-    size_t size)
-{
-    oe_sha256_context_t context;
-    OE_SHA256 sha256;
-
-    oe_sha256_init(&context);
-    oe_sha256_update(&context, data, size);
-    oe_sha256_final(&context, &sha256);
-    memcpy(hash, sha256.buf, OE_SHA256_SIZE);
-}
-
-static int _write_file(const char* path, const void* data, size_t size)
-{
-    FILE* os;
-
-    if (!(os = fopen(path, "wb")))
-        return -1;
-
-    if (fwrite(data, 1, size, os) != size)
-        return -1;
-
-    fclose(os);
-
-    return 0;
-}
-
-static void _mem_reverse(void* dest_, const void* src_, size_t n)
-{
-    unsigned char* dest = (unsigned char*)dest_;
-    const unsigned char* src = (const unsigned char*)src_;
-    const unsigned char* end = src + n;
-
-    while (n--)
-        *dest++ = *--end;
-}
-
-static oe_result_t _get_modulus(
-    const oe_rsa_public_key_t* rsa,
-    uint8_t modulus[OE_EXT_KEY_SIZE])
-{
-    oe_result_t result = OE_UNEXPECTED;
-    uint8_t buf[OE_EXT_KEY_SIZE];
-    size_t bufsize = sizeof(buf);
-
-    if (!rsa || !modulus)
-        OE_RAISE(OE_INVALID_PARAMETER);
-
-    OE_CHECK(oe_rsa_public_key_get_modulus(rsa, buf, &bufsize));
-
-    /* RSA key length is the modulus length, so these have to be equal. */
-    if (bufsize != OE_EXT_KEY_SIZE)
-        OE_RAISE(OE_FAILURE);
-
-    _mem_reverse(modulus, buf, bufsize);
-
-    result = OE_OK;
-
-done:
-    return result;
-}
-
-static oe_result_t _get_exponent(
-    const oe_rsa_public_key_t* rsa,
-    uint8_t exponent[OE_EXT_EXPONENT_SIZE])
-{
-    oe_result_t result = OE_UNEXPECTED;
-    uint8_t buf[OE_EXT_EXPONENT_SIZE];
-    size_t bufsize = sizeof(buf);
-
-    if (!rsa || !exponent)
-        OE_RAISE(OE_INVALID_PARAMETER);
-
-    OE_CHECK(oe_rsa_public_key_get_exponent(rsa, buf, &bufsize));
-
-    /* Exponent is in big endian. So, we need to reverse. */
-    _mem_reverse(exponent, buf, bufsize);
-
-    /* We zero out the rest to get the right exponent in little endian. */
-    memset(exponent + bufsize, 0, OE_EXT_EXPONENT_SIZE - bufsize);
-
-    result = OE_OK;
-
-done:
-    return result;
-}
-
 static int _get_opt(
     int* argc,
     const char* argv[],
@@ -203,33 +114,16 @@ static int _register_main(int argc, const char* argv[])
     int ret = 1;
     static const char _usage[] =
         "\n"
-        "Usage: %s register pubkey=? extid=? enclave=? symbol=? [payload=?]\n"
+        "Usage: %s register enclave=? symbol=? pubkey=? extid=? [payload=?]\n"
         "\n";
-    typedef struct
-    {
-        const char* pubkey;
-        oe_ext_hash_t extid;
-        const char* enclave;
-        const char* symbol;
-        const char* payload;
-    } opts_t;
-    opts_t opts;
-    elf64_t elf;
-    bool loaded = false;
-    elf64_sym_t sym;
-    uint8_t* symbol_address;
-    size_t file_offset;
-    void* pem_data = NULL;
-    size_t pem_size = 0;
-    void* payload_data = NULL;
-    size_t payload_size = 0;
-    oe_rsa_public_key_t pubkey;
-    bool pubkey_initialized = false;
-
-    memset(&opts, 0, sizeof(opts));
+    const char* pubkey;
+    oe_ext_hash_t extid;
+    const char* enclave;
+    const char* symbol;
+    const char* payload;
 
     /* Check and collect arguments. */
-    if (argc == 2)
+    if (argc < 6)
     {
         fprintf(stderr, _usage, arg0);
         goto done;
@@ -238,7 +132,7 @@ static int _register_main(int argc, const char* argv[])
     /* Collect the options. */
     {
         /* Handle pubkey option. */
-        if (_get_opt(&argc, argv, "pubkey", &opts.pubkey) != 0)
+        if (_get_opt(&argc, argv, "pubkey", &pubkey) != 0)
             _err("missing pubkey option");
 
         /* Get the extid option. */
@@ -248,169 +142,46 @@ static int _register_main(int argc, const char* argv[])
             if (_get_opt(&argc, argv, "extid", &ascii) != 0)
                 _err("missing 'extid' option");
 
-            if (oe_ext_ascii_to_hash(ascii, &opts.extid) != OE_OK)
+            if (oe_ext_ascii_to_hash(ascii, &extid) != OE_OK)
                 _err("bad 'extid' option: %s", ascii);
         }
 
         /* Handle enclave option. */
-        if (_get_opt(&argc, argv, "enclave", &opts.enclave) != 0)
+        if (_get_opt(&argc, argv, "enclave", &enclave) != 0)
             _err("missing 'enclave' option");
 
         /* Get symbol option. */
         {
-            if (_get_opt(&argc, argv, "symbol", &opts.symbol) != 0)
+            if (_get_opt(&argc, argv, "symbol", &symbol) != 0)
                 _err("missing symbol option");
 
-            if (!_valid_symbol_name(opts.symbol))
-                _err("bad value for symbol option: %s", opts.symbol);
+            if (!_valid_symbol_name(symbol))
+                _err("bad value for symbol option: %s", symbol);
         }
 
         /* Get optional payload option. */
-        _get_opt(&argc, argv, "payload", &opts.payload);
-
-        if (payload_size >= OE_EXT_PAYLOAD_SIZE)
-        {
-            _err(
-                "payload is too large (cannot be bigger than %u)",
-                OE_EXT_PAYLOAD_SIZE);
-        }
+        _get_opt(&argc, argv, "payload", &payload);
     }
 
-    /* Fail if there are unconsumed option. */
-    if (argc > 2)
+    if (oe_ext_register(enclave, symbol, pubkey, &extid, payload) != OE_OK)
     {
-        _err("unknown option: %s", argv[2]);
-    }
-
-    /* Load the ELF-64 object */
-    {
-        if (elf64_load(opts.enclave, &elf) != 0)
-            _err("cannot load %s", opts.enclave);
-
-        loaded = true;
-    }
-
-    /* Find the symbol within the ELF image. */
-    if (elf64_find_symbol_by_name(&elf, opts.symbol, &sym) != 0)
-        _err("cannot find symbol: %s", opts.symbol);
-
-    /* Check the size of the symbol. */
-    if (sym.st_size != sizeof(oe_ext_policy_t))
-        _err("symbol %s is wrong size", opts.symbol);
-
-    /* Find the offset within the ELF file of this symbol. */
-    if ((file_offset = _find_file_offset(&elf, sym.st_value)) == (uint64_t)-1)
-        _err("cannot locate symbol %s in %s", opts.symbol, opts.enclave);
-
-    /* Make sure the entire symbol falls within the file image. */
-    if (file_offset + sizeof(oe_ext_policy_t) >= elf.size)
-        _err("unexpected");
-
-    /* Get the address of the symbol. */
-    symbol_address = (uint8_t*)elf.data + file_offset;
-
-    /* Load the public key. */
-    {
-        if (__oe_load_file(opts.pubkey, 1, &pem_data, &pem_size) != 0)
-            _err("failed to load keyfile: %s", opts.pubkey);
-
-        pem_size++;
-    }
-
-    /* Load the profile if any. */
-    if (opts.payload)
-    {
-        if (__oe_load_file(opts.payload, 1, &payload_data, &payload_size) != 0)
-            _err("failed to load payload file: %s", opts.payload);
-    }
-
-    /* Initialize the RSA private key. */
-    if (oe_rsa_public_key_read_pem(&pubkey, pem_data, pem_size) != OE_OK)
-        _err("failed to initialize private key");
-
-    /* Update the 'policy' symbol. */
-    {
-        oe_ext_policy_t policy;
-        memset(&policy, 0, sizeof(policy));
-
-        /* policy.modulus */
-        if (_get_modulus(&pubkey, policy.pubkey.modulus) != 0)
-            _err("failed to get modulus");
-
-        /* policy.exponent */
-        if (_get_exponent(&pubkey, policy.pubkey.exponent) != 0)
-            _err("failed to get exponent");
-
-        /* policy.extid */
-        policy.extid = opts.extid;
-
-        /* Expecting an exponent of 03000000 */
-        {
-            uint8_t buf[OE_EXT_EXPONENT_SIZE] = {
-                0x03,
-                0x00,
-                0x00,
-                0x00,
-            };
-
-            if (memcmp(policy.pubkey.exponent, buf, sizeof(buf)) != 0)
-                _err("bad value for pubkey exponent (must be 3)");
-        }
-
-        /* Compute the hash of the public key. */
-        _compute_sha256_hash(
-            &policy.signer,
-            policy.pubkey.modulus,
-            sizeof(policy.pubkey.modulus));
-
-        /* Inject the payload if any. */
-        if (payload_data && payload_size)
-        {
-            memcpy(policy.payload, payload_data, payload_size);
-            policy.payload_size = payload_size;
-        }
-
-        /* Update the policy structure in the ELF file. */
-        memcpy(symbol_address, &policy, sizeof(policy));
-    }
-
-    /* Rewrite the file. */
-    if (_write_file(opts.enclave, elf.data, elf.size) != 0)
-    {
-        _err("failed to write: %s", opts.enclave);
-        goto done;
+        _err("registration failed");
     }
 
     ret = 0;
 
 done:
 
-    if (pem_data)
-        free(pem_data);
-
-    if (payload_data)
-        free(payload_data);
-
-    if (loaded)
-        elf64_unload(&elf);
-
-    if (pubkey_initialized)
-        oe_rsa_public_key_free(&pubkey);
-
     return ret;
 }
 
-static int _dump_policy_main(int argc, const char* argv[])
+static int _dump_main(int argc, const char* argv[])
 {
     static const char _usage[] = "\n"
-                                 "Usage: %s dump_policy enclave=? symbol=?\n"
+                                 "Usage: %s dump enclave=? symbol=?\n"
                                  "\n";
-    typedef struct
-    {
-        const char* enclave;
-        const char* symbol;
-    } opts_t;
-    opts_t opts;
+    const char* enclave;
+    const char* symbol;
     elf64_t elf;
     bool loaded = false;
     elf64_sym_t sym;
@@ -429,54 +200,54 @@ static int _dump_policy_main(int argc, const char* argv[])
     /* Collect the options. */
     {
         /* Handle enclave option. */
-        if (_get_opt(&argc, argv, "enclave", &opts.enclave) != 0)
+        if (_get_opt(&argc, argv, "enclave", &enclave) != 0)
             _err("missing enclave option");
 
         /* Get symbol option. */
         {
-            if (_get_opt(&argc, argv, "symbol", &opts.symbol) != 0)
+            if (_get_opt(&argc, argv, "symbol", &symbol) != 0)
                 _err("missing symbol option");
 
-            if (!_valid_symbol_name(opts.symbol))
-                _err("bad value for symbol option: %s", opts.symbol);
+            if (!_valid_symbol_name(symbol))
+                _err("bad value for symbol option: %s", symbol);
         }
     }
 
     /* Load the ELF-64 object */
     {
-        if (elf64_load(opts.enclave, &elf) != 0)
-            _err("cannot load %s", opts.enclave);
+        if (elf64_load(enclave, &elf) != 0)
+            _err("cannot load %s", enclave);
 
         loaded = true;
     }
 
     /* Find the symbol within the ELF image. */
-    if (elf64_find_symbol_by_name(&elf, opts.symbol, &sym) != 0)
-        _err("cannot find symbol: %s", opts.symbol);
+    if (elf64_find_symbol_by_name(&elf, symbol, &sym) != 0)
+        _err("cannot find symbol: %s", symbol);
 
     /* Check the size of the symbol. */
-    if (sym.st_size != sizeof(oe_ext_policy_t))
-        _err("symbol %s is wrong size", opts.symbol);
+    if (sym.st_size != sizeof(oe_ext_registration_t))
+        _err("symbol %s is wrong size", symbol);
 
     /* Find the offset within the ELF file of this symbol. */
     if ((file_offset = _find_file_offset(&elf, sym.st_value)) == (uint64_t)-1)
-        _err("cannot locate symbol %s in %s", opts.symbol, opts.enclave);
+        _err("cannot locate symbol %s in %s", symbol, enclave);
 
     /* Make sure the entire symbol falls within the file image. */
-    if (file_offset + sizeof(oe_ext_policy_t) >= elf.size)
+    if (file_offset + sizeof(oe_ext_registration_t) >= elf.size)
         _err("unexpected");
 
     /* Get the address of the symbol. */
     symbol_address = (uint8_t*)elf.data + file_offset;
 
-    /* Print the 'policy' symbol. */
+    /* Print the 'registration' symbol. */
     {
-        oe_ext_policy_t policy;
+        oe_ext_registration_t registration;
 
-        /* Update the policy structure in the ELF file. */
-        memcpy(&policy, symbol_address, sizeof(policy));
+        /* Update the registration structure in the ELF file. */
+        memcpy(&registration, symbol_address, sizeof(registration));
 
-        oe_ext_dump_policy(&policy);
+        oe_ext_dump_registration(&registration);
     }
 
     ret = 0;
@@ -543,16 +314,13 @@ static int _sign_main(int argc, const char* argv[])
             _err("missing sigstructfile option");
     }
 
+    /* Perform the signing operation. */
     if (oe_ext_sign(privkey, &extid, &extmeasure, &sigstruct) != OE_OK)
-    {
         _err("signing operation failed");
-    }
 
     /* Save the sigstruct to a file. */
     if (oe_ext_save_sigstruct(sigstructfile, &sigstruct) != OE_OK)
-    {
         _err("failed to save: %s", sigstructfile);
-    }
 
     ret = 0;
 
@@ -568,9 +336,9 @@ int main(int argc, const char* argv[])
         "Usage: %s command options...\n"
         "\n"
         "Commands:\n"
-        "    register - inject a policy into an enclave.\n"
+        "    register - update the registration in an enclave.\n"
         "    sign - create a sigstruct file for a given signer and hash.\n"
-        "    dump_policy - dump an enclave update sructure.\n"
+        "    dump - dump an enclave update sructure.\n"
         "\n";
     int ret = 1;
 
@@ -595,9 +363,9 @@ int main(int argc, const char* argv[])
         ret = _sign_main(argc, argv);
         goto done;
     }
-    if (strcmp(argv[1], "dump_policy") == 0)
+    if (strcmp(argv[1], "dump") == 0)
     {
-        ret = _dump_policy_main(argc, argv);
+        ret = _dump_main(argc, argv);
         goto done;
     }
     else

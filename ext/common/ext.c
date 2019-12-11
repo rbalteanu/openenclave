@@ -55,31 +55,31 @@ void oe_ext_dump_hash(const char* name, const oe_ext_hash_t* hash)
     printf("\n");
 }
 
-void oe_ext_dump_policy(const oe_ext_policy_t* policy)
+void oe_ext_dump_registration(const oe_ext_registration_t* p)
 {
-    printf("# policy\n");
+    printf("# registration \n");
 
     printf("modulus=");
-    _dump_hex(policy->pubkey.modulus, sizeof(policy->pubkey.modulus));
+    _dump_hex(p->pubkey.modulus, sizeof(p->pubkey.modulus));
     printf("\n");
 
     printf("exponent=");
-    _dump_hex(policy->pubkey.exponent, sizeof(policy->pubkey.exponent));
+    _dump_hex(p->pubkey.exponent, sizeof(p->pubkey.exponent));
     printf("\n");
 
     printf("signer=");
-    _dump_hex(policy->signer.buf, sizeof(policy->signer.buf));
+    _dump_hex(p->signer.buf, sizeof(p->signer.buf));
     printf("\n");
 
     printf("extid=");
-    _dump_hex(policy->extid.buf, sizeof(policy->extid));
+    _dump_hex(p->extid.buf, sizeof(p->extid));
     printf("\n");
 
     printf("payload=");
-    _dump_string(policy->payload, policy->payload_size);
+    _dump_string(p->payload, p->payload_size);
     printf("\n");
 
-    printf("payload_size=%zu\n", policy->payload_size);
+    printf("payload_size=%zu\n", p->payload_size);
 
     printf("\n");
 }

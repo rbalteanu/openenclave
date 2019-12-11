@@ -7,7 +7,7 @@ enclave
 
     trusted
     {
-        public void dump_policy_ecall();
+        public void dump_registration_ecall();
 
         public void verify_ecall(
             [in, count=1] const struct _oe_ext_sigstruct* sigstruct,

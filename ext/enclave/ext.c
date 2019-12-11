@@ -35,7 +35,7 @@ oe_result_t oe_ext_verify_signature(
         memcpy(hash.buf, sha256.buf, sizeof(hash));
     }
 
-    /* Initialize the RSA key from the policy. */
+    /* Initialize the RSA key from the registration. */
     OE_CHECK(oe_rsa_public_key_init_from_binary(
         &rpk,
         pubkey->modulus,

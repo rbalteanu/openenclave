@@ -9,12 +9,12 @@
 #include <string.h>
 #include "oeext_t.h"
 
-/* The 'oeext policy' subcommand fills this in. */
-OE_EXT_SECTION oe_ext_policy_t policy;
+/* The 'oeext registration' subcommand fills this in. */
+OE_EXT_SECTION oe_ext_registration_t registration;
 
-void dump_policy_ecall(void)
+void dump_registration_ecall(void)
 {
-    oe_ext_dump_policy(&policy);
+    oe_ext_dump_registration(&registration);
 }
 
 void verify_ecall(
@@ -29,7 +29,10 @@ void verify_ecall(
     oe_ext_dump_sigstruct(sigstruct);
 
     r = oe_ext_verify_signature(
-        &policy.pubkey, &policy.extid, extmeasure, &sigstruct->signature);
+        &registration.pubkey,
+        &registration.extid,
+        extmeasure,
+        &sigstruct->signature);
     OE_TEST(r == OE_OK);
 
     printf("=== VERIFY OKAY\n");

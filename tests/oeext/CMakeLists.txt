@@ -19,13 +19,13 @@ add_test(tests/oeext_privkey
 add_test(tests/oeext_pubkey
     openssl rsa -in ${PRIVKEY} -out ${PUBKEY} -pubout -outform PEM)
 
-# Update the policy within the enclave:
+# Update the registration within the enclave:
 add_test(tests/oeext_register
     oeext register
     pubkey=${PUBKEY}
     extid=${EXTID}
     enclave=${CMAKE_CURRENT_BINARY_DIR}/enc/oeext_enc
-    symbol=policy
+    symbol=registration
     payload=${PAYLOAD})
 
 # Sign the hash and create the sigstruct file:

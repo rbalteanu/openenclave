@@ -36,8 +36,8 @@ typedef struct _oe_ext_pubkey
     uint8_t exponent[OE_EXT_EXPONENT_SIZE];
 } oe_ext_pubkey_t;
 
-/* A policy written to an enclave with the 'oeext update' tool. */
-typedef struct _oe_ext_policy
+/* A registration written to an enclave with the 'oeext update' tool. */
+typedef struct _oe_ext_registration
 {
     /* The public key of the signer. */
     oe_ext_pubkey_t pubkey;
@@ -53,7 +53,7 @@ typedef struct _oe_ext_policy
 
     /* Size of the payload */
     size_t payload_size;
-} oe_ext_policy_t;
+} oe_ext_registration_t;
 
 typedef struct _oe_ext_signature
 {
@@ -76,6 +76,13 @@ typedef struct _oe_ext_sigstruct
     oe_ext_signature_t signature;
 } oe_ext_sigstruct_t;
 
+oe_result_t oe_ext_register(
+    const char* enclave,
+    const char* symbol,
+    const char* pubkey,
+    const oe_ext_hash_t* extid,
+    const char* payload);
+
 oe_result_t oe_ext_sign(
     const char* privkey_path,
     const oe_ext_hash_t* extid,
@@ -92,7 +99,7 @@ oe_result_t oe_ext_ascii_to_hash(const char* ascii, oe_ext_hash_t* hash);
 
 void oe_ext_dump_hash(const char* name, const oe_ext_hash_t* hash);
 
-void oe_ext_dump_policy(const oe_ext_policy_t* policy);
+void oe_ext_dump_registration(const oe_ext_registration_t* registration);
 
 void oe_ext_dump_sigstruct(const oe_ext_sigstruct_t* sigstruct);
 

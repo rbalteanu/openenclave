@@ -33,7 +33,7 @@ int main(int argc, const char* argv[])
     result = oe_create_oeext_enclave(argv[1], type, flags, NULL, 0, &enclave);
     OE_TEST(result == OE_OK);
 
-    result = dump_policy_ecall(enclave);
+    result = dump_registration_ecall(enclave);
     OE_TEST(result == OE_OK);
 
     OE_TEST(oe_ext_ascii_to_hash(argv[3], &hash) == OE_OK);
