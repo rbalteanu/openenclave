@@ -495,20 +495,10 @@ static int _sign_main(int argc, const char* argv[])
         "\n"
         "Usage: %s sign privkey=? extid=? extmeasure=? sigstructfile=?\n"
         "\n";
-    typedef struct
-    {
-        const char* privkey;
-        oe_ext_hash_t extid;
-        oe_ext_hash_t extmeasure;
-        const char* sigstructfile;
-    } opts_t;
-    opts_t opts;
-    void* pem_data = NULL;
-    size_t pem_size = 0;
-    oe_rsa_private_key_t rsa_private;
-    bool rsa_private_initialized = false;
-    oe_rsa_public_key_t pubkey;
-    bool pubkey_initialized = false;
+    const char* privkey;
+    oe_ext_hash_t extid;
+    oe_ext_hash_t extmeasure;
+    const char* sigstructfile;
     oe_ext_sigstruct_t sigstruct;
 
     int ret = 1;
@@ -523,7 +513,7 @@ static int _sign_main(int argc, const char* argv[])
     /* Collect the options. */
     {
         /* Get pubkey option. */
-        if (_get_opt(&argc, argv, "privkey", &opts.privkey) != 0)
+        if (_get_opt(&argc, argv, "privkey", &privkey) != 0)
             _err("missing privkey option");
 
         /* Get the extid option. */
@@ -533,7 +523,7 @@ static int _sign_main(int argc, const char* argv[])
             if (_get_opt(&argc, argv, "extid", &ascii) != 0)
                 _err("missing extid option");
 
-            if (oe_ext_ascii_to_hash(ascii, &opts.extid) != OE_OK)
+            if (oe_ext_ascii_to_hash(ascii, &extid) != OE_OK)
                 _err("bad extid option: %s", ascii);
         }
 
@@ -544,123 +534,29 @@ static int _sign_main(int argc, const char* argv[])
             if (_get_opt(&argc, argv, "extmeasure", &ascii) != 0)
                 _err("missing extmeasure option");
 
-            if (oe_ext_ascii_to_hash(ascii, &opts.extmeasure) != OE_OK)
+            if (oe_ext_ascii_to_hash(ascii, &extmeasure) != OE_OK)
                 _err("bad extmeasure option: %s", ascii);
         }
 
         /* Get the sigstructfile option. */
-        if (_get_opt(&argc, argv, "sigstructfile", &opts.sigstructfile) != 0)
+        if (_get_opt(&argc, argv, "sigstructfile", &sigstructfile) != 0)
             _err("missing sigstructfile option");
     }
 
-    /* Load the private key. */
+    if (oe_ext_sign(privkey, &extid, &extmeasure, &sigstruct) != OE_OK)
     {
-        if (__oe_load_file(opts.privkey, 1, &pem_data, &pem_size) != 0)
-            _err("failed to load privkey: %s", opts.privkey);
-
-        pem_size++;
-    }
-
-    /* Initialize the RSA private key. */
-    if (oe_rsa_private_key_read_pem(&rsa_private, pem_data, pem_size) != OE_OK)
-        _err("failed to initialize private key");
-    rsa_private_initialized = true;
-
-    /* Get the RSA public key. */
-    if (oe_rsa_get_public_key_from_private(&rsa_private, &pubkey) != OE_OK)
-        _err("failed to get public key");
-    pubkey_initialized = true;
-
-    /* Perform the signing operation. */
-    {
-        uint8_t signature[OE_EXT_KEY_SIZE];
-        oe_ext_hash_t hash;
-
-        /* Combine the two hashes (extid and extmeasure) into one */
-        {
-            oe_sha256_context_t context;
-            OE_SHA256 sha256;
-
-            oe_sha256_init(&context);
-            oe_sha256_update(&context, opts.extid.buf, sizeof(opts.extid));
-            oe_sha256_update(
-                &context, opts.extmeasure.buf, sizeof(opts.extmeasure));
-            oe_sha256_final(&context, &sha256);
-
-            memcpy(hash.buf, sha256.buf, sizeof(hash));
-        }
-
-        /* Create the signature from the hash. */
-        {
-            size_t signature_size = OE_EXT_KEY_SIZE;
-
-            if (oe_rsa_private_key_sign(
-                    &rsa_private,
-                    OE_HASH_TYPE_SHA256,
-                    hash.buf,
-                    sizeof(oe_ext_hash_t),
-                    signature,
-                    &signature_size) != 0)
-            {
-                _err("signing operation failed");
-            }
-
-            if (signature_size != OE_EXT_KEY_SIZE)
-                _err("bad resulting signature size");
-        }
-
-        /* Initialize the sigstruct structure. */
-        {
-            uint8_t modulus[OE_EXT_KEY_SIZE];
-            uint8_t exponent[OE_EXT_EXPONENT_SIZE];
-
-            memset(&sigstruct, 0, sizeof(sigstruct));
-
-            /* Get the modulus */
-            if (_get_modulus(&pubkey, modulus) != 0)
-                _err("failed to get modulus");
-
-            /* Get the exponent */
-            if (_get_exponent(&pubkey, exponent) != 0)
-                _err("failed to get exponent");
-
-            /* sign.signer */
-            _compute_sha256_hash(&sigstruct.signer, modulus, sizeof(modulus));
-
-            /* sign.extid*/
-            assert(sizeof sigstruct.extid == sizeof opts.extid);
-            sigstruct.extid = opts.extid;
-
-            /* sign.extmeasure*/
-            assert(sizeof sigstruct.extmeasure == sizeof opts.extmeasure);
-            sigstruct.extmeasure = opts.extmeasure;
-
-            /* sign.signature */
-            assert(sizeof sigstruct.signature == sizeof signature);
-            memcpy(
-                sigstruct.signature.buf, signature, sizeof sigstruct.signature);
-        }
+        _err("signing operation failed");
     }
 
     /* Save the sigstruct to a file. */
-    if (oe_ext_save_sigstruct(opts.sigstructfile, &sigstruct) != OE_OK)
+    if (oe_ext_save_sigstruct(sigstructfile, &sigstruct) != OE_OK)
     {
-        _err("failed to save: %s", opts.sigstructfile);
-        goto done;
+        _err("failed to save: %s", sigstructfile);
     }
 
     ret = 0;
 
 done:
-
-    if (pem_data)
-        free(pem_data);
-
-    if (rsa_private_initialized)
-        oe_rsa_private_key_free(&rsa_private);
-
-    if (pubkey_initialized)
-        oe_rsa_public_key_free(&pubkey);
 
     return ret;
 }

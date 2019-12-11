@@ -76,6 +76,12 @@ typedef struct _oe_ext_sigstruct
     oe_ext_signature_t signature;
 } oe_ext_sigstruct_t;
 
+oe_result_t oe_ext_sign(
+    const char* privkey_path,
+    const oe_ext_hash_t* extid,
+    const oe_ext_hash_t* extmeasure,
+    oe_ext_sigstruct_t* sigstruct);
+
 oe_result_t oe_ext_verify_signature(
     oe_ext_pubkey_t* pubkey,
     const oe_ext_hash_t* extid,

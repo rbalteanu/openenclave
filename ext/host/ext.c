@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../../host/crypto/rsa.h"
 
 oe_result_t _ascii_to_binary(const char* ascii, uint8_t* data, size_t size)
 {
@@ -47,36 +48,6 @@ oe_result_t oe_ext_ascii_to_hash(const char* ascii, oe_ext_hash_t* hash)
 {
     return _ascii_to_binary(ascii, hash->buf, sizeof(oe_ext_hash_t));
 }
-
-#if 0
-oe_result_t oe_ext_load_sigstruct(
-    const char* path,
-    oe_ext_sigstruct_t* sigstruct)
-{
-    oe_result_t result = OE_UNEXPECTED;
-    void* data = NULL;
-    size_t size;
-
-    if (!path || !sigstruct)
-        OE_RAISE(OE_INVALID_PARAMETER);
-
-    OE_CHECK(__oe_load_file(path, 0, &data, &size));
-
-    if (size != sizeof(oe_ext_sigstruct_t))
-        OE_RAISE(OE_FAILURE);
-
-    memcpy(sigstruct, data, sizeof(oe_ext_sigstruct_t));
-
-    result = OE_OK;
-
-done:
-
-    if (data)
-        free(data);
-
-    return result;
-}
-#endif
 
 oe_result_t oe_ext_load_sigstruct(
     const char* path,
@@ -242,6 +213,196 @@ done:
 
     if (os)
         fclose(os);
+
+    return result;
+}
+
+static void _mem_reverse(void* dest_, const void* src_, size_t n)
+{
+    unsigned char* dest = (unsigned char*)dest_;
+    const unsigned char* src = (const unsigned char*)src_;
+    const unsigned char* end = src + n;
+
+    while (n--)
+        *dest++ = *--end;
+}
+
+static oe_result_t _get_modulus(
+    const oe_rsa_public_key_t* rsa,
+    uint8_t modulus[OE_EXT_KEY_SIZE])
+{
+    oe_result_t result = OE_UNEXPECTED;
+    uint8_t buf[OE_EXT_KEY_SIZE];
+    size_t bufsize = sizeof(buf);
+
+    if (!rsa || !modulus)
+        OE_RAISE(OE_INVALID_PARAMETER);
+
+    OE_CHECK(oe_rsa_public_key_get_modulus(rsa, buf, &bufsize));
+
+    /* RSA key length is the modulus length, so these have to be equal. */
+    if (bufsize != OE_EXT_KEY_SIZE)
+        OE_RAISE(OE_FAILURE);
+
+    _mem_reverse(modulus, buf, bufsize);
+
+    result = OE_OK;
+
+done:
+    return result;
+}
+
+static oe_result_t _get_exponent(
+    const oe_rsa_public_key_t* rsa,
+    uint8_t exponent[OE_EXT_EXPONENT_SIZE])
+{
+    oe_result_t result = OE_UNEXPECTED;
+    uint8_t buf[OE_EXT_EXPONENT_SIZE];
+    size_t bufsize = sizeof(buf);
+
+    if (!rsa || !exponent)
+        OE_RAISE(OE_INVALID_PARAMETER);
+
+    OE_CHECK(oe_rsa_public_key_get_exponent(rsa, buf, &bufsize));
+
+    /* Exponent is in big endian. So, we need to reverse. */
+    _mem_reverse(exponent, buf, bufsize);
+
+    /* We zero out the rest to get the right exponent in little endian. */
+    memset(exponent + bufsize, 0, OE_EXT_EXPONENT_SIZE - bufsize);
+
+    result = OE_OK;
+
+done:
+    return result;
+}
+
+static void _compute_hash(
+    oe_ext_hash_t* hash,
+    const void* p1,
+    size_t n1,
+    const void* p2,
+    size_t n2)
+{
+    oe_sha256_context_t context;
+    OE_SHA256 sha256;
+
+    oe_sha256_init(&context);
+    oe_sha256_update(&context, p1, n1);
+
+    if (p2 && n2)
+        oe_sha256_update(&context, p2, n2);
+
+    oe_sha256_final(&context, &sha256);
+    memcpy(hash, sha256.buf, OE_SHA256_SIZE);
+}
+
+oe_result_t oe_ext_sign(
+    const char* privkey_path,
+    const oe_ext_hash_t* extid,
+    const oe_ext_hash_t* extmeasure,
+    oe_ext_sigstruct_t* sigstruct)
+{
+    oe_result_t result = OE_UNEXPECTED;
+    oe_rsa_private_key_t privkey;
+    bool privkey_initialized = false;
+    oe_rsa_public_key_t pubkey;
+    bool pubkey_initialized = false;
+    void* data = NULL;
+    size_t size;
+    uint8_t signature[OE_EXT_KEY_SIZE];
+
+    if (sigstruct)
+        memset(sigstruct, 0, sizeof(oe_ext_sigstruct_t));
+
+    /* Reject null parameters. */
+    if (!privkey_path || !extid || !extmeasure || !sigstruct)
+        OE_RAISE(OE_INVALID_PARAMETER);
+
+    /* Load the private RSA key. */
+    {
+        if (__oe_load_file(privkey_path, 1, &data, &size))
+            OE_RAISE(OE_FAILURE);
+
+        size++;
+
+        if (oe_rsa_private_key_read_pem(&privkey, data, size) != OE_OK)
+            OE_RAISE(OE_FAILURE);
+    }
+
+    /* Load the public key. */
+    {
+        if (oe_rsa_get_public_key_from_private(&privkey, &pubkey) != OE_OK)
+            OE_RAISE(OE_FAILURE);
+        pubkey_initialized = true;
+    }
+
+    /* Perform the signing operation. */
+    {
+        oe_ext_hash_t hash;
+
+        /* Compute the composit hash of EXTID and EXTMEASURE. */
+        _compute_hash(
+            &hash, extid, sizeof(*extid), extmeasure, sizeof(*extmeasure));
+
+        /* Create the signature from the composite hash. */
+        {
+            size_t signature_size = OE_EXT_KEY_SIZE;
+
+            if (oe_rsa_private_key_sign(
+                    &privkey,
+                    OE_HASH_TYPE_SHA256,
+                    hash.buf,
+                    sizeof(oe_ext_hash_t),
+                    signature,
+                    &signature_size) != 0)
+            {
+                OE_RAISE(OE_FAILURE);
+            }
+
+            if (signature_size != OE_EXT_KEY_SIZE)
+                OE_RAISE(OE_FAILURE);
+        }
+    }
+
+    /* Initialize the SIGSTRUCT. */
+    {
+        uint8_t modulus[OE_EXT_KEY_SIZE];
+        uint8_t exponent[OE_EXT_EXPONENT_SIZE];
+
+        /* Get the modulus */
+        if (_get_modulus(&pubkey, modulus) != 0)
+            OE_RAISE(OE_FAILURE);
+
+        /* Get the exponent */
+        if (_get_exponent(&pubkey, exponent) != 0)
+            OE_RAISE(OE_FAILURE);
+
+        /* sign.signer */
+        _compute_hash(&sigstruct->signer, modulus, sizeof(modulus), NULL, 0);
+
+        /* sign.extid*/
+        sigstruct->extid = *extid;
+
+        /* sign.extmeasure */
+        sigstruct->extmeasure = *extmeasure;
+
+        /* sign.signature */
+        memcpy(&sigstruct->signature, signature, sizeof signature);
+    }
+
+    result = OE_OK;
+
+done:
+
+    if (data)
+        free(data);
+
+    if (privkey_initialized)
+        oe_rsa_private_key_free(&privkey);
+
+    if (pubkey_initialized)
+        oe_rsa_public_key_free(&pubkey);
 
     return result;
 }
