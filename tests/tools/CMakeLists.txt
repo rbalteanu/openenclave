@@ -3,4 +3,5 @@
 
 if (OE_SGX)
     add_subdirectory(oecert)
+    add_subdirectory(oecertdump)
 endif()
