@@ -3,6 +3,8 @@
 
 enclave
 {
+    from "syscall.edl" import *;
+
     trusted
     {
         /* define ECALLs here. */

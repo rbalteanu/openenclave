@@ -1,16 +1,21 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/enclave.h>
-#include <openenclave/internal/syscall/sys/select.h>
-#include <openenclave/internal/syscall/sys/socket.h>
+#include <openenclave/internal/print.h>
 #include <openenclave/internal/tests.h>
+#include <syscall/common.h>
+#include <syscall/sys/select.h>
+#include <syscall/sys/socket.h>
 #include "../client.h"
 #include "../server.h"
 
+extern "C" void oe_syscall_register(void);
+
 static void _init(void)
 {
+    oe_syscall_register();
+
     static bool _initialized = false;
 
     if (!_initialized)
@@ -321,7 +326,7 @@ extern "C" void test_fd_set(void)
         }
     }
 
-    oe_printf("==== passed %s\n", __FUNCTION__);
+    oe_host_printf("==== passed %s\n", __FUNCTION__);
 }
 
 OE_SET_ENCLAVE_SGX(

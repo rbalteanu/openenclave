@@ -5,12 +5,12 @@
 #include <openenclave/internal/time.h>
 
 // enclave.h must come before socket.h
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/internal/syscall/arpa/inet.h>
-#include <openenclave/internal/syscall/netinet/in.h>
-#include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/tests.h>
+#include <syscall/arpa/inet.h>
+#include <syscall/common.h>
+#include <syscall/netinet/in.h>
+#include <syscall/sys/socket.h>
+#include <syscall/unistd.h>
 #include <unistd.h>
 
 #include <socketpair_test_t.h>
@@ -22,6 +22,10 @@ char done = false;
 
 int init_enclave()
 {
+    extern void oe_syscall_register(void);
+
+    oe_syscall_register();
+
     int ret = -1;
 
     OE_TEST(oe_load_module_host_socket_interface() == OE_OK);
