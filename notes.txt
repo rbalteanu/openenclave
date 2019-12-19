@@ -1,12 +1,12 @@
 # Copyright (c) Open Enclave SDK contributors.
 # Licensed under the MIT License.
 
-    - Why does liboecore have a rand() function?
+    - Remove rand() function from core.
 
-    - Why does liboecore have __oe_errno_location?
+    - Remove __oe_errno_location from liboecore.
 
-    - Move time functions out of liboecore?
+    - Move time functions out of liboecore.
 
-    - Move core/pthreads to libc.
+    - liboecore should not contain pthreads.c.
 
-    - Get rid of oe_stdout, etc. in liboecore
+    - liboecore should not use stdin, stdout, and stderr.
