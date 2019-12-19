@@ -65,7 +65,6 @@ if (OE_SGX)
         sgx/memory.c
         sgx/properties.c
         sgx/report.c
-        sgx/sched_yield.c
         sgx/spinlock.c
         sgx/td.c
         sgx/thread.c
@@ -99,7 +98,6 @@ elseif (OE_TRUSTZONE)
         optee/gp.c
         optee/keys.c
         optee/printf.c
-        optee/sched_yield.c
         optee/spinlock.c
         optee/stubs.c
         optee/thread.c
