@@ -1,8 +1,12 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-enclave {
-    trusted {
+enclave
+{
+    from "syscall.edl" import *;
+
+    trusted
+    {
         public void set_up();
         public void tear_down();
         public void wait_for_events();
