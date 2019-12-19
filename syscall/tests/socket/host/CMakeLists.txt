@@ -3,14 +3,12 @@
 
 include(oeedl_file)
 
-oeedl_file(../socket_test.edl
-    host socket_test_u
-    --edl-search-dir ../../../include)
+oeedl_file(../socket_test.edl host gen --edl-search-dir "../../../edl")
 
-add_executable(socket_host
-    host.c
-    ${socket_test_u}
-)
+add_executable(socket_host host.c ${gen})
 
-target_include_directories(socket_host PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(socket_host oehostapp)
+target_include_directories(socket_host PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${PROJECT_SOURCE_DIR}/syscall/include)
+
+target_link_libraries(socket_host oesyscallhost oehostapp)

@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 if(UNIX)
-#add_subdirectory(socket)
+add_subdirectory(socket)
 add_subdirectory(cpio)
 #add_subdirectory(datagram)
 #add_subdirectory(dup)
