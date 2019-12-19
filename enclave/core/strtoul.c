@@ -192,19 +192,19 @@ void __oe_gen_strtoul_table(void)
     {
         if (i >= '0' && i <= '9')
         {
-            oe_printf("0x%02x,\n", i - '0');
+            printf("0x%02x,\n", i - '0');
         }
         else if (i >= 'A' && i <= 'Z')
         {
-            oe_printf("0x%02x,\n", i - 'A' + 10);
+            printf("0x%02x,\n", i - 'A' + 10);
         }
         else if (i >= 'a' && i <= 'z')
         {
-            oe_printf("0x%02x,\n", i - 'a' + 10);
+            printf("0x%02x,\n", i - 'a' + 10);
         }
         else
         {
-            oe_printf("0xFF,\n");
+            printf("0xFF,\n");
         }
     }
 }

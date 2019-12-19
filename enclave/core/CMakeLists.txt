@@ -140,7 +140,6 @@ add_library(oecore STATIC
     stdio.c
     strerror.c
     string.c
-    strtok_r.c
     strtoul.c
     switchlesscalls.c
     tee_t_wrapper.c

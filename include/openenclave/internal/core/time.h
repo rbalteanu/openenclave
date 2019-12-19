@@ -24,13 +24,13 @@ struct oe_tm
 
 struct oe_timespec;
 
-struct oe_tm* oe_gmtime_r(const time_t* timep, struct oe_tm* result);
-
 int oe_sleep_msec(uint64_t milliseconds);
 
 uint64_t oe_get_time(void);
 
 time_t oe_time(time_t* tloc);
+
+struct oe_tm* oe_gmtime_r(const time_t* timep, struct oe_tm* result);
 
 OE_EXTERNC_END
 

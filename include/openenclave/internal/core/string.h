@@ -21,8 +21,6 @@ int oe_strcmp(const char* s1, const char* s2);
 
 int oe_strncmp(const char* s1, const char* s2, size_t n);
 
-char* oe_strstr(const char* haystack, const char* needle);
-
 size_t oe_strlcpy(char* dest, const char* src, size_t size);
 
 size_t oe_strlcat(char* dest, const char* src, size_t size);
@@ -30,20 +28,6 @@ size_t oe_strlcat(char* dest, const char* src, size_t size);
 char* oe_strerror(int errnum);
 
 int oe_strerror_r(int errnum, char* buf, size_t buflen);
-
-char* oe_strtok_r(char* str, const char* delim, char** saveptr);
-
-char* oe_strdup(const char* s);
-
-size_t oe_strspn(const char* s, const char* accept);
-
-size_t oe_strcspn(const char* s, const char* reject);
-
-char* oe_strchr(const char* s, int c);
-
-char* oe_strchrnul(const char* s, int c);
-
-char* oe_strrchr(const char* s, int c);
 
 OE_EXTERNC_END
 
