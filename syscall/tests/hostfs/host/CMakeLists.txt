@@ -1,9 +1,7 @@
 # Copyright (c) Open Enclave SDK contributors.
 # Licensed under the MIT License.
 
-set(EDL_DIR ../../../edl)
-
-oeedl_file(../test_hostfs.edl host gen --edl-search-dir ${EDL_DIR})
+oeedl_file(../test_hostfs.edl host gen --edl-search-dir "../../../edl")
 
 add_executable(hostfs_host host.c ${gen})
 

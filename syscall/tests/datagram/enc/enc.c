@@ -13,6 +13,10 @@
 
 void init_ecall(void)
 {
+    extern void oe_syscall_register(void);
+
+    oe_syscall_register();
+
     OE_TEST(oe_load_module_host_socket_interface() == 0);
 }
 
