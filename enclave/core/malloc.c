@@ -2,21 +2,14 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/fault.h>
 #include <openenclave/internal/globals.h>
 #include <openenclave/internal/malloc.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/thread.h>
 #include "debugmalloc.h"
-
-/* The use of dlmalloc/malloc.c below requires stdc names from these headers */
-#define OE_NEED_STDC_NAMES
-#include <openenclave/corelibc/bits/stdfile.h> // For stderr & FILE
-#include <openenclave/corelibc/errno.h>        // For errno & error defs
-#include <openenclave/corelibc/sched.h>        // For sched_yield
 
 #define HAVE_MMAP 0
 #define LACKS_UNISTD_H
@@ -31,6 +24,23 @@
 #define USE_LOCKS 1
 #define sbrk oe_sbrk
 #define fprintf _dlmalloc_stats_fprintf
+
+typedef struct _file
+{
+    int fd;
+} FILE;
+
+static int sched_yield(void)
+{
+    asm volatile("pause");
+    return 0;
+}
+
+static FILE _stderr = {2};
+
+#define stderr (&_stderr)
+
+static __thread int errno;
 
 static int _dlmalloc_stats_fprintf(FILE* stream, const char* format, ...);
 

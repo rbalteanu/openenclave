@@ -3,8 +3,8 @@
 
 #include "threadlocal.h"
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/malloc.h>
 #include <openenclave/internal/elf.h>
 #include <openenclave/internal/globals.h>
 #include <openenclave/internal/raise.h>

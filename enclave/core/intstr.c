@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include "intstr.h"
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/string.h>
 
 const char* oe_uint64_to_hexstr(oe_intstr_buf_t* buf, uint64_t x, size_t* size)
 {

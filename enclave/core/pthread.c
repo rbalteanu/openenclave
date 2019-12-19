@@ -1,9 +1,10 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/pthread.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/errno.h>
+#include <openenclave/internal/core/pthread.h>
+#include <openenclave/internal/core/time.h>
 #include <openenclave/internal/defs.h>
 #include <openenclave/internal/thread.h>
 

@@ -3,7 +3,7 @@
 
 #include "atexit.h"
 #include <openenclave/enclave.h>
-#include <openenclave/internal/syscall/unistd.h>
+#include <openenclave/internal/core/sbrk.h>
 #include <openenclave/internal/thread.h>
 
 /*

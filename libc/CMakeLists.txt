@@ -58,11 +58,10 @@ add_library(oelibc STATIC
     atexit.c
     dladdr.c
     errno.c
-    epoll.c
     exit.c
-    freeaddrinfo.c
-    getaddrinfo.c
-    getnameinfo.c
+    #ATTN:MEB: freeaddrinfo.c
+    #ATTN:MEB: getaddrinfo.c
+    #ATTN:MEB: getnameinfo.c
     kill.c
     libunwind_stubs.c
     link.c

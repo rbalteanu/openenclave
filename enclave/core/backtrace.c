@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/backtrace.h>
 #include <openenclave/internal/calls.h>

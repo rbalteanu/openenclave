@@ -2,14 +2,20 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/crypto/ec.h>
 #include <openenclave/internal/kdf.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/utils.h>
 #include <stdlib.h>
+
+#if defined(OE_BUILD_ENCLAVE)
+#include <openenclave/internal/core/malloc.h>
+#include <openenclave/internal/core/string.h>
+#else
+#include <stdlib.h>
+#include <string.h>
+#endif
 
 static inline oe_result_t _check_asymmetric_key_params(
     const oe_asymmetric_key_params_t* key_params)

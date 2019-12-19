@@ -1,7 +1,7 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
+#include <openenclave/internal/core/errno.h>
 
 int* __errno_location(void)
 {

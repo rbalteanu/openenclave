@@ -1,15 +1,12 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/defs.h>
-#include <openenclave/bits/types.h>
-#include <openenclave/corelibc/ctype.h>
-#include <openenclave/corelibc/stdarg.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/malloc.h>
+#include <openenclave/internal/core/string.h>
+#include <openenclave/internal/core/strtoul.h>
+#include <openenclave/internal/defs.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/internal/syscall/unistd.h>
+#include <openenclave/internal/types.h>
 #include "intstr.h"
 
 /*
@@ -71,6 +68,19 @@ struct placeholder
     char conversion;
 };
 
+static inline bool _isdigit(int c)
+{
+    return c >= '0' && c <= '9';
+}
+
+static inline int _toupper(int c)
+{
+    if (c >= 'a' && c <= 'z')
+        return c + ' ';
+
+    return c;
+}
+
 /* Syntax: %flags width [ . precision ] type conversion */
 static const char* _parse_placeholder(
     const char* p,
@@ -117,7 +127,7 @@ static const char* _parse_placeholder(
     }
 
     /* Parse the width */
-    if (oe_isdigit(*p))
+    if (_isdigit(*p))
     {
         char* end = NULL;
         unsigned long int ul = oe_strtoul(p, &end, 10);
@@ -139,7 +149,7 @@ static const char* _parse_placeholder(
         p++;
 
         /* Parse the precision */
-        if (oe_isdigit(*p))
+        if (_isdigit(*p))
         {
             char* end = NULL;
             unsigned long int ul = oe_strtoul(p, &end, 10);
@@ -304,7 +314,7 @@ static void _str_toupper(char* s)
 {
     while (*s)
     {
-        *s = (char)oe_toupper(*s);
+        *s = (char)_toupper(*s);
         s++;
     }
 }

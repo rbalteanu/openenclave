@@ -8,7 +8,6 @@
 #include <openenclave/bits/types.h>
 #include <openenclave/internal/cpuid.h>
 #include <openenclave/internal/defs.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include "backtrace.h"
 
 OE_EXTERNC_BEGIN
@@ -425,12 +424,6 @@ oe_result_t oe_register_sgx_ocall_function_table(void);
 /* Register the ECALL table needed by the SGX-specific interface (enclave side).
  */
 oe_result_t oe_register_sgx_ecall_function_table(void);
-
-/* Register the OCALL table needed by the SYSCALL interface (host side). */
-void oe_register_syscall_ocall_function_table(void);
-
-/* Register the ECALL table needed by the SYSCALL interface (enclave side). */
-void oe_register_syscall_ecall_function_table(void);
 
 OE_EXTERNC_END
 

@@ -71,4 +71,21 @@
 /* OE_FIELD_SIZE */
 #define OE_FIELD_SIZE(TYPE, FIELD) (sizeof(((TYPE*)0)->FIELD))
 
+/* Maximum path size */
+#define OE_PATH_MAX 4096
+
+/* OE_NO_RETURN */
+#ifdef __GNUC__
+#define OE_NO_RETURN __attribute__((__noreturn__))
+#else
+#define OE_NO_RETURN
+#endif
+
+/* OE_RESTRICT */
+#if __STDC_VERSION__ >= 199901L
+#define OE_RESTRICT restrict
+#elif !defined(__GNUC__) || defined(__cplusplus)
+#define OE_RESTRICT
+#endif
+
 #endif /* _OE_INTERNAL_DEFS_H */

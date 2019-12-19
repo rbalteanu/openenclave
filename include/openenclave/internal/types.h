@@ -191,4 +191,22 @@ OE_INLINE long long oe_check_lld(const int64_t* ptr)
 
 #endif /* defined(__GNUC__) */
 
+/*
+**==============================================================================
+**
+** oe_va_list
+** oe_va_start
+** oe_va_arg
+** oe_va_end
+** oe_va_copy
+**
+**==============================================================================
+*/
+
+#define oe_va_list __builtin_va_list
+#define oe_va_start __builtin_va_start
+#define oe_va_arg __builtin_va_arg
+#define oe_va_end __builtin_va_end
+#define oe_va_copy __builtin_va_copy
+
 #endif /* _OE_INTERNAL_TYPES_H */

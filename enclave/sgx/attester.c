@@ -3,10 +3,9 @@
 
 #include <openenclave/attestation/plugin.h>
 #include <openenclave/attestation/sgx/attester.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/malloc.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/report.h>
 #include <openenclave/internal/sgx/plugin.h>

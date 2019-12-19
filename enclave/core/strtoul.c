@@ -3,8 +3,7 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/ctype.h>
-#include <openenclave/corelibc/stdlib.h>
+#include <openenclave/internal/core/strtoul.h>
 
 //
 // If c is a digit character:
@@ -50,6 +49,12 @@ OE_INLINE bool _isdigit(char c, int base)
     return _digit[(unsigned char)c] < base;
 }
 
+static bool _isspace(int c)
+{
+    return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' ||
+           c == '\r';
+}
+
 unsigned long int oe_strtoul(const char* nptr, char** endptr, int base)
 {
     const char* p;
@@ -66,7 +71,7 @@ unsigned long int oe_strtoul(const char* nptr, char** endptr, int base)
     p = nptr;
 
     /* Skip any leading whitespace */
-    while (oe_isspace(*p))
+    while (_isspace(*p))
         p++;
 
     /* Handle '+' and '-' */

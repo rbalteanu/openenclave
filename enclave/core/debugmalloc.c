@@ -3,8 +3,8 @@
 
 #define USE_DL_PREFIX
 #include "debugmalloc.h"
+#include <errno.h>
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/errno.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/backtrace.h>
 #include <openenclave/internal/calls.h>
@@ -419,13 +419,13 @@ void* oe_debug_memalign(size_t alignment, size_t size)
 int oe_debug_posix_memalign(void** memptr, size_t alignment, size_t size)
 {
     if (!memptr)
-        return OE_EINVAL;
+        return EINVAL;
 
     if (!oe_is_ptrsize_multiple(alignment) || !oe_is_pow2(alignment))
-        return OE_EINVAL;
+        return EINVAL;
 
     if (!(*memptr = oe_debug_memalign(alignment, size)))
-        return OE_ENOMEM;
+        return ENOMEM;
 
     return 0;
 }

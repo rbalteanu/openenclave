@@ -4,9 +4,10 @@
 #include <openenclave/bits/safemath.h>
 #include <openenclave/internal/argv.h>
 #include <openenclave/internal/raise.h>
+#include "common.h"
 
 #if defined(OE_BUILD_ENCLAVE)
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/string.h>
 #define strlen oe_strlen
 #else
 #include <string.h>

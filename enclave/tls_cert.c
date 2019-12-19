@@ -18,6 +18,12 @@
 #include "crypto/key.h"
 #include "crypto/rsa.h"
 
+#if defined(OE_BUILD_ENCLAVE)
+#include <openenclave/internal/core/malloc.h>
+#else
+#include <stdlib.h>
+#endif
+
 // Todo: consider set CN with enclave's MRENCLAVE values
 #define SUBJECT_NAME "CN=Open Enclave SDK,O=OESDK TLS,C=US"
 #define DATE_NOT_VALID_BEFORE "20190501000000"

@@ -3,9 +3,10 @@
 
 #define OE_NEED_STDC_NAMES
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/string.h>
+#include <errno.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/errno.h>
+#include <openenclave/internal/core/string.h>
 
 typedef struct _error_info
 {

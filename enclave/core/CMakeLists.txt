@@ -124,7 +124,6 @@ add_library(oecore STATIC
     atexit.c
     backtrace.c
     calls.c
-    ctype.c
     debugmalloc.c
     errno.c
     gmtime.c
@@ -150,7 +149,7 @@ add_library(oecore STATIC
     ${PLATFORM_SRC})
 
 # Suppress type conversion warnings introduced by 3rdparty code
-set_source_files_properties(${MUSL_SRC_DIR}/prng/rand.c ROPERTIES
+set_source_files_properties(${MUSL_SRC_DIR}/prng/rand.c PROPERTIES
     COMPILE_FLAGS -Wno-conversion)
 set_source_files_properties(${MUSL_SRC_DIR}/string/memmove.c PROPERTIES
     COMPILE_FLAGS -Wno-sign-conversion)
@@ -166,6 +165,8 @@ if(OE_SGX)
     add_dependencies(oecore sgx_trusted_edl)
 endif()
 target_include_directories(oecore PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
+target_include_directories(oecore PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(oecore PUBLIC oe_includes)
 if (OE_TRUSTZONE)

@@ -1,0 +1,12 @@
+# Copyright (c) Open Enclave SDK contributors.
+# Licensed under the MIT License.
+
+    - Why does liboecore have a rand() function?
+
+    - Why does liboecore have __oe_errno_location?
+
+    - Move time functions out of liboecore?
+
+    - Move core/pthreads to libc.
+
+    - Get rid of oe_stdout, etc. in liboecore

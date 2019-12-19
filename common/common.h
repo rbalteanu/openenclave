@@ -15,11 +15,10 @@
 #ifdef OE_BUILD_ENCLAVE
 
 #include <openenclave/enclave.h>
-
-#include <openenclave/corelibc/stdint.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/malloc.h>
+#include <openenclave/internal/core/string.h>
+#include <openenclave/internal/defs.h>
+#include <openenclave/internal/types.h>
 
 #else
 

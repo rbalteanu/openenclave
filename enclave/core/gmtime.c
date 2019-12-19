@@ -1,10 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/types.h>
-#include <openenclave/corelibc/time.h>
+#include <openenclave/internal/core/time.h>
 
-int __secs_to_tm(long long, struct oe_tm*);
+int __secs_to_tm(long long, struct oe_tm* tm);
 
 struct oe_tm* oe_gmtime(const time_t* timep)
 {
