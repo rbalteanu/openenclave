@@ -91,7 +91,7 @@ if ( UNIX )
         add_subdirectory(memory)
     endif()
 add_subdirectory(create-rapid)
-#ATTN:MEB: add_subdirectory(libc)
+add_subdirectory(libc)
 endif()
 
 if (OE_SGX AND UNIX)

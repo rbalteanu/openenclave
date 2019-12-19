@@ -33,17 +33,6 @@ typedef unsigned int fpu_control_t __attribute__((__mode__(__HI__)));
 
 int t_status = 0;
 
-int device_init()
-{
-    OE_TEST(oe_load_module_host_file_system() == OE_OK);
-    OE_TEST(oe_load_module_host_socket_interface() == OE_OK);
-    // OE_TEST(oe_load_module_host_epoll() == OE_OK);
-
-    OE_TEST(mount("/", "/", OE_HOST_FILE_SYSTEM, 0, NULL) == 0);
-
-    return 0;
-}
-
 #if defined(XMM_OK)
 int my_printfpu_control()
 {
@@ -139,6 +128,8 @@ done:
     free(environ);
     __environ = NULL;
 
+    OE_TEST(ret == 0);
+
     return ret;
 }
 
@@ -146,7 +137,6 @@ extern int run_tests(void);
 
 int test()
 {
-    device_init();
     return run_tests();
 }
 
