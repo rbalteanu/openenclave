@@ -1,16 +1,16 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/tests.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/mount.h>
+#include <syscall/common.h>
+#include <syscall/device.h>
+#include <syscall/realpath.h>
+#include <syscall/unistd.h>
 #include <set>
 #include <string>
 #include "../../cpio/commands.h"
@@ -550,8 +550,12 @@ extern "C" void test_dup_case2(const char* tmp_dir)
     OE_TEST(umount("/") == 0);
 }
 
+extern "C" void oe_syscall_register(void);
+
 void test_fs(const char* src_dir, const char* tmp_dir)
 {
+    oe_syscall_register();
+
     (void)src_dir;
 
     OE_TEST(oe_load_module_host_file_system() == OE_OK);

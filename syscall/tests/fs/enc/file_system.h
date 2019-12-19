@@ -8,18 +8,17 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <openenclave/bits/fs.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/enclave.h>
-#include <openenclave/internal/syscall/dirent.h>
-#include <openenclave/internal/syscall/fcntl.h>
-#include <openenclave/internal/syscall/sys/mount.h>
-#include <openenclave/internal/syscall/sys/stat.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <syscall/common.h>
+#include <syscall/dirent.h>
+#include <syscall/fcntl.h>
+#include <syscall/rename.h>
+#include <syscall/sys/mount.h>
+#include <syscall/sys/stat.h>
+#include <syscall/unistd.h>
 #include <unistd.h>
 
 class oe_fd_file_system

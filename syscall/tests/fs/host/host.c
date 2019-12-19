@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 #include <openenclave/host.h>
-#include <openenclave/internal/syscall/host.h>
 #include <openenclave/internal/tests.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <syscall/host.h>
 #include "fs_u.h"
 
 #define SKIP_RETURN_CODE 2
