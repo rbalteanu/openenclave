@@ -36,6 +36,7 @@ add_library(${TARGET} STATIC
     fdtable.c
     iov.c
     mount.c
+    musl.c
     netdb.c
     poll.c
     epoll.c
@@ -45,6 +46,7 @@ add_library(${TARGET} STATIC
     stdio.c
     stdlib.c
     stub.c
+    strdup.c
     strtok_r.c
     syscall.c
     unistd.c
@@ -60,7 +62,7 @@ target_include_directories(${TARGET} PRIVATE
     ${PROJECT_SOURCE_DIR}/syscall/include/edger8r
     ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(${TARGET} oecore)
+target_link_libraries(${TARGET} oelibc oecore)
 
 install(TARGETS ${TARGET} EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

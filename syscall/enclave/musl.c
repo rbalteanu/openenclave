@@ -1,6 +1,15 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+/* Integration with MUSL C library */
+
+#include <openenclave/internal/syscall.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <syscall/common.h>
+#include <syscall/sys/stat.h>
+#include <syscall/sys/syscall.h>
+
 static void _stat_to_oe_stat(struct stat* stat, struct oe_stat* oe_stat)
 {
     oe_stat->st_dev = stat->st_dev;
@@ -41,16 +50,17 @@ static void _oe_stat_to_stat(struct oe_stat* oe_stat, struct stat* stat)
     stat->st_mtim.tv_nsec = oe_stat->st_mtim.tv_nsec;
 }
 
-static long _dispatch_oe_syscall(
+static oe_result_t _syscall_hook(
     long n,
     long x1,
     long x2,
     long x3,
     long x4,
     long x5,
-    long x6)
+    long x6,
+    long* ret)
 {
-    long ret;
+    oe_result_t result = OE_UNSUPPORTED;
 
     switch (n)
     {
@@ -62,9 +72,12 @@ static long _dispatch_oe_syscall(
 
             _stat_to_oe_stat(stat, &oe_stat);
             x2 = (long)&oe_stat;
-            ret = oe_syscall(OE_SYS_stat, x1, x2, x3, x4, x5, x6);
-            _oe_stat_to_stat(&oe_stat, stat);
+            *ret = oe_syscall(OE_SYS_stat, x1, x2, x3, x4, x5, x6);
 
+            if (*ret == OE_ENOSYS)
+                goto done;
+
+            _oe_stat_to_stat(&oe_stat, stat);
             break;
         }
 #endif
@@ -75,17 +88,30 @@ static long _dispatch_oe_syscall(
 
             _stat_to_oe_stat(stat, &oe_stat);
             x3 = (long)&oe_stat;
-            ret = oe_syscall(OE_SYS_newfstatat, x1, x2, x3, x4, x5, x6);
-            _oe_stat_to_stat(&oe_stat, stat);
+            *ret = oe_syscall(OE_SYS_newfstatat, x1, x2, x3, x4, x5, x6);
 
+            if (*ret == OE_ENOSYS)
+                goto done;
+
+            _oe_stat_to_stat(&oe_stat, stat);
             break;
         }
         default:
         {
-            ret = oe_syscall(n, x1, x2, x3, x4, x5, x6);
+            if ((*ret = oe_syscall(n, x1, x2, x3, x4, x5, x6)) == OE_ENOSYS)
+                goto done;
+
             break;
         }
     }
 
-    return ret;
+    result = OE_OK;
+
+done:
+    return result;
+}
+
+void oe_syscall_register(void)
+{
+    oe_register_syscall_hook(_syscall_hook);
 }

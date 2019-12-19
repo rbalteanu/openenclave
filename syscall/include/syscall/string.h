@@ -13,6 +13,8 @@ char* oe_strdup(const char* s);
 
 char* oe_strtok_r(char* s, const char* delim, char** lasts);
 
+char* oe_strdup(const char* s);
+
 OE_EXTERNC_END
 
 #endif /* _OE_SYSCALL_STRING_H */

@@ -1,9 +1,8 @@
 # Copyright (c) Open Enclave SDK contributors.
 # Licensed under the MIT License.
 
-add_subdirectory(socket)
-
 if(UNIX)
+#add_subdirectory(socket)
 add_subdirectory(cpio)
 #add_subdirectory(datagram)
 #add_subdirectory(dup)

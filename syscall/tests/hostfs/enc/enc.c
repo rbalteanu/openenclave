@@ -11,6 +11,9 @@
 void test_hostfs(const char* tmp_dir)
 {
     extern int run_main(const char* tmp_dir);
+    extern void oe_syscall_register(void);
+
+    oe_syscall_register();
 
     if (oe_load_module_host_file_system() != OE_OK)
     {
