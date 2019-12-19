@@ -4,7 +4,7 @@
 #ifndef _OE_SYSCALL_CONSOLEFS_H
 #define _OE_SYSCALL_CONSOLEFS_H
 
-#include <openenclave/internal/syscall/device.h>
+#include <openenclave/syscall/device.h>
 
 OE_EXTERNC_BEGIN
 

@@ -6,7 +6,7 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/internal/syscall/netinet/in.h>
+#include <syscall/netinet/in.h>
 
 OE_EXTERNC_BEGIN
 

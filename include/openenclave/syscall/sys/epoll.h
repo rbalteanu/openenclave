@@ -6,8 +6,8 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/internal/syscall/sys/bits/sigset.h>
 #include <openenclave/internal/types.h>
+#include <openenclave/syscall/sys/bits/sigset.h>
 
 OE_EXTERNC_BEGIN
 
@@ -44,12 +44,12 @@ enum OE_EPOLL_EVENTS
 
 #define __OE_EPOLL_DATA oe_epoll_data
 #define __OE_EPOLL_DATA_T oe_epoll_data_t
-#include <openenclave/internal/syscall/sys/bits/epoll_data.h>
+#include <openenclave/syscall/sys/bits/epoll_data.h>
 #undef __OE_EPOLL_DATA
 #undef __OE_EPOLL_DATA_T
 
 #define __OE_EPOLL_EVENT oe_epoll_event
-#include <openenclave/internal/syscall/sys/bits/epoll_event.h>
+#include <openenclave/syscall/sys/bits/epoll_event.h>
 #undef __OE_EPOLL_EVENT
 
 int oe_epoll_create(int size);

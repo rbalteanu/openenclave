@@ -6,7 +6,7 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/internal/syscall/fd.h>
+#include <openenclave/syscall/fd.h>
 
 OE_EXTERNC_BEGIN
 

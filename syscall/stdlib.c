@@ -1,14 +1,11 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/realpath.h>
+#include <openenclave/syscall/unistd.h>
 
 char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 {
@@ -134,7 +131,7 @@ OE_NO_RETURN void oe_exit(int status)
 {
     OE_UNUSED(status);
 
-    oe_printf("oe_exit() panic");
+    oe_host_printf("oe_exit() panic");
     oe_abort();
 
     /* Never return. */

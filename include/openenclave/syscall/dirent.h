@@ -5,8 +5,8 @@
 #define _OE_SYSCALL_DIRENT_H
 
 #include <openenclave/bits/defs.h>
-#include <openenclave/corelibc/bits/types.h>
-#include <openenclave/corelibc/limits.h>
+#include <openenclave/syscall/limits.h>
+#include <openenclave/syscall/types.h>
 
 OE_EXTERNC_BEGIN
 
@@ -24,7 +24,7 @@ OE_EXTERNC_BEGIN
 typedef struct _OE_DIR OE_DIR;
 
 #define __OE_DIRENT oe_dirent
-#include <openenclave/internal/syscall/bits/dirent.h>
+#include <openenclave/syscall/bits/dirent.h>
 #undef __OE_DIRENT
 
 OE_DIR* oe_opendir(const char* pathname);

@@ -7,17 +7,15 @@
 #include <openenclave/enclave.h>
 // clang-format on
 
-#include <openenclave/internal/syscall/device.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
 #include <openenclave/internal/thread.h>
-#include <openenclave/corelibc/string.h>
-#include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/iov.h>
-#include <openenclave/internal/syscall/fd.h>
-#include <openenclave/internal/syscall/iov.h>
-#include <openenclave/internal/syscall/fcntl.h>
-#include <openenclave/corelibc/stdlib.h>
+#include <openenclave/syscall/sys/socket.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/iov.h>
+#include <openenclave/syscall/fd.h>
+#include <openenclave/syscall/iov.h>
+#include <openenclave/syscall/fcntl.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/bits/safecrt.h>
 #include "syscall_t.h"

@@ -6,16 +6,16 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/time.h>
-#include <openenclave/internal/syscall/sys/time.h>
-#include <openenclave/internal/syscall/unistd.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/sys/time.h>
+#include <openenclave/syscall/unistd.h>
 
 OE_EXTERNC_BEGIN
 
 #define OE_FD_SETSIZE 1024
 
 #define __OE_FD_SET oe_fd_set
-#include <openenclave/internal/syscall/sys/bits/fd_set.h>
+#include <openenclave/syscall/sys/bits/fd_set.h>
 #undef __OE_FD_SET
 
 int oe_select(

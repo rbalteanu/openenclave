@@ -1,13 +1,13 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/internal/syscall/netdb.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/resolver.h>
-#include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/netdb.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/resolver.h>
+#include <openenclave/syscall/sys/socket.h>
 
 static oe_resolver_t* _resolver;
 static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;

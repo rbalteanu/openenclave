@@ -6,19 +6,18 @@
 #include <openenclave/enclave.h>
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/raise.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/fcntl.h>
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/iov.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/fcntl.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/iov.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/sys/ioctl.h>
 #include "syscall_t.h"
 
 /* The map allocation grows in multiples of the chunk size. */

@@ -6,6 +6,6 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/corelibc/bits/types.h>
-#include <openenclave/internal/syscall/sys/select.h>
+#include <syscall/sys/select.h>
 
 #endif /* _OE_SYSCALL_SYS_TYPES_H */

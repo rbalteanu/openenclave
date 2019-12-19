@@ -4,9 +4,8 @@
 #ifndef _OE_SYSCALL_RESOLVER_H
 #define _OE_SYSCALL_RESOLVER_H
 
-#include <openenclave/bits/types.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/internal/syscall/netdb.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/netdb.h>
 
 OE_EXTERNC_BEGIN
 

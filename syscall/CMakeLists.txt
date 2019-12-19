@@ -8,7 +8,7 @@
 ##
 ##==============================================================================
 
-set(EDL_DIR ${CMAKE_SOURCE_DIR}/common)
+set(EDL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/edl)
 set(EDL_FILE ${EDL_DIR}/syscall.edl)
 
 add_custom_command(
@@ -44,6 +44,7 @@ add_library(oesyscall STATIC
     stdio.c
     stdlib.c
     stub.c
+    strtok_r.c
     syscall.c
     unistd.c
     utsname.c)
@@ -54,6 +55,7 @@ add_dependencies(oesyscall syscall_trusted_edl)
 
 target_include_directories(oesyscall PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/edger8r
     ${CMAKE_CURRENT_BINARY_DIR}
     ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
 

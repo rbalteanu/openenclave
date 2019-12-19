@@ -5,9 +5,9 @@
 #define _OE_SYSCALL_RAISE_H
 
 #include <openenclave/bits/result.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/internal/syscall/device.h>
+#include <openenclave/internal/core/errno.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/device.h>
 
 OE_EXTERNC_BEGIN
 

@@ -7,6 +7,6 @@
 
     - Move time functions out of liboecore.
 
-    - liboecore should not contain pthreads.c.
-
     - liboecore should not use stdin, stdout, and stderr.
+
+    - edger8r generates inclusions of stdint.h, stdlib.h, and errno.h.

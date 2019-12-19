@@ -4,9 +4,7 @@
 #ifndef _OE_SYSCALL_SYS_IOCTL_H
 #define _OE_SYSCALL_SYS_IOCTL_H
 
-#include <openenclave/bits/defs.h>
-#include <openenclave/bits/types.h>
-#include <openenclave/corelibc/stdarg.h>
+#include <openenclave/syscall/types.h>
 
 OE_EXTERNC_BEGIN
 

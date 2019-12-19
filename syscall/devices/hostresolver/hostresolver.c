@@ -7,17 +7,16 @@
 #include <openenclave/enclave.h>
 // clang-format on
 
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/syscall/netdb.h>
-#include <openenclave/internal/syscall/resolver.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/sys/socket.h>
+#include <openenclave/syscall/netdb.h>
+#include <openenclave/syscall/resolver.h>
 #include <openenclave/bits/safemath.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/bits/module.h>
 #include <openenclave/internal/trace.h>
 #include "syscall_t.h"

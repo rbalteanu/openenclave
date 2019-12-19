@@ -1,14 +1,12 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/stdarg.h>
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/internal/backtrace.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/raise.h>
 
 int __oe_ioctl(int fd, unsigned long request, uint64_t arg)
 {

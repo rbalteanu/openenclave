@@ -3,15 +3,12 @@
 
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/bits/safemath.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/internal/syscall/iov.h>
-#include <openenclave/internal/syscall/sys/uio.h>
-#include <openenclave/internal/syscall/types.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/iov.h>
+#include <openenclave/syscall/sys/uio.h>
+#include <openenclave/syscall/types.h>
 
 int oe_iov_pack(
     const struct oe_iovec* iov,

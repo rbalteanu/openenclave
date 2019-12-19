@@ -4,8 +4,8 @@
 #ifndef _OE_SYSCALL_SYS_STAT_H
 #define _OE_SYSCALL_SYS_STAT_H
 
-#include <openenclave/corelibc/bits/types.h>
 #include <openenclave/internal/defs.h>
+#include <openenclave/syscall/types.h>
 
 OE_EXTERNC_BEGIN
 
@@ -46,7 +46,7 @@ OE_EXTERNC_BEGIN
 #define OE_S_IRWOTH (OE_S_IROTH | OE_S_IWOTH)
 
 #define __OE_STAT oe_stat
-#include <openenclave/internal/syscall/sys/bits/stat.h>
+#include <openenclave/syscall/sys/bits/stat.h>
 #undef __OE_STAT
 
 #ifndef st_atime

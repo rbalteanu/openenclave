@@ -6,10 +6,10 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/internal/syscall/sys/epoll.h>
-#include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/syscall/sys/uio.h>
-#include <openenclave/internal/syscall/types.h>
+#include <openenclave/syscall/sys/epoll.h>
+#include <openenclave/syscall/sys/socket.h>
+#include <openenclave/syscall/sys/uio.h>
+#include <openenclave/syscall/types.h>
 
 OE_EXTERNC_BEGIN
 

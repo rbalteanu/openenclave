@@ -6,8 +6,8 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/bits/types.h>
-#include <openenclave/internal/syscall/sys/uio.h>
+#include <openenclave/syscall/sys/uio.h>
+#include <openenclave/syscall/types.h>
 
 OE_EXTERNC_BEGIN
 
@@ -140,16 +140,16 @@ OE_EXTERNC_BEGIN
 #define OE_MSG_PEEK 0x0002
 
 #define __OE_SOCKADDR oe_sockaddr
-#include <openenclave/internal/syscall/sys/bits/sockaddr.h>
+#include <openenclave/syscall/sys/bits/sockaddr.h>
 #undef __OE_SOCKADDR
 
 #define __OE_SOCKADDR_STORAGE oe_sockaddr_storage
-#include <openenclave/internal/syscall/sys/bits/sockaddr_storage.h>
+#include <openenclave/syscall/sys/bits/sockaddr_storage.h>
 #undef __OE_SOCKADDR_STORAGE
 
 #define __OE_IOVEC oe_iovec
 #define __OE_MSGHDR oe_msghdr
-#include <openenclave/internal/syscall/sys/bits/msghdr.h>
+#include <openenclave/syscall/sys/bits/msghdr.h>
 #undef __OE_IOVEC
 #undef __OE_MSGHDR
 

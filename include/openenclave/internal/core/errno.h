@@ -149,6 +149,8 @@ OE_EXTERNC_BEGIN
 
 int* __oe_errno_location(void);
 
+#define oe_errno (*__oe_errno_location())
+
 OE_EXTERNC_END
 
 #endif /* _OE_INTERNAL_CORE_ERRNO_H */

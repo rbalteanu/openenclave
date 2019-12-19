@@ -3,9 +3,10 @@
 
 #include <openenclave/enclave.h>
 
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/sys/poll.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/sys/poll.h>
 #include "syscall_t.h"
 
 int oe_poll(struct oe_pollfd* fds, oe_nfds_t nfds, int timeout)

@@ -4,16 +4,13 @@
 #include <openenclave/enclave.h>
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/internal/raise.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/raise.h>
 
 /*
 **==============================================================================

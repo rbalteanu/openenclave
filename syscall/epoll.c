@@ -6,15 +6,13 @@
 #include <openenclave/internal/thread.h>
 // clang-format on
 
-#include <openenclave/corelibc/stdlib.h>
+#include <openenclave/syscall/common.h>
 #include <openenclave/internal/utils.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/corelibc/string.h>
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/internal/trace.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/device.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/device.h>
 
 #include "syscall_t.h"
 

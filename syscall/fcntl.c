@@ -1,14 +1,13 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/fcntl.h>
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/fcntl.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/unistd.h>
 #include "mount.h"
 #include "syscall_t.h"
 

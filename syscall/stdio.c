@@ -1,11 +1,10 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
+#include <openenclave/syscall/raise.h>
 #include "mount.h"
 
 int oe_rename(const char* oldpath, const char* newpath)

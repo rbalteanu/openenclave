@@ -3,19 +3,16 @@
 
 #include <openenclave/bits/module.h>
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/internal/syscall/fd.h>
-#include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/fd.h>
+#include <openenclave/syscall/fdtable.h>
+#include <openenclave/syscall/raise.h>
+#include <openenclave/syscall/unistd.h>
 #include "consolefs.h"
 
 /*

@@ -5,8 +5,8 @@
 #define _OE_SYSCALL_MOUNT_H
 
 #include <openenclave/bits/defs.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/internal/syscall/device.h>
+#include <openenclave/syscall/common.h>
+#include <openenclave/syscall/device.h>
 
 OE_EXTERNC_BEGIN
 

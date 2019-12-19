@@ -6,8 +6,8 @@
 
 #include <openenclave/bits/fs.h>
 #include <openenclave/bits/result.h>
-#include <openenclave/internal/syscall/fd.h>
-#include <openenclave/internal/syscall/sys/stat.h>
+#include <openenclave/syscall/fd.h>
+#include <openenclave/syscall/sys/stat.h>
 
 OE_EXTERNC_BEGIN
 

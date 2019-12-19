@@ -38,7 +38,7 @@ struct oe_in_addr
 };
 
 #define __OE_IN6_ADDR oe_in6_addr
-#include <openenclave/internal/syscall/netinet/bits/in6_addr.h>
+#include <syscall/netinet/bits/in6_addr.h>
 #undef __OE_IN6_ADDR
 
 #define oe_s6_addr __in6_union.__s6_addr
@@ -46,11 +46,11 @@ struct oe_in_addr
 #define oe_s6_addr32 __in6_union.__s6_addr32
 
 #define __OE_SOCKADDR_IN oe_sockaddr_in
-#include <openenclave/internal/syscall/netinet/bits/sockaddr_in.h>
+#include <syscall/netinet/bits/sockaddr_in.h>
 #undef __OE_SOCKADDR_IN
 
 #define __OE_SOCKADDR_IN6 oe_sockaddr_in6
-#include <openenclave/internal/syscall/netinet/bits/sockaddr_in6.h>
+#include <syscall/netinet/bits/sockaddr_in6.h>
 #undef __OE_SOCKADDR_IN6
 
 OE_EXTERNC_END
