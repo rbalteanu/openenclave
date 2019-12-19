@@ -1,9 +1,12 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-enclave {
+enclave
+{
+    from "syscall.edl" import *;
 
-    trusted {
+    trusted
+    {
         public void test_ids(
             int32_t pid,
             int32_t ppid,

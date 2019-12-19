@@ -1,7 +1,6 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/limits.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
 #include <stdio.h>
