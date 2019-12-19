@@ -70,4 +70,4 @@ tools/oeedger8r/src/main\.ml
 tools/oesign/getopt\.h
 tools/oesign/getopt_long\.c
 tests/host_verify/data/.*
-syscall/strtok_r.c
+syscall/enclave/strtok_r.c

@@ -4,12 +4,11 @@
 #ifndef _OE_HOST_SOCKET_H
 #define _OE_HOST_SOCKET_H
 
-#include <openenclave/corelibc/bits/types.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/syscall/types.h>
 #include <stdint.h>
 #include <string.h>
+#include <syscall/common.h>
+#include <syscall/sys/socket.h>
+#include <syscall/types.h>
 
 #ifdef _WIN32
 #include <winsock2.h>

@@ -11,13 +11,13 @@
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
-#include <openenclave/syscall/common.h>
-#include <openenclave/syscall/device.h>
-#include <openenclave/syscall/fcntl.h>
-#include <openenclave/syscall/fdtable.h>
-#include <openenclave/syscall/iov.h>
-#include <openenclave/syscall/raise.h>
-#include <openenclave/syscall/sys/ioctl.h>
+#include <syscall/common.h>
+#include <syscall/device.h>
+#include <syscall/fcntl.h>
+#include <syscall/fdtable.h>
+#include <syscall/iov.h>
+#include <syscall/raise.h>
+#include <syscall/sys/ioctl.h>
 #include "syscall_t.h"
 
 /* The map allocation grows in multiples of the chunk size. */

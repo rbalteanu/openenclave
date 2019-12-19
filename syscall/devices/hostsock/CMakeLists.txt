@@ -8,11 +8,11 @@ maybe_build_using_clangw(oehostsock)
 add_dependencies(oehostsock syscall_trusted_edl)
 
 target_include_directories(oehostsock PRIVATE
-    ${CMAKE_BINARY_DIR}/syscall
-    ${PROJECT_SOURCE_DIR}/syscall/include/edger8r
-    ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
+    ${CMAKE_BINARY_DIR}/syscall/enclave
+    ${PROJECT_SOURCE_DIR}/syscall/include
+    ${PROJECT_SOURCE_DIR}/syscall/include/edger8r)
 
-target_link_libraries(oehostsock oesyscall)
+target_link_libraries(oehostsock oesyscallenclave)
 
 install(TARGETS oehostsock EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

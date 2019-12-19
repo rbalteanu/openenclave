@@ -8,11 +8,11 @@ maybe_build_using_clangw(oehostepoll)
 add_dependencies(oehostepoll syscall_trusted_edl)
 
 target_include_directories(oehostepoll PRIVATE
-    ${CMAKE_BINARY_DIR}/syscall
-    ${PROJECT_SOURCE_DIR}/syscall/include/edger8r
-    ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
+    ${CMAKE_BINARY_DIR}/syscall/enclave
+    ${PROJECT_SOURCE_DIR}/syscall/include
+    ${PROJECT_SOURCE_DIR}/syscall/include/edger8r)
 
-target_link_libraries(oehostepoll oesyscall)
+target_link_libraries(oehostepoll oesyscallenclave)
 
 install(TARGETS oehostepoll EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

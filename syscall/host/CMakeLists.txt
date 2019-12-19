@@ -8,14 +8,34 @@
 ##
 ##==============================================================================
 
-set(SYSCALL_EDL ${EDL_DIR}/syscall.edl)
+set(EDL_DIR ${PROJECT_SOURCE_DIR}/syscall/edl)
+set(EDL_FILE ${EDL_DIR}/syscall.edl)
 
 add_custom_command(
     OUTPUT syscall_u.h syscall_u.c syscall_args.h
-    DEPENDS ${SYSCALL_EDL} edger8r
-    COMMAND edger8r --search-path ${EDL_DIR} --untrusted ${SYSCALL_EDL})
+    DEPENDS ${EDL_FILE} edger8r
+    COMMAND edger8r --search-path ${EDL_DIR} --untrusted ${EDL_FILE})
 
 add_custom_target(syscall_untrusted_edl
     DEPENDS syscall_u.h syscall_u.c syscall_args.h)
 
-add_dependencies(oehost syscall_untrusted_edl)
+##==============================================================================
+##
+## These rules build the oesyscallhost target.
+##
+##==============================================================================
+
+add_library(oesyscallhost STATIC linux/syscall.c)
+
+maybe_build_using_clangw(oesyscallhost)
+
+add_dependencies(oesyscallhost syscall_untrusted_edl)
+
+target_include_directories(oesyscallhost PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/syscall/include)
+
+install(TARGETS oesyscallhost EXPORT openenclave-targets ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

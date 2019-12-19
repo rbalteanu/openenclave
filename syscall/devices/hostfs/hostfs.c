@@ -21,16 +21,16 @@
 #include <openenclave/enclave.h>
 // clang-format on
 
-#include <openenclave/syscall/common.h>
-#include <openenclave/syscall/unistd.h>
-#include <openenclave/syscall/device.h>
+#include <syscall/common.h>
+#include <syscall/unistd.h>
+#include <syscall/device.h>
 #include <openenclave/internal/thread.h>
-#include <openenclave/syscall/dirent.h>
-#include <openenclave/syscall/sys/mount.h>
-#include <openenclave/syscall/fcntl.h>
-#include <openenclave/syscall/sys/ioctl.h>
-#include <openenclave/syscall/raise.h>
-#include <openenclave/syscall/iov.h>
+#include <syscall/dirent.h>
+#include <syscall/sys/mount.h>
+#include <syscall/fcntl.h>
+#include <syscall/sys/ioctl.h>
+#include <syscall/raise.h>
+#include <syscall/iov.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/hexdump.h>
 #include <openenclave/bits/safecrt.h>
