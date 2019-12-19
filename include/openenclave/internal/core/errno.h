@@ -7,6 +7,8 @@
 #include <openenclave/internal/defs.h>
 #include <openenclave/internal/types.h>
 
+OE_EXTERNC_BEGIN
+
 // clang-format off
 #define OE_EPERM            1
 #define OE_ENOENT           2
@@ -146,5 +148,7 @@
 // clang-format on
 
 int* __oe_errno_location(void);
+
+OE_EXTERNC_END
 
 #endif /* _OE_INTERNAL_CORE_ERRNO_H */
