@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include <ctype.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/string.h>
 #include "readfile.h"
 
 oe_result_t read_cert(char* filename, char* cert)

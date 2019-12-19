@@ -28,7 +28,7 @@ void memalign_free(void* ptr)
     return oe_memalign_free(ptr);
 }
 
-void* _memalign(size_t alignment, size_t size)
+void* memalign(size_t alignment, size_t size)
 {
     return oe_memalign(alignment, size);
 }

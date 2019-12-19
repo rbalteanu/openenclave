@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/sbrk.h>
 #include <openenclave/internal/globals.h>
-#include <openenclave/internal/syscall/unistd.h>
 #include "bigmalloc_t.h"
 
 /* Test a large memory allocation */

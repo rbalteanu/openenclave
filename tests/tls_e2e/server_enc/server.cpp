@@ -7,7 +7,6 @@
 #include <openenclave/internal/tests.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/report.h>
-#include <openenclave/internal/syscall/device.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -3,9 +3,9 @@
 
 #include <assert.h>
 #include <fcntl.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/cert.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/crypto/sha.h>
 #include <openenclave/internal/ec.h>
 #include <openenclave/internal/hexdump.h>

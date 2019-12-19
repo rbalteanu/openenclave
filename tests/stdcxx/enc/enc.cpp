@@ -1,9 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/edger8r/enclave.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/atexit.h>
 #include <openenclave/internal/malloc.h>
 #include <openenclave/internal/tests.h>
 #include <iostream>

@@ -1,9 +1,10 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/print.h>
+#include <stdio.h>
 #include "echo_t.h"
 
 char* oe_host_strdup(const char* str)

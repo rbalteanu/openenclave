@@ -314,7 +314,7 @@ done:
 }
 
 #ifdef OE_BUILD_ENCLAVE
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/string.h>
 
 #define GetReport oe_get_report
 #define GetReport_v2 oe_get_report_v2
