@@ -9,5 +9,5 @@
     "vm_size": "Standard_DC2s",
     "communicator": "ssh",
     "ansible_group": "linux-agents",
-    "playbook_file": "/ansible/oe-linux-acc-setup.yml"
+    "playbook_file": "/ansible/oe-linux-acc-setup.yml /ansible/jenkins-setup.yml"
 }

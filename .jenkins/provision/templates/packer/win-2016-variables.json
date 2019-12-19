@@ -9,6 +9,6 @@
     "vm_size": "Standard_DC2s",
     "communicator": "winrm",
     "ansible_group": "windows-agents",
-    "playbook_file": "/ansible/oe-windows-acc-setup.yml",
+    "playbook_file": "/ansible/oe-windows-acc-setup.yml /ansible/jenkins-setup.yml",
     "dcap_testing_node": "false"
 }
