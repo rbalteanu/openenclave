@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
 #include <setjmp.h>
@@ -40,6 +39,9 @@ void test_dup(const char* tmp_dir)
     int fd;
     char path[PATH_MAX];
     const char MESSAGE[] = "This is STDOUT\n";
+    extern void oe_syscall_register(void);
+
+    oe_syscall_register();
 
     printf("tmp_dir=%s\n", tmp_dir);
 
