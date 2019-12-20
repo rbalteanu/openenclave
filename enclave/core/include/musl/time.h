@@ -1,8 +1,8 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#ifndef _OE_TIME_H
-#define _OE_TIME_H
+#ifndef _OE_CORE_INCLUDE_MUSL_TIME_H
+#define _OE_CORE_INCLUDE_MUSL_TIME_H
 
 #include <openenclave/bits/types.h>
 
@@ -19,4 +19,4 @@ struct tm
     int tm_isdst;
 };
 
-#endif /* _OE_TIME_H */
+#endif /* _OE_CORE_INCLUDE_MUSL_TIME_H */
