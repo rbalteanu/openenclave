@@ -4,7 +4,6 @@
 #ifndef _OE_SCHED_H
 #define _OE_SCHED_H
 
-#include <openenclave/internal/defs.h>
 #include <openenclave/internal/types.h>
 
 #endif /* _OE_SCHED_H */

@@ -1,10 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#ifndef _OE_STDDEF_H
-#define _OE_STDDEF_H
+#ifndef _OE_STDLIB_H
+#define _OE_STDLIB_H
 
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/bits/types.h>
 
-#endif /* _OE_STDDEF_H */
+#endif /* _OE_STDLIB_H */

@@ -4,8 +4,7 @@
 #ifndef _OE_TIME_H
 #define _OE_TIME_H
 
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/bits/types.h>
 
 struct tm
 {

@@ -5,8 +5,6 @@
 #define _OE_ERRNO_H
 
 #include <openenclave/internal/core/errno.h>
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
 
 #define EPERM OE_EPERM
 #define ENOENT OE_ENOENT

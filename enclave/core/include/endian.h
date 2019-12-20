@@ -4,7 +4,6 @@
 #ifndef _OE_ENDIAN_H
 #define _OE_ENDIAN_H
 
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/bits/types.h>
 
 #endif /* _OE_ENDIAN_H */

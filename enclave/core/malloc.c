@@ -25,6 +25,9 @@
 #define sbrk oe_sbrk
 #define fprintf _dlmalloc_stats_fprintf
 
+//#define ENOMEM 12
+//#define EINVAL 22
+
 typedef struct _file
 {
     int fd;

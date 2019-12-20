@@ -4,7 +4,6 @@
 #ifndef _OE_STDIO_H
 #define _OE_STDIO_H
 
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/bits/types.h>
 
 #endif /* _OE_STDIO_H */

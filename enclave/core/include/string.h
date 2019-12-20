@@ -5,9 +5,10 @@
 #define _OE_STRINGS_H
 
 #include <openenclave/internal/core/string.h>
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
 
-#define strlen oe_strlen
+OE_INLINE size_t strlen(const char* s)
+{
+    return oe_strlen(s);
+}
 
 #endif /* _OE_STRINGS_H */

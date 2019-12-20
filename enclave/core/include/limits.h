@@ -4,8 +4,7 @@
 #ifndef _OE_LIMITS_H
 #define _OE_LIMITS_H
 
-#include <openenclave/internal/defs.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/bits/types.h>
 
 #define INT_MIN OE_INT_MIN
 #define INT_MAX OE_INT_MAX
