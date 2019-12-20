@@ -34,8 +34,8 @@ enum
 
 /* Device names. */
 #define OE_DEVICE_NAME_CONSOLE_FILE_SYSTEM "oe_console_file_system"
-#define OE_DEVICE_NAME_HOST_FILE_SYSTEM OE_HOST_FILE_SYSTEM
-#define OE_DEVICE_NAME_SGX_FILE_SYSTEM OE_SGX_FILE_SYSTEM
+#define OE_DEVICE_NAME_HOST_FILE_SYSTEM "oe_host_file_system"
+#define OE_DEVICE_NAME_SGX_FILE_SYSTEM "oe_sgx_file_system"
 #define OE_DEVICE_NAME_HOST_SOCKET_INTERFACE "oe_host_socket_interface"
 #define OE_DEVICE_NAME_HOST_EPOLL "oe_host_epoll"
 

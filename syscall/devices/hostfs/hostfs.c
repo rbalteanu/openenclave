@@ -210,7 +210,7 @@ static int _hostfs_mount(
         OE_RAISE_ERRNO(OE_EBUSY);
 
     /* Cross check the file system type. */
-    if (oe_strcmp(filesystemtype, "oe_host_file_system") != 0)
+    if (oe_strcmp(filesystemtype, OE_DEVICE_NAME_HOST_FILE_SYSTEM) != 0)
         OE_RAISE_ERRNO(OE_EINVAL);
 
     /* The data parameter is not supported for host file systems. */
@@ -1215,7 +1215,7 @@ static oe_file_ops_t _get_file_ops(void)
 static device_t _hostfs =
 {
     .base.type = OE_DEVICE_TYPE_FILE_SYSTEM,
-    .base.name = "oe_host_file_system",
+    .base.name = OE_DEVICE_NAME_HOST_FILE_SYSTEM,
     .base.ops.fs =
     {
         .base.release = _hostfs_release,
