@@ -4,10 +4,10 @@
 #include <openenclave/enclave.h>
 #include <openenclave/internal/time.h>
 
-#include <openenclave/internal/syscall/arpa/inet.h>
-#include <openenclave/internal/syscall/netdb.h>
-#include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/tests.h>
+#include <syscall/arpa/inet.h>
+#include <syscall/netdb.h>
+#include <syscall/netinet/in.h>
 
 #include <resolver_test_t.h>
 #include <stdio.h>
@@ -20,6 +20,10 @@ struct addrinfo;
 
 int ecall_device_init()
 {
+    extern void oe_syscall_register(void);
+
+    oe_syscall_register();
+
     OE_TEST(oe_load_module_host_resolver() == OE_OK);
     return 0;
 }

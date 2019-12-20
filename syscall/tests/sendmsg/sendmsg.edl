@@ -1,8 +1,12 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-enclave {
-    trusted {
+enclave
+{
+    from "syscall.edl" import *;
+
+    trusted
+    {
         public void run_enclave_server(uint16_t port);
         public void run_enclave_client(uint16_t port);
     };
