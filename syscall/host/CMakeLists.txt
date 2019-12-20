@@ -25,17 +25,19 @@ add_custom_target(syscall_untrusted_edl
 ##
 ##==============================================================================
 
-add_library(oesyscallhost STATIC linux/syscall.c)
+set(TARGET oesyscallhost)
 
-maybe_build_using_clangw(oesyscallhost)
+add_library(${TARGET} STATIC linux/syscall.c)
 
-add_dependencies(oesyscallhost syscall_untrusted_edl)
+maybe_build_using_clangw(${TARGET})
 
-target_include_directories(oesyscallhost PRIVATE
+add_dependencies(${TARGET} syscall_untrusted_edl)
+
+target_include_directories(${TARGET} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/syscall/include)
 
-install(TARGETS oesyscallhost EXPORT openenclave-targets ARCHIVE
+install(TARGETS ${TARGET} EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)
