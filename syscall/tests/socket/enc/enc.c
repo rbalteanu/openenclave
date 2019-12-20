@@ -5,12 +5,10 @@
 #include <openenclave/internal/time.h>
 
 // enclave.h must come before socket.h
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <openenclave/internal/tests.h>
-#include <syscall/arpa/inet.h>
-#include <syscall/common.h>
-#include <syscall/netinet/in.h>
-#include <syscall/sys/socket.h>
-#include <syscall/unistd.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include <socket_test_t.h>
@@ -49,18 +47,18 @@ int ecall_run_client(char* recv_buff, ssize_t* recv_buff_len)
     int sockfd = 0;
     ssize_t n = 0;
     size_t buff_len = (size_t)*recv_buff_len;
-    struct oe_sockaddr_in serv_addr = {0};
+    struct sockaddr_in serv_addr = {0};
 
     memset(recv_buff, '0', buff_len);
     printf("create socket\n");
-    if ((sockfd = oe_socket(OE_AF_INET, OE_SOCK_STREAM, 0)) < 0)
+    if ((sockfd = oe_socket(OE_AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Error : Could not create socket \n");
         return OE_FAILURE;
     }
     serv_addr.sin_family = OE_AF_INET;
-    serv_addr.sin_addr.s_addr = oe_htonl(OE_INADDR_LOOPBACK);
-    serv_addr.sin_port = oe_htons(1492);
+    serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    serv_addr.sin_port = htons(1492);
 
     printf("socket fd = %d\n", sockfd);
     printf("Connecting...\n");
@@ -73,7 +71,7 @@ int ecall_run_client(char* recv_buff, ssize_t* recv_buff_len)
         if (retries++ > max_retries)
         {
             printf("\n Error : Connect Failed \n");
-            oe_close(sockfd);
+            close(sockfd);
             return OE_FAILURE;
         }
         else
@@ -82,10 +80,10 @@ int ecall_run_client(char* recv_buff, ssize_t* recv_buff_len)
         }
     }
 
-    int sockdup = oe_dup(sockfd);
+    int sockdup = dup(sockfd);
 
     printf("reading...\n");
-    n = oe_read(sockdup, recv_buff, buff_len);
+    n = read(sockdup, recv_buff, buff_len);
 
     *recv_buff_len = n;
     if (n > 0)
@@ -95,14 +93,14 @@ int ecall_run_client(char* recv_buff, ssize_t* recv_buff_len)
     else
     {
         printf("Read error, Fail\n");
-        oe_close(sockfd);
+        close(sockfd);
         oe_host_printf("fail close\n");
         return OE_FAILURE;
     }
 
     oe_host_printf("success close\n");
-    oe_close(sockfd);
-    oe_close(sockdup);
+    close(sockfd);
+    close(sockdup);
     return OE_OK;
 }
 
@@ -114,9 +112,9 @@ int ecall_run_server()
     _initialize();
     int status = OE_FAILURE;
     static const char TESTDATA[] = "This is TEST DATA\n";
-    int listenfd = oe_socket(OE_AF_INET, OE_SOCK_STREAM, 0);
+    int listenfd = oe_socket(OE_AF_INET, SOCK_STREAM, 0);
     int connfd = 0;
-    struct oe_sockaddr_in serv_addr = {0};
+    struct sockaddr_in serv_addr = {0};
 
     const int optVal = 1;
     const oe_socklen_t optLen = sizeof(optVal);
@@ -124,24 +122,24 @@ int ecall_run_server()
         listenfd, OE_SOL_SOCKET, OE_SO_REUSEADDR, (void*)&optVal, optLen);
     if (rtn > 0)
     {
-        printf("oe_setsockopt failed errno = %d\n", oe_errno);
+        printf("oe_setsockopt failed errno = %d\n", errno);
     }
 
     serv_addr.sin_family = OE_AF_INET;
-    serv_addr.sin_addr.s_addr = oe_htonl(OE_INADDR_LOOPBACK);
-    serv_addr.sin_port = oe_htons(1493);
+    serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    serv_addr.sin_port = htons(1493);
 
     printf("enclave: binding\n");
     rtn = oe_bind(listenfd, (struct oe_sockaddr*)&serv_addr, sizeof(serv_addr));
     if (rtn < 0)
     {
-        printf("bind error errno = %d\n", oe_errno);
+        printf("bind error errno = %d\n", errno);
     }
     oe_host_printf("enclave: listening\n");
     rtn = oe_listen(listenfd, 10);
     if (rtn < 0)
     {
-        printf("listen error errno = %d\n", oe_errno);
+        printf("listen error errno = %d\n", errno);
     }
 
     while (1)
@@ -149,14 +147,14 @@ int ecall_run_server()
         oe_sleep_msec(1);
         printf("enc: accepting\n");
 
-        struct oe_sockaddr_in peer_addr = {0};
+        struct sockaddr_in peer_addr = {0};
         oe_socklen_t peer_addr_len = sizeof(peer_addr);
         connfd = oe_accept(
             listenfd, (struct oe_sockaddr*)&peer_addr, &peer_addr_len);
         OE_TEST(peer_addr_len == sizeof(peer_addr));
         OE_TEST(peer_addr.sin_family == OE_AF_INET);
-        OE_TEST(oe_ntohs(peer_addr.sin_port) >= 1024);
-        OE_TEST(oe_ntohl(peer_addr.sin_addr.s_addr) == OE_INADDR_LOOPBACK);
+        OE_TEST(ntohs(peer_addr.sin_port) >= 1024);
+        OE_TEST(ntohl(peer_addr.sin_addr.s_addr) == INADDR_LOOPBACK);
 
         if (connfd >= 0)
         {
@@ -164,16 +162,16 @@ int ecall_run_server()
             do
             {
                 oe_host_printf("enclave: accepted\n");
-                ssize_t n = oe_write(connfd, TESTDATA, strlen(TESTDATA));
+                ssize_t n = write(connfd, TESTDATA, strlen(TESTDATA));
                 if (n > 0)
                 {
                     printf("write test data n = %ld\n", n);
-                    oe_close(connfd);
+                    close(connfd);
                     break;
                 }
                 else
                 {
-                    printf("write test data n = %ld errno = %d\n", n, oe_errno);
+                    printf("write test data n = %ld errno = %d\n", n, errno);
                 }
                 oe_sleep_msec(3);
             } while (1);
@@ -182,11 +180,11 @@ int ecall_run_server()
         }
         else
         {
-            printf("enc: accept failed errno = %d \n", oe_errno);
+            printf("enc: accept failed errno = %d \n", errno);
         }
     }
 
-    oe_close(listenfd);
+    close(listenfd);
     printf("exit from server thread\n");
     return status;
 }
