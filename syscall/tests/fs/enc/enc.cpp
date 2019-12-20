@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/mount.h>
+#include <syscall/device.h>
 #include <syscall/realpath.h>
 #include <set>
 #include <string>
@@ -400,15 +401,14 @@ void _test_mount(const char* tmp_dir)
     mkpath(source, tmp_dir, "source");
     mkpath(target, tmp_dir, "target");
 
-    OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
     unlink(mkpath(path, source, "newfile"));
     rmdir(source);
     rmdir(target);
 
     OE_TEST(oe_mkdir(source, 0777) == 0);
     OE_TEST(oe_mkdir(target, 0777) == 0);
-    OE_TEST(
-        mount(source, target, OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    OE_TEST(mount(source, target, "oe_host_file_system", 0, NULL) == 0);
 
     _touch(mkpath(path, target, "file1"));
     _touch(mkpath(path, target, "file2"));
@@ -443,7 +443,7 @@ static void test_realpath(const char* tmp_dir)
 
     printf("--- %s()\n", __FUNCTION__);
 
-    OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
 
     OE_TEST(oe_realpath("/../../..", &buf));
     OE_TEST(strcmp(buf.buf, "/") == 0);
@@ -499,7 +499,7 @@ extern "C" void test_dup_case1(const char* tmp_dir)
 
     printf("--- %s()\n", __FUNCTION__);
 
-    OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
 
     /* Create and close a file. */
     int fd;
@@ -527,7 +527,7 @@ extern "C" void test_dup_case2(const char* tmp_dir)
 
     printf("--- %s()\n", __FUNCTION__);
 
-    OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
 
     /* Create a file named "STDOUT" */
     mkpath(path, tmp_dir, "STDOUT");
@@ -634,9 +634,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
         mkpath(path, tmp_dir, "somefile");
         const int flags = O_CREAT | O_TRUNC | O_WRONLY;
 
-        OE_TEST(
-            mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, MS_RDONLY, NULL) ==
-            0);
+        OE_TEST(mount("/", "/", "oe_host_file_system", MS_RDONLY, NULL) == 0);
         OE_TEST(open(path, flags, MODE) == -1);
         OE_TEST(errno == EPERM);
         OE_TEST(umount("/") == 0);

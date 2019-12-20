@@ -4,7 +4,6 @@
 #ifndef _OE_SYSCALL_IOV_H
 #define _OE_SYSCALL_IOV_H
 
-#include <openenclave/bits/fs.h>
 #include <openenclave/bits/result.h>
 #include <syscall/fd.h>
 #include <syscall/sys/stat.h>

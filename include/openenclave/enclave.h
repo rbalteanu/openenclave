@@ -16,7 +16,6 @@
 
 #include "bits/defs.h"
 #include "bits/exception.h"
-#include "bits/fs.h"
 #include "bits/module.h"
 #include "bits/properties.h"
 #include "bits/report.h"

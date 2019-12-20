@@ -7,13 +7,11 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <openenclave/bits/fs.h>
 #include <openenclave/enclave.h>
 #include <stdio.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <syscall/device.h>
 #include <unistd.h>
 
 class oe_fd_file_system
@@ -93,7 +91,7 @@ class oe_fd_file_system
 
     int mkdir(const char* pathname, mode_t mode)
     {
-        return oe_mkdir(pathname, mode);
+        return ::mkdir(pathname, mode);
     }
 
     int rmdir(const char* pathname)
@@ -119,7 +117,7 @@ class oe_fd_hostfs_file_system : public oe_fd_file_system
   public:
     oe_fd_hostfs_file_system()
     {
-        OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+        OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
     }
 
     ~oe_fd_hostfs_file_system()
@@ -249,8 +247,7 @@ class fd_hostfs_file_system : public fd_file_system
   public:
     fd_hostfs_file_system()
     {
-        OE_TEST(
-            ::mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+        OE_TEST(::mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
     }
 
     ~fd_hostfs_file_system()
@@ -486,7 +483,7 @@ class stream_hostfs_file_system : public stream_file_system
   public:
     stream_hostfs_file_system()
     {
-        OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+        OE_TEST(mount("/", "/", "oe_host_file_system", 0, NULL) == 0);
     }
 
     ~stream_hostfs_file_system()
