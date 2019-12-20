@@ -1,8 +1,8 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#ifndef _OE_SYSCALL_NETDB_H_
-#define _OE_SYSCALL_NETDB_H_
+#ifndef _OE_SYSCALL_NETDB_H
+#define _OE_SYSCALL_NETDB_H
 
 #include <syscall/sys/socket.h>
 
@@ -69,4 +69,4 @@ int oe_getnameinfo(
 
 OE_EXTERNC_END
 
-#endif /* netinet/netdb.h */
+#endif /* _OE_SYSCALL_NETDB_H */
