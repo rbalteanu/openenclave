@@ -1,7 +1,6 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/module.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
@@ -11,6 +10,7 @@
 #include <syscall/common.h>
 #include <syscall/fd.h>
 #include <syscall/fdtable.h>
+#include <syscall/module.h>
 #include <syscall/raise.h>
 #include <syscall/unistd.h>
 #include "consolefs.h"

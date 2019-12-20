@@ -13,6 +13,7 @@
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <syscall/module.h>
 #include <unistd.h>
 
 // Define a TEST() macro that bypasses use of stderr and stdout devices.
@@ -39,9 +40,6 @@ void test_dup(const char* tmp_dir)
     int fd;
     char path[PATH_MAX];
     const char MESSAGE[] = "This is STDOUT\n";
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
 
     printf("tmp_dir=%s\n", tmp_dir);
 

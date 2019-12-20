@@ -6,15 +6,12 @@
 #include <openenclave/internal/tests.h>
 #include <sys/select.h>
 #include <sys/socket.h>
+#include <syscall/module.h>
 #include "../client.h"
 #include "../server.h"
 
-extern "C" void oe_syscall_register(void);
-
 static void _init(void)
 {
-    oe_syscall_register();
-
     static bool _initialized = false;
 
     if (!_initialized)

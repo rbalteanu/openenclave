@@ -1250,6 +1250,9 @@ oe_result_t oe_load_module_host_file_system(void)
     oe_result_t result = OE_UNEXPECTED;
     static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
     static bool _loaded = false;
+    extern void oe_load_module_syscall(void);
+
+    oe_load_module_syscall();
 
     oe_spin_lock(&_lock);
 

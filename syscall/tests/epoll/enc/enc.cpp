@@ -6,6 +6,7 @@
 #include <openenclave/internal/tests.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
+#include <syscall/module.h>
 #include <unistd.h>
 #include <cerrno>
 #include <cstdio>
@@ -23,10 +24,6 @@ static int _sockfd;
 
 extern "C" void set_up()
 {
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
-
     OE_TEST(oe_load_module_host_socket_interface() == OE_OK);
     OE_TEST(oe_load_module_host_epoll() == OE_OK);
 

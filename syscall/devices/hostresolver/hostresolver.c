@@ -17,7 +17,7 @@
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/bits/module.h>
+#include <syscall/module.h>
 #include <openenclave/internal/trace.h>
 #include "syscall_t.h"
 
@@ -287,6 +287,8 @@ oe_result_t oe_load_module_host_resolver(void)
     oe_result_t result = OE_UNEXPECTED;
     static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
     static bool _loaded = false;
+
+    oe_load_module_syscall();
 
     oe_spin_lock(&_lock);
 

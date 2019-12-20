@@ -3,6 +3,7 @@
 
 #include <openenclave/enclave.h>
 #include <openenclave/internal/time.h>
+#include <syscall/module.h>
 
 // enclave.h must come before socket.h
 #include <arpa/inet.h>
@@ -20,10 +21,6 @@ char done = false;
 
 int init_enclave()
 {
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
-
     int ret = -1;
 
     OE_TEST(oe_load_module_host_socket_interface() == OE_OK);

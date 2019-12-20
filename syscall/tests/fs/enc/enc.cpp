@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <syscall/device.h>
+#include <syscall/module.h>
 #include <syscall/realpath.h>
 #include <set>
 #include <string>
@@ -546,12 +547,8 @@ extern "C" void test_dup_case2(const char* tmp_dir)
     OE_TEST(umount("/") == 0);
 }
 
-extern "C" void oe_syscall_register(void);
-
 void test_fs(const char* src_dir, const char* tmp_dir)
 {
-    oe_syscall_register();
-
     (void)src_dir;
 
     OE_TEST(oe_load_module_host_file_system() == OE_OK);

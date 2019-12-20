@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 #include <syscall/common.h>
+#include <syscall/module.h>
 #include <syscall/sys/stat.h>
 #include <syscall/sys/syscall.h>
 
@@ -148,7 +149,8 @@ int getnameinfo(
         (struct oe_sockaddr*)sa, salen, host, hostlen, serv, servlen, flags);
 }
 
-void oe_syscall_register(void)
+oe_result_t oe_load_module_syscall(void)
 {
     oe_register_syscall_hook(_syscall_hook);
+    return OE_OK;
 }

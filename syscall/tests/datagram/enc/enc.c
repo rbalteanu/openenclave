@@ -9,14 +9,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <syscall/module.h>
 #include <unistd.h>
 
 void init_ecall(void)
 {
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
-
     OE_TEST(oe_load_module_host_socket_interface() == 0);
 }
 

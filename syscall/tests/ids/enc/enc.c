@@ -19,11 +19,10 @@ void test_ids(
     const gid_t* groups,
     size_t num_groups)
 {
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
-
     gid_t list[NGROUPS_MAX];
+    extern void oe_load_module_syscall(void);
+
+    oe_load_module_syscall();
 
     memset(list, 0xff, sizeof(list));
 

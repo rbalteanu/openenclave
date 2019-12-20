@@ -3,15 +3,12 @@
 
 #include <openenclave/enclave.h>
 #include <openenclave/internal/tests.h>
+#include <syscall/module.h>
 #include "../client.h"
 #include "../server.h"
 
 static void _init(void)
 {
-    extern void oe_syscall_register(void);
-
-    oe_syscall_register();
-
     static bool _initialized = false;
 
     if (!_initialized)

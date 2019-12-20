@@ -7,8 +7,8 @@
  * This file defines functions to load the optional modules available.
  *
  */
-#ifndef _OE_BITS_MODULE_H
-#define _OE_BITS_MODULE_H
+#ifndef _OE_SYSCALL_MODULE_H
+#define _OE_SYSCALL_MODULE_H
 
 /*
 **==============================================================================
@@ -24,6 +24,17 @@
 #include <openenclave/bits/types.h>
 
 OE_EXTERNC_BEGIN
+
+/**
+ * Load the host syscall system module.
+ *
+ * This function loads the syscall module, which set the liboelibc syscall hook.
+ *
+ * @retval OE_OK
+ * @retval OE_FAILURE
+ *
+ */
+oe_result_t oe_load_module_syscall(void);
 
 /**
  * Load the host file system module.
@@ -74,6 +85,7 @@ oe_result_t oe_load_module_host_resolver(void);
  * @retval OE_FAILURE Module failed to load.
  */
 oe_result_t oe_load_module_host_epoll(void);
+
 OE_EXTERNC_END
 
-#endif /* _OE_BITS_MODULE_H */
+#endif /* _OE_SYSCALL_MODULE_H */
