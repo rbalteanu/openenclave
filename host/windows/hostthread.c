@@ -3,8 +3,8 @@
 
 #include "../hostthread.h"
 #include <assert.h>
-#include <openenclave/corelibc/errno.h>
 #include <openenclave/host.h>
+#include <openenclave/internal/core/errno.h>
 
 typedef DWORD (*start_routine_t)(void*);
 

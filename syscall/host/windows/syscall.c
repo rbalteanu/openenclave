@@ -26,11 +26,11 @@
 #include <VersionHelpers.h>
 // clang-format on
 
-#include <openenclave/corelibc/errno.h>
+#include <openenclave/internal/core/errno.h>
 #include <openenclave/internal/atomic.h>
-#include <openenclave/internal/syscall/fcntl.h>
-#include <openenclave/internal/syscall/dirent.h>
-#include <openenclave/internal/syscall/unistd.h>
+#include <syscall/fcntl.h>
+#include <syscall/dirent.h>
+#include <syscall/unistd.h>
 #include "../hostthread.h"
 #include "../../common/oe_host_socket.h"
 #include "syscall_u.h"

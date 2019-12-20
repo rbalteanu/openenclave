@@ -131,7 +131,7 @@ Excerpt from `enclave/key.c`:
 
 #include "key.h"
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/crypto/hash.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/utils.h>

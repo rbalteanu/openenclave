@@ -4,11 +4,11 @@
 #define OE_NEED_STDC_NAMES
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/edger8r/enclave.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/calls.h>
+#include <openenclave/internal/core/malloc.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/raise.h>
 #include "../atexit.h"
 #include "../calls.h"

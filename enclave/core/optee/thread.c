@@ -4,9 +4,9 @@
 // TODO: This file is a stub!
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/calls.h>
+#include <openenclave/internal/core/string.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/thread.h>
 

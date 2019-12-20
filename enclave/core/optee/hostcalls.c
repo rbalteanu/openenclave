@@ -1,9 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/edger8r/enclave.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/core/malloc.h>
 
 // Function used by oeedger8r for allocating ocall buffers. This function can be
 // optimized by allocating a buffer for making ocalls and pass it in to the
