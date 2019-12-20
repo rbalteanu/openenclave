@@ -5,12 +5,10 @@
 #include <openenclave/internal/time.h>
 
 // enclave.h must come before socket.h
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <openenclave/internal/tests.h>
-#include <syscall/arpa/inet.h>
-#include <syscall/common.h>
-#include <syscall/netinet/in.h>
-#include <syscall/sys/socket.h>
-#include <syscall/unistd.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include <socketpair_test_t.h>
@@ -44,10 +42,10 @@ int init_enclave()
     }
 
     {
-        if (oe_socketpair(OE_AF_LOCAL, OE_SOCK_STREAM, 0, sockfd) < 0)
+        if (socketpair(OE_AF_LOCAL, SOCK_STREAM, 0, sockfd) < 0)
         {
-            printf("could not create socketpair. errno = %d\n", oe_errno);
-            OE_TEST(oe_errno == 0);
+            printf("could not create socketpair. errno = %d\n", errno);
+            OE_TEST(errno == 0);
         }
     }
     ret = 0;
@@ -67,13 +65,13 @@ int run_enclave_client(char* recv_buff, ssize_t* recv_buff_len)
 
     printf("socket[0] fd = %d\n", sockfd[0]);
     printf("socket[1] fd = %d\n", sockfd[1]);
-    int sockdup = oe_dup(sockfd[1]);
+    int sockdup = dup(sockfd[1]);
 
     printf("reading...\n");
     int numtries = 0;
     do
     {
-        n = oe_read(sockdup, recv_buff, buff_len);
+        n = read(sockdup, recv_buff, buff_len);
 
         *recv_buff_len = n;
         if (n > 0)
@@ -97,7 +95,7 @@ int run_enclave_client(char* recv_buff, ssize_t* recv_buff_len)
         return OE_FAILURE;
     }
     oe_host_printf("success close\n");
-    oe_close(sockdup); // We don't close the socket pair
+    close(sockdup); // We don't close the socket pair
     return OE_OK;
 }
 
@@ -114,14 +112,14 @@ int run_enclave_server()
     do
     {
         printf("enclave: writing on sockfd[0]\n");
-        ssize_t n = oe_write(sockfd[0], TESTDATA, strlen(TESTDATA));
+        ssize_t n = write(sockfd[0], TESTDATA, strlen(TESTDATA));
         if (n > 0)
         {
             printf("write test data n = %ld\n", n);
         }
         else
         {
-            printf("write test data n = %ld errno = %d\n", n, oe_errno);
+            printf("write test data n = %ld errno = %d\n", n, errno);
         }
         oe_sleep_msec(1000);
     } while (!done);
@@ -130,17 +128,16 @@ int run_enclave_server()
 
     if (oe_shutdown(sockfd[0], OE_SHUT_WR) < 0)
     {
-        printf(
-            "could not shutdown socket %d. errno = %d\n", sockfd[0], oe_errno);
-        OE_TEST(oe_errno == 0);
+        printf("could not shutdown socket %d. errno = %d\n", sockfd[0], errno);
+        OE_TEST(errno == 0);
     }
 
-    ssize_t bytes_written = oe_write(sockfd[0], TESTDATA, strlen(TESTDATA));
+    ssize_t bytes_written = write(sockfd[0], TESTDATA, strlen(TESTDATA));
     OE_TEST(bytes_written <= 0);
 
     // We let the server close both sides
-    oe_close(sockfd[0]);
-    oe_close(sockfd[1]);
+    close(sockfd[0]);
+    close(sockfd[1]);
     printf("exit from server thread\n");
     return status;
 }
