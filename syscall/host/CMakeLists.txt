@@ -40,4 +40,4 @@ target_include_directories(${TARGET} PRIVATE
     ${PROJECT_SOURCE_DIR}/syscall/include)
 
 install(TARGETS ${TARGET} EXPORT openenclave-targets ARCHIVE
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/host)
