@@ -10,3 +10,5 @@
     - liboecore should not use stdin, stdout, and stderr.
 
     - edger8r generates inclusions of stdint.h, stdlib.h, and errno.h.
+
+    - remove use of <syscall/device.h>?
