@@ -10,6 +10,12 @@
 #include <syscall/sys/stat.h>
 #include <syscall/sys/syscall.h>
 
+typedef int64_t intmax_t;
+typedef uint64_t uintmax_t;
+
+#include <netdb.h>
+#include <syscall/netdb.h>
+
 static void _stat_to_oe_stat(struct stat* stat, struct oe_stat* oe_stat)
 {
     oe_stat->st_dev = stat->st_dev;
@@ -109,6 +115,37 @@ static oe_result_t _syscall_hook(
 
 done:
     return result;
+}
+
+void freeaddrinfo(struct addrinfo* res)
+{
+    oe_freeaddrinfo((struct oe_addrinfo*)res);
+}
+
+int getaddrinfo(
+    const char* node,
+    const char* service,
+    const struct addrinfo* hints,
+    struct addrinfo** res)
+{
+    return oe_getaddrinfo(
+        node,
+        service,
+        (const struct oe_addrinfo*)hints,
+        (struct oe_addrinfo**)res);
+}
+
+int getnameinfo(
+    const struct sockaddr* sa,
+    socklen_t salen,
+    char* host,
+    socklen_t hostlen,
+    char* serv,
+    socklen_t servlen,
+    int flags)
+{
+    return oe_getnameinfo(
+        (struct oe_sockaddr*)sa, salen, host, hostlen, serv, servlen, flags);
 }
 
 void oe_syscall_register(void)

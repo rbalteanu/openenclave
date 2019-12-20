@@ -4,10 +4,10 @@
 #include <openenclave/enclave.h>
 #include <openenclave/internal/time.h>
 
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <openenclave/internal/tests.h>
-#include <syscall/arpa/inet.h>
-#include <syscall/netdb.h>
-#include <syscall/netinet/in.h>
 
 #include <resolver_test_t.h>
 #include <stdio.h>
@@ -38,15 +38,14 @@ int ecall_getnameinfo(char* buffer, size_t bufflen)
     char host[256] = {0};
     char serv[256] = {0};
 
-    struct oe_sockaddr_in addr = {
-        .sin_family = OE_AF_INET,
-        .sin_port = 22,
-        .sin_addr.s_addr = oe_htonl(OE_INADDR_LOOPBACK)};
+    struct sockaddr_in addr = {.sin_family = AF_INET,
+                               .sin_port = 22,
+                               .sin_addr.s_addr = htonl(INADDR_LOOPBACK)};
 
     printf("s_addr=%x\n", addr.sin_addr.s_addr);
 
-    int rslt = oe_getnameinfo(
-        (const struct oe_sockaddr*)&addr,
+    int rslt = getnameinfo(
+        (const struct sockaddr*)&addr,
         sizeof(addr),
         host,
         sizeof(host),
@@ -179,7 +178,7 @@ int ecall_getaddrinfo(struct addrinfo** res)
     struct oe_addrinfo* ai = NULL;
     const char host[] = {"localhost"};
     const char serv[] = {"telnet"};
-    struct oe_addrinfo hints;
+    struct addrinfo hints;
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -188,7 +187,7 @@ int ecall_getaddrinfo(struct addrinfo** res)
     if (res)
         *res = NULL;
 
-    OE_TEST(oe_getaddrinfo(host, serv, &hints, (struct oe_addrinfo**)&ai) == 0);
+    OE_TEST(getaddrinfo(host, serv, &hints, (struct addrinfo**)&ai) == 0);
 
     if (!(*res = (struct addrinfo*)_clone_addrinfo(ai)))
         OE_TEST("_clone_addrinfo() failed" == NULL);
