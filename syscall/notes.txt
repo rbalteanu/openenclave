@@ -11,6 +11,10 @@
 
     - edger8r generates inclusions of stdint.h, stdlib.h, and errno.h.
 
+    - fix samples
+
+    - install syscall.edl
+
     ----------------------------------------------------------------------------
 
     x Moved strerror to musl.
