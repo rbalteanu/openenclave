@@ -7,10 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/mount.h>
-#include <syscall/common.h>
-#include <syscall/device.h>
 #include <syscall/realpath.h>
-#include <syscall/unistd.h>
 #include <set>
 #include <string>
 #include "../../cpio/commands.h"
@@ -97,7 +94,7 @@ static void test_create_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Open the file for output. */
     {
-        const int flags = OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY;
+        const int flags = O_CREAT | O_TRUNC | O_WRONLY;
         OE_TEST(file = fs.open(path, flags, MODE));
     }
 
@@ -124,7 +121,7 @@ static void test_read_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Open the file for input. */
     {
-        const int flags = OE_O_RDONLY;
+        const int flags = O_RDONLY;
         file = fs.open(path, flags, 0);
         OE_TEST(file);
     }
@@ -138,14 +135,14 @@ static void test_read_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Read "lmnop" */
     {
-        OE_TEST(fs.lseek(file, 11, OE_SEEK_SET) == 11);
+        OE_TEST(fs.lseek(file, 11, SEEK_SET) == 11);
         OE_TEST(fs.read(file, buf, 5) == 5);
         OE_TEST(memcmp(buf, "lmnop", 5) == 0);
     }
 
     /* Read one character at a time. */
     {
-        OE_TEST(fs.lseek(file, 0, OE_SEEK_SET) == 0);
+        OE_TEST(fs.lseek(file, 0, SEEK_SET) == 0);
 
         for (size_t i = 0; i < OE_COUNTOF(ALPHABET); i++)
         {
@@ -403,16 +400,15 @@ void _test_mount(const char* tmp_dir)
     mkpath(source, tmp_dir, "source");
     mkpath(target, tmp_dir, "target");
 
-    OE_TEST(oe_mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
-    oe_unlink(mkpath(path, source, "newfile"));
-    oe_rmdir(source);
-    oe_rmdir(target);
+    OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+    unlink(mkpath(path, source, "newfile"));
+    rmdir(source);
+    rmdir(target);
 
     OE_TEST(oe_mkdir(source, 0777) == 0);
     OE_TEST(oe_mkdir(target, 0777) == 0);
     OE_TEST(
-        oe_mount(source, target, OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) ==
-        0);
+        mount(source, target, OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
 
     _touch(mkpath(path, target, "file1"));
     _touch(mkpath(path, target, "file2"));
@@ -437,8 +433,8 @@ void _test_mount(const char* tmp_dir)
     OE_TEST(oe_cmp(target, unpack_dir) == 0);
     OE_TEST(oe_cmp(source, unpack_dir) == 0);
 
-    OE_TEST(oe_umount(target) == 0);
-    OE_TEST(oe_umount("/") == 0);
+    OE_TEST(umount(target) == 0);
+    OE_TEST(umount("/") == 0);
 }
 
 static void test_realpath(const char* tmp_dir)
@@ -493,8 +489,8 @@ void test_zero_sized_iovs(void)
 {
     struct oe_iovec iov;
 
-    OE_TEST(oe_writev(OE_STDOUT_FILENO, &iov, 0) == 0);
-    OE_TEST(oe_readv(OE_STDIN_FILENO, &iov, 0) == 0);
+    OE_TEST(oe_writev(STDOUT_FILENO, &iov, 0) == 0);
+    OE_TEST(oe_readv(STDIN_FILENO, &iov, 0) == 0);
 }
 
 extern "C" void test_dup_case1(const char* tmp_dir)
@@ -510,15 +506,15 @@ extern "C" void test_dup_case1(const char* tmp_dir)
     {
         char path[OE_PATH_MAX];
         mkpath(path, tmp_dir, "dummy");
-        fd = open(path, OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY, MODE);
+        fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, MODE);
         OE_TEST(fd >= 0);
         OE_TEST(close(fd) == 0);
     }
 
-    OE_TEST(dup2(OE_STDERR_FILENO, fd) == fd);
-    OE_TEST(close(OE_STDERR_FILENO) == 0);
+    OE_TEST(dup2(STDERR_FILENO, fd) == fd);
+    OE_TEST(close(STDERR_FILENO) == 0);
     OE_TEST((stream = fdopen(fd, "w")));
-    OE_TEST(dup2(fd, OE_STDERR_FILENO) == OE_STDERR_FILENO);
+    OE_TEST(dup2(fd, STDERR_FILENO) == STDERR_FILENO);
     fclose(stream);
 
     OE_TEST(umount("/") == 0);
@@ -535,15 +531,15 @@ extern "C" void test_dup_case2(const char* tmp_dir)
 
     /* Create a file named "STDOUT" */
     mkpath(path, tmp_dir, "STDOUT");
-    fd = open(path, OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY, MODE);
+    fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, MODE);
     OE_TEST(fd >= 0);
 
     /* Close standard output. */
-    int r = oe_close(OE_STDOUT_FILENO);
+    int r = close(STDOUT_FILENO);
     OE_TEST(r == 0);
 
     /* Dup "STDOUT" file to STDOUT */
-    OE_TEST(oe_dup2(fd, OE_STDOUT_FILENO) == OE_STDOUT_FILENO);
+    OE_TEST(dup2(fd, STDOUT_FILENO) == STDOUT_FILENO);
 
     OE_TEST(close(fd) == 0);
 
@@ -636,26 +632,22 @@ void test_fs(const char* src_dir, const char* tmp_dir)
     {
         char path[OE_PATH_MAX];
         mkpath(path, tmp_dir, "somefile");
-        const int flags = OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY;
+        const int flags = O_CREAT | O_TRUNC | O_WRONLY;
 
         OE_TEST(
-            oe_mount(
-                "/",
-                "/",
-                OE_DEVICE_NAME_HOST_FILE_SYSTEM,
-                OE_MS_RDONLY,
-                NULL) == 0);
-        OE_TEST(oe_open(path, flags, MODE) == -1);
-        OE_TEST(oe_errno == EPERM);
-        OE_TEST(oe_umount("/") == 0);
+            mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, MS_RDONLY, NULL) ==
+            0);
+        OE_TEST(open(path, flags, MODE) == -1);
+        OE_TEST(errno == EPERM);
+        OE_TEST(umount("/") == 0);
     }
 
     /* Write the standard output and standard error. */
     {
         static const char DATA[] = "abcdefghijklmnopqrstuvwxyz\n";
         static const size_t n = sizeof(DATA) - 1;
-        OE_TEST(oe_write(OE_STDOUT_FILENO, DATA, n) == n);
-        OE_TEST(oe_write(OE_STDERR_FILENO, DATA, n) == n);
+        OE_TEST(write(STDOUT_FILENO, DATA, n) == n);
+        OE_TEST(write(STDERR_FILENO, DATA, n) == n);
     }
 
     /* Test mounting. */
@@ -667,7 +659,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
     /* Test getcwd() */
     {
         char buf[OE_PATH_MAX];
-        OE_TEST(oe_getcwd(buf, sizeof(buf)));
+        OE_TEST(getcwd(buf, sizeof(buf)));
         OE_TEST(strcmp(buf, "/") == 0);
     }
 

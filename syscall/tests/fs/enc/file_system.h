@@ -10,24 +10,19 @@
 #include <openenclave/bits/fs.h>
 #include <openenclave/enclave.h>
 #include <stdio.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <syscall/common.h>
-#include <syscall/dirent.h>
-#include <syscall/fcntl.h>
-#include <syscall/rename.h>
-#include <syscall/sys/mount.h>
-#include <syscall/sys/stat.h>
-#include <syscall/unistd.h>
+#include <syscall/device.h>
 #include <unistd.h>
 
 class oe_fd_file_system
 {
   public:
     typedef int file_handle;
-    typedef OE_DIR* dir_handle;
-    typedef struct oe_stat stat_type;
-    typedef struct oe_dirent dirent_type;
+    typedef DIR* dir_handle;
+    typedef struct stat stat_type;
+    typedef struct dirent dirent_type;
 
     static constexpr file_handle invalid_file_handle = -1;
     static constexpr dir_handle invalid_dir_handle = nullptr;
@@ -38,62 +33,62 @@ class oe_fd_file_system
 
     file_handle open(const char* pathname, int flags, mode_t mode)
     {
-        return (file_handle)oe_open(pathname, flags, mode);
+        return (file_handle)::open(pathname, flags, mode);
     }
 
     ssize_t write(file_handle file, const void* buf, size_t count)
     {
-        return oe_write(file, buf, count);
+        return ::write(file, buf, count);
     }
 
     ssize_t read(file_handle file, void* buf, size_t count)
     {
-        return oe_read(file, buf, count);
+        return ::read(file, buf, count);
     }
 
     off_t lseek(file_handle file, off_t offset, int whence)
     {
-        return oe_lseek(file, offset, whence);
+        return ::lseek(file, offset, whence);
     }
 
     int close(file_handle file)
     {
-        return oe_close(file);
+        return ::close(file);
     }
 
     dir_handle opendir(const char* name)
     {
-        return (dir_handle)oe_opendir(name);
+        return (dir_handle)::opendir(name);
     }
 
-    struct oe_dirent* readdir(dir_handle dir)
+    struct dirent* readdir(dir_handle dir)
     {
-        return oe_readdir(dir);
+        return ::readdir(dir);
     }
 
     void rewinddir(dir_handle dir)
     {
-        oe_rewinddir(dir);
+        ::rewinddir(dir);
     }
 
     int closedir(dir_handle dir)
     {
-        return oe_closedir(dir);
+        return ::closedir(dir);
     }
 
     int unlink(const char* pathname)
     {
-        return oe_unlink(pathname);
+        return ::unlink(pathname);
     }
 
     int link(const char* oldpath, const char* newpath)
     {
-        return oe_link(oldpath, newpath);
+        return ::link(oldpath, newpath);
     }
 
     int rename(const char* oldpath, const char* newpath)
     {
-        return oe_rename(oldpath, newpath);
+        return ::rename(oldpath, newpath);
     }
 
     int mkdir(const char* pathname, mode_t mode)
@@ -103,17 +98,17 @@ class oe_fd_file_system
 
     int rmdir(const char* pathname)
     {
-        return oe_rmdir(pathname);
+        return ::rmdir(pathname);
     }
 
-    int stat(const char* pathname, struct oe_stat* buf)
+    int stat(const char* pathname, struct stat* buf)
     {
-        return oe_stat(pathname, buf);
+        return ::stat(pathname, buf);
     }
 
     int truncate(const char* path, off_t length)
     {
-        return oe_truncate(path, length);
+        return ::truncate(path, length);
     }
 
   private:
@@ -124,13 +119,12 @@ class oe_fd_hostfs_file_system : public oe_fd_file_system
   public:
     oe_fd_hostfs_file_system()
     {
-        OE_TEST(
-            oe_mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+        OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
     }
 
     ~oe_fd_hostfs_file_system()
     {
-        OE_TEST(oe_umount("/") == 0);
+        OE_TEST(::umount("/") == 0);
     }
 };
 
@@ -157,7 +151,7 @@ class fd_file_system
   public:
     typedef int file_handle;
     typedef DIR* dir_handle;
-    typedef struct oe_stat stat_type;
+    typedef struct stat stat_type;
     typedef struct dirent dirent_type;
 
     static constexpr file_handle invalid_file_handle = -1;
@@ -237,7 +231,7 @@ class fd_file_system
         return ::rmdir(pathname);
     }
 
-    int stat(const char* pathname, struct oe_stat* buf)
+    int stat(const char* pathname, struct stat* buf)
     {
         return ::stat(pathname, (struct stat*)buf);
     }
@@ -256,12 +250,12 @@ class fd_hostfs_file_system : public fd_file_system
     fd_hostfs_file_system()
     {
         OE_TEST(
-            oe_mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+            ::mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
     }
 
     ~fd_hostfs_file_system()
     {
-        OE_TEST(oe_umount("/") == 0);
+        OE_TEST(::umount("/") == 0);
     }
 };
 
@@ -307,20 +301,20 @@ class stream_file_system
 
         switch ((flags & 0x00000003))
         {
-            case OE_O_RDONLY:
+            case O_RDONLY:
             {
                 fopen_mode = "r";
                 break;
             }
-            case OE_O_RDWR:
+            case O_RDWR:
             {
-                if (flags & OE_O_CREAT)
+                if (flags & O_CREAT)
                 {
-                    if (flags & OE_O_TRUNC)
+                    if (flags & O_TRUNC)
                     {
                         fopen_mode = "w+";
                     }
-                    else if (flags & OE_O_APPEND)
+                    else if (flags & O_APPEND)
                     {
                         fopen_mode = "a+";
                     }
@@ -336,15 +330,15 @@ class stream_file_system
                 }
                 break;
             }
-            case OE_O_WRONLY:
+            case O_WRONLY:
             {
-                if (flags & OE_O_CREAT)
+                if (flags & O_CREAT)
                 {
-                    if (flags & OE_O_TRUNC)
+                    if (flags & O_TRUNC)
                     {
                         fopen_mode = "w";
                     }
-                    else if (flags & OE_O_APPEND)
+                    else if (flags & O_APPEND)
                     {
                         fopen_mode = "a";
                     }
@@ -492,13 +486,12 @@ class stream_hostfs_file_system : public stream_file_system
   public:
     stream_hostfs_file_system()
     {
-        OE_TEST(
-            oe_mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
+        OE_TEST(mount("/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, 0, NULL) == 0);
     }
 
     ~stream_hostfs_file_system()
     {
-        OE_TEST(oe_umount("/") == 0);
+        OE_TEST(umount("/") == 0);
     }
 };
 
