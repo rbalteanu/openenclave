@@ -25,10 +25,6 @@ size_t oe_strlcpy(char* dest, const char* src, size_t size);
 
 size_t oe_strlcat(char* dest, const char* src, size_t size);
 
-char* oe_strerror(int errnum);
-
-int oe_strerror_r(int errnum, char* buf, size_t buflen);
-
 OE_EXTERNC_END
 
 #endif /* _OE_INTERNAL_CORE_STRING_H */

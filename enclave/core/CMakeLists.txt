@@ -135,7 +135,6 @@ add_library(oecore STATIC
     sbrk.c
     arena.c
     stdio.c
-    strerror.c
     string.c
     strtoul.c
     switchlesscalls.c
@@ -144,15 +143,21 @@ add_library(oecore STATIC
     tracee.c
     ${PLATFORM_SRC})
 
+set(MUSL_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/include/musl")
+
 # Suppress type conversion warnings introduced by 3rdparty code
 set_source_files_properties(${MUSL_SRC_DIR}/prng/rand.c PROPERTIES
-    COMPILE_FLAGS -Wno-conversion)
+    COMPILE_FLAGS "-Wno-conversion -I${MUSL_INCLUDES}")
 set_source_files_properties(${MUSL_SRC_DIR}/string/memmove.c PROPERTIES
-    COMPILE_FLAGS -Wno-sign-conversion)
+    COMPILE_FLAGS "-Wno-sign-conversion -I${MUSL_INCLUDES}")
+set_source_files_properties(${MUSL_SRC_DIR}/string/memcmp.c PROPERTIES
+    COMPILE_FLAGS "-I${MUSL_INCLUDES}")
+set_source_files_properties(${MUSL_SRC_DIR}/string/memcpy.c PROPERTIES
+    COMPILE_FLAGS "-I${MUSL_INCLUDES}")
 set_source_files_properties(${MUSL_SRC_DIR}/string/memset.c PROPERTIES
-    COMPILE_FLAGS -Wno-conversion)
+    COMPILE_FLAGS "-Wno-conversion -I${MUSL_INCLUDES}")
 set_source_files_properties(__secs_to_tm.c PROPERTIES
-    COMPILE_FLAGS -Wno-conversion)
+    COMPILE_FLAGS "-Wno-conversion -I${MUSL_INCLUDES}")
 
 maybe_build_using_clangw(oecore)
 
@@ -162,7 +167,9 @@ if(OE_SGX)
 endif()
 target_include_directories(oecore PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-target_include_directories(oecore PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Unfortunately edger8r needs <stdint.h> and <stdlib.h>
+set(EDGER8R_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/include/edger8r")
+target_include_directories(oecore PRIVATE ${EDGER8R_INCLUDES})
 
 target_link_libraries(oecore PUBLIC oe_includes)
 if (OE_TRUSTZONE)
@@ -173,14 +180,17 @@ if (CMAKE_C_COMPILER_ID MATCHES GNU)
     target_compile_options(oecore PRIVATE -Wjump-misses-init)
 endif()
 
-# This directory contains enclave core libc headers:
-target_include_directories(oecore PRIVATE
-    ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
+#target_include_directories(oecore PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Unfortunately dlmalloc uses GNU extension that allows arithmetic
 # null pointers.
+set(DLMALLOC_CFLAGS "-Wno-conversion -Wno-null-pointer-arithmetic")
+set(DLMALLOC_INCLUDES "-I${CMAKE_CURRENT_SOURCE_DIR}/include/dlmalloc")
 set_source_files_properties(malloc.c
-    PROPERTIES COMPILE_FLAGS "-Wno-conversion -Wno-null-pointer-arithmetic")
+    PROPERTIES COMPILE_FLAGS "${DLMALLOC_CFLAGS} ${DLMALLOC_INCLUDES}")
+
+set_source_files_properties(debugmalloc.c
+    PROPERTIES COMPILE_FLAGS "${DLMALLOC_INCLUDES}")
 
 if (OE_SGX)
     # jump.s must be optimized for the correct call-frame.

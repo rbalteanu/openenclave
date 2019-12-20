@@ -72,11 +72,11 @@ add_library(oelibc STATIC
     sigaction.c
     signal.c
     stdlib.c
-    strerror.c
     syscalls.c
     sysconf.c
     regcomp.c
     regexec.c
+    strerror_l.c
     tre-mem.c
     __printf_chk.c
     __vfprintf_chk.c
@@ -184,6 +184,8 @@ add_library(oelibc STATIC
     ${MUSLSRC}/env/putenv.c
     ${MUSLSRC}/env/setenv.c
     ${MUSLSRC}/env/unsetenv.c
+    ${MUSLSRC}/errno/strerror.c
+    ${MUSLSRC}/exit/assert.c
     ${MUSLSRC}/exit/assert.c
     ${MUSLSRC}/exit/_Exit.c
     ${MUSLSRC}/fenv/fegetexceptflag.c
