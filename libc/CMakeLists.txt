@@ -76,6 +76,7 @@ add_library(oelibc STATIC
     sysconf.c
     regcomp.c
     regexec.c
+    strerror.c
     strerror_l.c
     tre-mem.c
     __printf_chk.c
@@ -184,7 +185,6 @@ add_library(oelibc STATIC
     ${MUSLSRC}/env/putenv.c
     ${MUSLSRC}/env/setenv.c
     ${MUSLSRC}/env/unsetenv.c
-    ${MUSLSRC}/errno/strerror.c
     ${MUSLSRC}/exit/assert.c
     ${MUSLSRC}/exit/assert.c
     ${MUSLSRC}/exit/_Exit.c
