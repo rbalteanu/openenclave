@@ -4,9 +4,8 @@
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
 #include <openenclave/internal/tests.h>
-#include <syscall/common.h>
-#include <syscall/sys/select.h>
-#include <syscall/sys/socket.h>
+#include <sys/select.h>
+#include <sys/socket.h>
 #include "../client.h"
 #include "../server.h"
 
@@ -43,95 +42,95 @@ extern "C" void run_enclave_client(uint16_t port)
 
 extern "C" void test_fd_set(void)
 {
-    oe_fd_set set;
+    fd_set set;
 
     /* Test clearing all bits. */
     {
-        OE_FD_ZERO(&set);
+        FD_ZERO(&set);
 
         /* Test that all bits are cleared. */
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_TEST(!OE_FD_ISSET(i, &set));
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            OE_TEST(!FD_ISSET(i, &set));
 
         /* Set all bits. */
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_FD_SET(i, &set);
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            FD_SET(i, &set);
 
         /* Clear all bits. */
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_FD_CLR(i, &set);
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            FD_CLR(i, &set);
 
         /* Test that all bits are cleared. */
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_TEST(!OE_FD_ISSET(i, &set));
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            OE_TEST(!FD_ISSET(i, &set));
     }
 
     /* Test setting all bits. */
     {
-        OE_FD_ZERO(&set);
+        FD_ZERO(&set);
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_FD_SET(i, &set);
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            FD_SET(i, &set);
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
-            OE_TEST(OE_FD_ISSET(i, &set));
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
+            OE_TEST(FD_ISSET(i, &set));
     }
 
     /* Test setting odd bits. */
     {
-        OE_FD_ZERO(&set);
+        FD_ZERO(&set);
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             bool is_odd = (i % 2) != 0;
 
             if (is_odd)
-                OE_FD_SET(i, &set);
+                FD_SET(i, &set);
             else
-                OE_FD_CLR(i, &set);
+                FD_CLR(i, &set);
         }
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             bool is_odd = (i % 2) != 0;
 
             if (is_odd)
-                OE_TEST(OE_FD_ISSET(i, &set));
+                OE_TEST(FD_ISSET(i, &set));
             else
-                OE_TEST(!OE_FD_ISSET(i, &set));
+                OE_TEST(!FD_ISSET(i, &set));
         }
     }
 
     /* Test setting even bits. */
     {
-        OE_FD_ZERO(&set);
+        FD_ZERO(&set);
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             bool is_even = (i % 2) == 0;
 
             if (is_even)
-                OE_FD_SET(i, &set);
+                FD_SET(i, &set);
             else
-                OE_FD_CLR(i, &set);
+                FD_CLR(i, &set);
         }
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             bool is_even = (i % 2) == 0;
 
             if (is_even)
-                OE_TEST(OE_FD_ISSET(i, &set));
+                OE_TEST(FD_ISSET(i, &set));
             else
-                OE_TEST(!OE_FD_ISSET(i, &set));
+                OE_TEST(!FD_ISSET(i, &set));
         }
     }
 
     /* Test setting prime bits. */
     {
-        bool is_prime[OE_FD_SETSIZE];
+        bool is_prime[FD_SETSIZE];
 
-        for (size_t i = 0; i < OE_FD_SETSIZE; i++)
+        for (size_t i = 0; i < FD_SETSIZE; i++)
             is_prime[i] = false;
 
         is_prime[2] = true;
@@ -307,22 +306,22 @@ extern "C" void test_fd_set(void)
         is_prime[1019] = true;
         is_prime[1021] = true;
 
-        OE_FD_ZERO(&set);
+        FD_ZERO(&set);
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             if (is_prime[i])
-                OE_FD_SET(i, &set);
+                FD_SET(i, &set);
             else
-                OE_FD_CLR(i, &set);
+                FD_CLR(i, &set);
         }
 
-        for (int i = 0; i < OE_FD_SETSIZE; i++)
+        for (unsigned int i = 0; i < FD_SETSIZE; i++)
         {
             if (is_prime[i])
-                OE_TEST(OE_FD_ISSET(i, &set));
+                OE_TEST(FD_ISSET(i, &set));
             else
-                OE_TEST(!OE_FD_ISSET(i, &set));
+                OE_TEST(!FD_ISSET(i, &set));
         }
     }
 
