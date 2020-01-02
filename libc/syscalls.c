@@ -3,24 +3,24 @@
 
 #define __OE_NEED_TIME_CALLS
 #define _GNU_SOURCE
-
+#include <assert.h>
 #include <errno.h>
-#include <openenclave/corelibc/errno.h>
+#include <fcntl.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/calls.h>
+#include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall.h>
-#include <openenclave/internal/syscall/sys/stat.h>
-#include <openenclave/internal/syscall/sys/syscall.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/time.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
+#include <sys/uio.h>
 #include <time.h>
+#include <unistd.h>
 
 static oe_syscall_hook_t _hook;
 static oe_spinlock_t _lock;
@@ -29,11 +29,90 @@ static const uint64_t _SEC_TO_MSEC = 1000UL;
 static const uint64_t _MSEC_TO_USEC = 1000UL;
 static const uint64_t _MSEC_TO_NSEC = 1000000UL;
 
+static long
+_syscall_open(long n, long x1, long x2, long x3, long x4, long x5, long x6)
+{
+    const char* filename = (const char*)x1;
+    int flags = (int)x2;
+    int mode = (int)x3;
+
+    (void)filename;
+    (void)flags;
+    (void)mode;
+
+    if (flags == O_WRONLY)
+        return STDOUT_FILENO;
+
+    return -1;
+}
+
+static long _syscall_close(long n, ...)
+{
+    /* required by mbedtls */
+    return 0;
+}
+
 static long _syscall_mmap(long n, ...)
 {
     /* Always fail */
-    OE_UNUSED(n);
     return EPERM;
+}
+
+static long _syscall_readv(long n, ...)
+{
+    /* required by mbedtls */
+
+    /* return zero-bytes read */
+    return 0;
+}
+
+static long
+_syscall_ioctl(long n, long x1, long x2, long x3, long x4, long x5, long x6)
+{
+    int fd = (int)x1;
+
+    /* only allow ioctl() on these descriptors */
+    if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO)
+        abort();
+
+    return 0;
+}
+
+static long
+_syscall_writev(long n, long x1, long x2, long x3, long x4, long x5, long x6)
+{
+    int fd = (int)x1;
+    const struct iovec* iov = (const struct iovec*)x2;
+    unsigned long iovcnt = (unsigned long)x3;
+    long ret = 0;
+    int device;
+
+    /* Allow writing only to stdout and stderr */
+    switch (fd)
+    {
+        case STDOUT_FILENO:
+        {
+            device = 0;
+            break;
+        }
+        case STDERR_FILENO:
+        {
+            device = 1;
+            break;
+        }
+        default:
+        {
+            abort();
+        }
+    }
+
+    for (unsigned long i = 0; i < iovcnt; i++)
+    {
+        oe_host_write(device, iov[i].iov_base, iov[i].iov_len);
+        ret += iov[i].iov_len;
+    }
+
+    return ret;
 }
 
 static long _syscall_clock_gettime(long n, long x1, long x2)
@@ -42,8 +121,6 @@ static long _syscall_clock_gettime(long n, long x1, long x2)
     struct timespec* tp = (struct timespec*)x2;
     int ret = -1;
     uint64_t msec;
-
-    OE_UNUSED(n);
 
     if (!tp)
         goto done;
@@ -75,8 +152,6 @@ static long _syscall_gettimeofday(long n, long x1, long x2)
     int ret = -1;
     uint64_t msec;
 
-    OE_UNUSED(n);
-
     if (tv)
         memset(tv, 0, sizeof(struct timeval));
 
@@ -105,8 +180,6 @@ static long _syscall_nanosleep(long n, long x1, long x2)
     size_t ret = -1;
     uint64_t milliseconds = 0;
 
-    OE_UNUSED(n);
-
     if (rem)
         memset(rem, 0, sizeof(*rem));
 
@@ -121,95 +194,6 @@ static long _syscall_nanosleep(long n, long x1, long x2)
     ret = oe_sleep_msec(milliseconds);
 
 done:
-
-    return ret;
-}
-
-static void _stat_to_oe_stat(struct stat* stat, struct oe_stat* oe_stat)
-{
-    oe_stat->st_dev = stat->st_dev;
-    oe_stat->st_ino = stat->st_ino;
-    oe_stat->st_nlink = stat->st_nlink;
-    oe_stat->st_mode = stat->st_mode;
-    oe_stat->st_uid = stat->st_uid;
-    oe_stat->st_gid = stat->st_gid;
-    oe_stat->st_rdev = stat->st_rdev;
-    oe_stat->st_size = stat->st_size;
-    oe_stat->st_blksize = stat->st_blksize;
-    oe_stat->st_blocks = stat->st_blocks;
-    oe_stat->st_atim.tv_sec = stat->st_atim.tv_sec;
-    oe_stat->st_atim.tv_nsec = stat->st_atim.tv_nsec;
-    oe_stat->st_ctim.tv_sec = stat->st_ctim.tv_sec;
-    oe_stat->st_ctim.tv_nsec = stat->st_ctim.tv_nsec;
-    oe_stat->st_mtim.tv_sec = stat->st_mtim.tv_sec;
-    oe_stat->st_mtim.tv_nsec = stat->st_mtim.tv_nsec;
-}
-
-static void _oe_stat_to_stat(struct oe_stat* oe_stat, struct stat* stat)
-{
-    stat->st_dev = oe_stat->st_dev;
-    stat->st_ino = oe_stat->st_ino;
-    stat->st_nlink = oe_stat->st_nlink;
-    stat->st_mode = oe_stat->st_mode;
-    stat->st_uid = oe_stat->st_uid;
-    stat->st_gid = oe_stat->st_gid;
-    stat->st_rdev = oe_stat->st_rdev;
-    stat->st_size = oe_stat->st_size;
-    stat->st_blksize = oe_stat->st_blksize;
-    stat->st_blocks = oe_stat->st_blocks;
-    stat->st_atim.tv_sec = oe_stat->st_atim.tv_sec;
-    stat->st_atim.tv_nsec = oe_stat->st_atim.tv_nsec;
-    stat->st_ctim.tv_sec = oe_stat->st_ctim.tv_sec;
-    stat->st_ctim.tv_nsec = oe_stat->st_ctim.tv_nsec;
-    stat->st_mtim.tv_sec = oe_stat->st_mtim.tv_sec;
-    stat->st_mtim.tv_nsec = oe_stat->st_mtim.tv_nsec;
-}
-
-static long _dispatch_oe_syscall(
-    long n,
-    long x1,
-    long x2,
-    long x3,
-    long x4,
-    long x5,
-    long x6)
-{
-    long ret;
-
-    switch (n)
-    {
-#if defined(SYS_stat)
-        case SYS_stat:
-        {
-            struct stat* stat = (struct stat*)x2;
-            struct oe_stat oe_stat;
-
-            _stat_to_oe_stat(stat, &oe_stat);
-            x2 = (long)&oe_stat;
-            ret = oe_syscall(OE_SYS_stat, x1, x2, x3, x4, x5, x6);
-            _oe_stat_to_stat(&oe_stat, stat);
-
-            break;
-        }
-#endif
-        case SYS_newfstatat:
-        {
-            struct stat* stat = (struct stat*)x3;
-            struct oe_stat oe_stat;
-
-            _stat_to_oe_stat(stat, &oe_stat);
-            x3 = (long)&oe_stat;
-            ret = oe_syscall(OE_SYS_newfstatat, x1, x2, x3, x4, x5, x6);
-            _oe_stat_to_stat(&oe_stat, stat);
-
-            break;
-        }
-        default:
-        {
-            ret = oe_syscall(n, x1, x2, x3, x4, x5, x6);
-            break;
-        }
-    }
 
     return ret;
 }
@@ -235,23 +219,6 @@ long __syscall(long n, long x1, long x2, long x3, long x4, long x5, long x6)
         /* The hook ignored the syscall so fall through */
     }
 
-    /* Let liboesyscall handle select system calls. */
-    {
-        long ret;
-
-        errno = 0;
-
-        ret = _dispatch_oe_syscall(n, x1, x2, x3, x4, x5, x6);
-
-        if (!(ret == -1 && errno == ENOSYS))
-        {
-            return ret;
-        }
-
-        /* Drop through and let the code below handle the syscall. */
-        errno = 0;
-    }
-
     switch (n)
     {
         case SYS_nanosleep:
@@ -260,8 +227,18 @@ long __syscall(long n, long x1, long x2, long x3, long x4, long x5, long x6)
             return _syscall_gettimeofday(n, x1, x2);
         case SYS_clock_gettime:
             return _syscall_clock_gettime(n, x1, x2);
+        case SYS_writev:
+            return _syscall_writev(n, x1, x2, x3, x4, x5, x6);
+        case SYS_ioctl:
+            return _syscall_ioctl(n, x1, x2, x3, x4, x5, x6);
+        case SYS_open:
+            return _syscall_open(n, x1, x2, x3, x4, x5, x6);
+        case SYS_close:
+            return _syscall_close(n, x1, x2, x3, x4, x5, x6);
         case SYS_mmap:
             return _syscall_mmap(n, x1, x2, x3, x4, x5, x6);
+        case SYS_readv:
+            return _syscall_readv(n, x1, x2, x3, x4, x5, x6);
         default:
         {
             /* All other MUSL-initiated syscalls are aborted. */
