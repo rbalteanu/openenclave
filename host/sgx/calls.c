@@ -246,6 +246,35 @@ done:
 /*
 **==============================================================================
 **
+** _lookup_ocall_table()
+**
+** Return the ocall table for the given table id or null if not found.
+**
+**==============================================================================
+*/
+
+static const ocall_table_t* _lookup_ocall_table(const oe_table_id_t* table_id)
+{
+    /* Search for an OCALL table with this table id */
+    for (size_t i = 0; i < OE_MAX_OCALL_TABLES; i++)
+    {
+        ocall_table_t* p = &_ocall_tables[i];
+
+        /* Exit if at the end of used entries. */
+        if (!p->used)
+            return NULL;
+
+        if (oe_table_id_equal(table_id, &p->table_id))
+            return &_ocall_tables[i];
+    }
+
+    /* Not found */
+    return NULL;
+}
+
+/*
+**==============================================================================
+**
 ** oe_handle_call_host_function()
 **
 ** Handle calls from the enclave.
@@ -260,6 +289,7 @@ oe_result_t oe_handle_call_host_function(uint64_t arg, oe_enclave_t* enclave)
     oe_ocall_func_t func = NULL;
     size_t buffer_size = 0;
     ocall_table_t ocall_table;
+    static const oe_table_id_t zero_table_id = OE_ZERO_TABLE_ID;
 
     args_ptr = (oe_call_host_function_args_t*)arg;
     if (args_ptr == NULL)
@@ -270,18 +300,20 @@ oe_result_t oe_handle_call_host_function(uint64_t arg, oe_enclave_t* enclave)
         OE_RAISE(OE_INVALID_PARAMETER);
 
     // Resolve which ocall table to use.
-    if (args_ptr->table_id == OE_UINT64_MAX)
+    if (oe_table_id_equal(&args_ptr->table_id, &zero_table_id))
     {
         ocall_table.ocalls = enclave->ocalls;
         ocall_table.num_ocalls = enclave->num_ocalls;
     }
     else
     {
-        if (args_ptr->table_id >= OE_MAX_OCALL_TABLES)
+        const ocall_table_t* table;
+
+        if (!(table = _lookup_ocall_table(&args_ptr->table_id)))
             OE_RAISE(OE_NOT_FOUND);
 
-        ocall_table.ocalls = _ocall_tables[args_ptr->table_id].ocalls;
-        ocall_table.num_ocalls = _ocall_tables[args_ptr->table_id].num_ocalls;
+        ocall_table.ocalls = table->ocalls;
+        ocall_table.num_ocalls = table->num_ocalls;
 
         if (!ocall_table.ocalls)
             OE_RAISE(OE_NOT_FOUND);
@@ -757,7 +789,7 @@ done:
 
 static oe_result_t oe_switchless_call_enclave_function_by_table_id(
     oe_enclave_t* enclave,
-    uint64_t table_id,
+    const oe_table_id_t* table_id,
     uint64_t function_id,
     const void* input_buffer,
     size_t input_buffer_size,
@@ -774,7 +806,7 @@ static oe_result_t oe_switchless_call_enclave_function_by_table_id(
 
     /* Initialize the call_enclave_args structure */
     {
-        args.table_id = table_id;
+        args.table_id = *table_id;
         args.function_id = function_id;
         args.input_buffer = input_buffer;
         args.input_buffer_size = input_buffer_size;
@@ -818,9 +850,11 @@ oe_result_t oe_switchless_call_enclave_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    static const oe_table_id_t table_id = OE_ZERO_TABLE_ID;
+
     return oe_switchless_call_enclave_function_by_table_id(
         enclave,
-        OE_UINT64_MAX,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,

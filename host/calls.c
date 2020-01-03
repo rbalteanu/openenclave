@@ -20,23 +20,43 @@ ocall_table_t _ocall_tables[OE_MAX_OCALL_TABLES];
 static oe_mutex _ocall_tables_lock = OE_H_MUTEX_INITIALIZER;
 
 oe_result_t oe_register_ocall_function_table(
-    uint64_t table_id,
+    const oe_table_id_t* table_id,
     const oe_ocall_func_t* ocalls,
     size_t num_ocalls)
 {
     oe_result_t result = OE_UNEXPECTED;
-
-    if (table_id >= OE_MAX_OCALL_TABLES || !ocalls)
-        OE_RAISE(OE_INVALID_PARAMETER);
+    size_t index = (size_t)-1;
 
     oe_mutex_lock(&_ocall_tables_lock);
-    _ocall_tables[table_id].ocalls = ocalls;
-    _ocall_tables[table_id].num_ocalls = num_ocalls;
-    oe_mutex_unlock(&_ocall_tables_lock);
+
+    /* Find a free index. */
+    for (size_t i = 0; i < OE_MAX_OCALL_TABLES; i++)
+    {
+        const ocall_table_t* table = &_ocall_tables[i];
+
+        if (!table->used)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    /* If no free entry found. */
+    if (index == (size_t)-1)
+        OE_RAISE(OE_NOT_FOUND);
+
+    /* Assign the entry. */
+    _ocall_tables[index].used = true;
+    _ocall_tables[index].table_id = *table_id;
+    _ocall_tables[index].ocalls = ocalls;
+    _ocall_tables[index].num_ocalls = num_ocalls;
 
     result = OE_OK;
 
 done:
+
+    oe_mutex_unlock(&_ocall_tables_lock);
+
     return result;
 }
 
@@ -52,7 +72,7 @@ done:
 
 oe_result_t oe_call_enclave_function_by_table_id(
     oe_enclave_t* enclave,
-    uint64_t table_id,
+    const oe_table_id_t* table_id,
     uint64_t function_id,
     const void* input_buffer,
     size_t input_buffer_size,
@@ -69,7 +89,7 @@ oe_result_t oe_call_enclave_function_by_table_id(
 
     /* Initialize the call_enclave_args structure */
     {
-        args.table_id = table_id;
+        args.table_id = *table_id;
         args.function_id = function_id;
         args.input_buffer = input_buffer;
         args.input_buffer_size = input_buffer_size;
@@ -121,9 +141,11 @@ oe_result_t oe_call_enclave_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    const oe_table_id_t table_id = OE_ZERO_TABLE_ID;
+
     return oe_call_enclave_function_by_table_id(
         enclave,
-        OE_UINT64_MAX,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,

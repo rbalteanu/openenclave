@@ -11,6 +11,12 @@
 
 typedef struct _ocall_table
 {
+    /* True if this table is in use. */
+    bool used;
+
+    /* The identifier of this table. */
+    oe_table_id_t table_id;
+
     const oe_ocall_func_t* ocalls;
     size_t num_ocalls;
 } ocall_table_t;

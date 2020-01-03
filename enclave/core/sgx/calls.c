@@ -183,6 +183,35 @@ done:
     return result;
 }
 
+/*
+**==============================================================================
+**
+** _lookup_ecall_table()
+**
+** Return the ecall table for the given table id or null if not found.
+**
+**==============================================================================
+*/
+
+static const ecall_table_t* _lookup_ecall_table(const oe_table_id_t* table_id)
+{
+    /* Search for an ECALL table with this table id */
+    for (size_t i = 0; i < OE_MAX_ECALL_TABLES; i++)
+    {
+        ecall_table_t* p = &_ecall_tables[i];
+
+        /* Exit if at the end of used entries. */
+        if (!p->used)
+            return NULL;
+
+        if (oe_table_id_equal(table_id, &p->table_id))
+            return &_ecall_tables[i];
+    }
+
+    /* Not found */
+    return NULL;
+}
+
 /**
  * This is the preferred way to call enclave functions.
  */
@@ -197,6 +226,7 @@ static oe_result_t _handle_call_enclave_function(uint64_t arg_in)
     size_t buffer_size = 0;
     size_t output_bytes_written = 0;
     ecall_table_t ecall_table;
+    const oe_table_id_t zero_table_id = OE_ZERO_TABLE_ID;
 
     // Ensure that args lies outside the enclave.
     if (!oe_is_outside_enclave(
@@ -233,18 +263,20 @@ static oe_result_t _handle_call_enclave_function(uint64_t arg_in)
         args.input_buffer_size, args.output_buffer_size, &buffer_size));
 
     // Resolve which ecall table to use.
-    if (args_ptr->table_id == OE_UINT64_MAX)
+    if (oe_table_id_equal(&args_ptr->table_id, &zero_table_id))
     {
         ecall_table.ecalls = __oe_ecalls_table;
         ecall_table.num_ecalls = __oe_ecalls_table_size;
     }
     else
     {
-        if (args_ptr->table_id >= OE_MAX_ECALL_TABLES)
+        const ecall_table_t* table;
+
+        if (!(table = _lookup_ecall_table(&args_ptr->table_id)))
             OE_RAISE(OE_NOT_FOUND);
 
-        ecall_table.ecalls = _ecall_tables[args_ptr->table_id].ecalls;
-        ecall_table.num_ecalls = _ecall_tables[args_ptr->table_id].num_ecalls;
+        ecall_table.ecalls = table->ecalls;
+        ecall_table.num_ecalls = table->num_ecalls;
 
         if (!ecall_table.ecalls)
             OE_RAISE(OE_NOT_FOUND);
@@ -557,7 +589,7 @@ done:
 */
 
 oe_result_t oe_call_host_function_by_table_id(
-    uint64_t table_id,
+    const oe_table_id_t* table_id,
     uint64_t function_id,
     const void* input_buffer,
     size_t input_buffer_size,
@@ -584,7 +616,7 @@ oe_result_t oe_call_host_function_by_table_id(
         OE_RAISE(OE_OUT_OF_MEMORY);
     }
 
-    args->table_id = table_id;
+    args->table_id = *table_id;
     args->function_id = function_id;
     args->input_buffer = input_buffer;
     args->input_buffer_size = input_buffer_size;
@@ -654,8 +686,10 @@ oe_result_t oe_call_host_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    const oe_table_id_t table_id = OE_ZERO_TABLE_ID;
+
     return oe_call_host_function_by_table_id(
-        OE_UINT64_MAX,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,

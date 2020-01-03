@@ -20,9 +20,11 @@ static oe_result_t _call_sgx_enclave_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    const oe_table_id_t table_id = OE_SGX_ECALL_FUNCTION_TABLE_ID;
+
     return oe_call_enclave_function_by_table_id(
         enclave,
-        OE_SGX_ECALL_FUNCTION_TABLE_ID,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,
@@ -43,9 +45,9 @@ static oe_result_t _call_sgx_enclave_function(
 /* Registers the sgx OCALL function table. */
 oe_result_t oe_register_sgx_ocall_function_table(void)
 {
-    const uint64_t table_id = OE_SGX_OCALL_FUNCTION_TABLE_ID;
+    const oe_table_id_t table_id = OE_SGX_OCALL_FUNCTION_TABLE_ID;
     const oe_ocall_func_t* ocalls = __sgx_ocall_function_table;
     const size_t num_ocalls = OE_COUNTOF(__sgx_ocall_function_table);
 
-    return oe_register_ocall_function_table(table_id, ocalls, num_ocalls);
+    return oe_register_ocall_function_table(&table_id, ocalls, num_ocalls);
 }

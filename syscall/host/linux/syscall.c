@@ -21,7 +21,7 @@
 #include <sys/uio.h>
 #include <sys/utsname.h>
 #include <unistd.h>
-#include "../../common/oe_host_socket.h"
+#include "../../syscall/host/oe_host_socket.h"
 #include "../host/strings.h"
 #include "syscall_u.h"
 
@@ -1365,13 +1365,13 @@ int oe_syscall_uname_ocall(struct oe_utsname* buf)
 
         /* domainname: */
         {
-            if (strlen(uts.domainname) >= sizeof(buf->domainname))
+            if (strlen(uts.__domainname) >= sizeof(buf->domainname))
             {
                 errno = ENAMETOOLONG;
                 goto done;
             }
 
-            strcpy(buf->domainname, uts.domainname);
+            strcpy(buf->domainname, uts.__domainname);
         }
     }
 

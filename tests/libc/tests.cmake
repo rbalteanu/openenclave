@@ -18,15 +18,12 @@ set(LIBC_TESTS
     3rdparty/musl/libc-test/src/functional/clock_gettime.c
     3rdparty/musl/libc-test/src/functional/dirname.c
     3rdparty/musl/libc-test/src/functional/env.c
-    3rdparty/musl/libc-test/src/functional/fdopen.c
-    3rdparty/musl/libc-test/src/functional/fwscanf.c
     3rdparty/musl/libc-test/src/functional/fnmatch.c
     3rdparty/musl/libc-test/src/functional/inet_pton.c
     3rdparty/musl/libc-test/src/functional/qsort.c
     3rdparty/musl/libc-test/src/functional/search_insque.c
     3rdparty/musl/libc-test/src/functional/search_lsearch.c
     3rdparty/musl/libc-test/src/functional/search_tsearch.c
-    3rdparty/musl/libc-test/src/functional/socket.c
     3rdparty/musl/libc-test/src/functional/snprintf.c
     3rdparty/musl/libc-test/src/functional/sscanf.c
     3rdparty/musl/libc-test/src/functional/string.c
@@ -43,7 +40,6 @@ set(LIBC_TESTS
     3rdparty/musl/libc-test/src/functional/strtol.c
     3rdparty/musl/libc-test/src/functional/strtold.c
     3rdparty/musl/libc-test/src/functional/udiv.c
-    3rdparty/musl/libc-test/src/functional/ungetc.c
     3rdparty/musl/libc-test/src/functional/wcsstr.c
     3rdparty/musl/libc-test/src/functional/wcstol.c
     3rdparty/musl/libc-test/src/math/acos.c
@@ -365,5 +361,9 @@ if (FALSE)
         3rdparty/musl/libc-test/src/regression/syscall-sign-extend.c
         3rdparty/musl/libc-test/src/regression/tls_get_new-dtv.c
         3rdparty/musl/libc-test/src/regression/uselocale-0.c
+        3rdparty/musl/libc-test/src/functional/fdopen.c
+        3rdparty/musl/libc-test/src/functional/fwscanf.c
+        3rdparty/musl/libc-test/src/functional/socket.c
+        3rdparty/musl/libc-test/src/functional/ungetc.c
     )
 endif()

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include <openenclave/edger8r/enclave.h>
+#include <openenclave/internal/calls.h>
 
 #ifndef OE_CALLS_H
 #define OE_CALLS_H
@@ -14,6 +15,12 @@ extern const size_t __oe_ecalls_table_size;
 
 typedef struct _ecall_table
 {
+    /* True if this table is in use. */
+    bool used;
+
+    /* The identifier of this table. */
+    oe_table_id_t table_id;
+
     const oe_ecall_func_t* ecalls;
     size_t num_ecalls;
 } ecall_table_t;

@@ -41,23 +41,6 @@ endif()
 
 ##==============================================================================
 ##
-## These rules generate the edge routines for the SYSCALL interface, which is
-## installed by oe_register_syscall_ecall_function_table().
-##
-##==============================================================================
-
-set(SYSCALL_EDL ${EDL_DIR}/syscall.edl)
-
-add_custom_command(
-    OUTPUT syscall_u.h syscall_u.c syscall_args.h
-    DEPENDS ${SYSCALL_EDL} edger8r
-    COMMAND edger8r --search-path ${EDL_DIR} --untrusted ${SYSCALL_EDL})
-
-add_custom_target(syscall_untrusted_edl
-    DEPENDS syscall_u.h syscall_u.c syscall_args.h)
-
-##==============================================================================
-##
 ## these rules build the oehost target.
 ##
 ##==============================================================================
@@ -80,7 +63,6 @@ if (UNIX)
     ../common/asn1.c
     crypto/openssl/hmac.c
     crypto/openssl/random.c
-    linux/syscall.c
     linux/time.c
     linux/windows.c)
 elseif (WIN32)
@@ -111,7 +93,6 @@ elseif (WIN32)
     crypto/bcrypt/rsa.c
     crypto/bcrypt/sha.c
     windows/hostthread.c
-    windows/syscall.c
     windows/time.c)
 else()
   message(FATAL_ERROR "Unknown OS. Only supported OSes are Linux and Windows")
@@ -239,7 +220,6 @@ list(APPEND PLATFORM_SDK_ONLY_SRC
   files.c
   fopen.c
   memalign.c
-  syscall_u_wrapper.c
   signkey.c
   strings.c
   tee_u_wrapper.c
@@ -275,7 +255,6 @@ if (OE_SGX AND UNIX)
     COMPILE_FLAGS "-O2 -fno-omit-frame-pointer")
 endif()
 
-add_dependencies(oehost syscall_untrusted_edl)
 add_dependencies(oehost tee_untrusted_edl)
 if(OE_SGX)
   add_dependencies(oehost sgx_untrusted_edl)

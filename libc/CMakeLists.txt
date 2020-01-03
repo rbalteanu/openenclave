@@ -58,11 +58,7 @@ add_library(oelibc STATIC
     atexit.c
     dladdr.c
     errno.c
-    epoll.c
     exit.c
-    freeaddrinfo.c
-    getaddrinfo.c
-    getnameinfo.c
     kill.c
     libunwind_stubs.c
     link.c
@@ -840,7 +836,7 @@ endif ()
 # This project (and its dependents) require the enclave headers and
 # library, and the musl headers.
 target_link_libraries(oelibc
-  PUBLIC oesyscall oecore oelibc_includes
+  PUBLIC oecore oelibc_includes
   PRIVATE oelibasm)
 
 target_include_directories(oelibc PRIVATE

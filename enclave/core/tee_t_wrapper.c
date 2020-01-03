@@ -27,8 +27,10 @@ static oe_result_t _call_host_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    const oe_table_id_t table_id = OE_TEE_OCALL_FUNCTION_TABLE_ID;
+
     return oe_call_host_function_by_table_id(
-        OE_TEE_OCALL_FUNCTION_TABLE_ID,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,
@@ -43,9 +45,9 @@ static oe_result_t _call_host_function(
 /* Registers the tee ECALL function table. */
 oe_result_t oe_register_tee_ecall_function_table(void)
 {
-    const uint64_t table_id = OE_TEE_ECALL_FUNCTION_TABLE_ID;
+    const oe_table_id_t table_id = OE_TEE_ECALL_FUNCTION_TABLE_ID;
     const oe_ecall_func_t* ecalls = __oe_tee_ecalls_table;
     const size_t num_ecalls = __oe_tee_ecalls_table_size;
 
-    return oe_register_ecall_function_table(table_id, ecalls, num_ecalls);
+    return oe_register_ecall_function_table(&table_id, ecalls, num_ecalls);
 }

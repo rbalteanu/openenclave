@@ -174,8 +174,10 @@ oe_result_t oe_switchless_call_host_function(
     size_t output_buffer_size,
     size_t* output_bytes_written)
 {
+    const oe_table_id_t table_id = OE_ZERO_TABLE_ID;
+
     return oe_call_host_function_by_table_id(
-        OE_UINT64_MAX,
+        &table_id,
         function_id,
         input_buffer,
         input_buffer_size,
