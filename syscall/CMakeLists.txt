@@ -4,3 +4,4 @@
 add_subdirectory(host)
 add_subdirectory(enclave)
 add_subdirectory(devices)
+add_subdirectory(tests)
