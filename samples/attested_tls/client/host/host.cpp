@@ -1,8 +1,8 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
+#include <openenclave/syscall/module.h>
 #include <stdio.h>
 #include "tls_client_u.h"
 
