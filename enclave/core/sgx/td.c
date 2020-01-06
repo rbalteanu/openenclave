@@ -91,19 +91,23 @@ void td_push_callsite(td_t* td, Callsite* callsite)
 void td_pop_callsite(td_t* td)
 {
     if (!td || !td->callsites)
-        oe_abort();
-
-    if (td->depth == 1)
     {
-        // The outermost ecall is about to return.
-        // Clear the thread-local storage.
-        td_clear(td);
+        oe_abort();
     }
     else
     {
-        // Nested ecall returning.
-        td->callsites = td->callsites->next;
-        --td->depth;
+        if (td->depth == 1)
+        {
+            // The outermost ecall is about to return.
+            // Clear the thread-local storage.
+            td_clear(td);
+        }
+        else
+        {
+            // Nested ecall returning.
+            td->callsites = td->callsites->next;
+            --td->depth;
+        }
     }
 }
 

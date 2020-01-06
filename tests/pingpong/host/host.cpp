@@ -24,13 +24,12 @@ void Pong(const char* in, char* out)
         {
             got_pong = true;
         }
+        strcpy(out, in);
     }
-
-    strcpy(out, in);
 }
 
 static char buf[128];
-
+// test
 int main(int argc, const char* argv[])
 {
     oe_result_t result;

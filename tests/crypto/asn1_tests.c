@@ -264,8 +264,6 @@ static oe_result_t _parse(oe_asn1_t* asn1)
                 if (result != OE_OK)
                     goto done;
 
-                result = _parse(&sequence);
-
                 break;
             }
             case OE_ASN1_TAG_INTEGER:
