@@ -32,9 +32,9 @@ typedef HANDLE pthread_t;
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <pthread.h>
 #include <signal.h>
 #include <stdio.h>

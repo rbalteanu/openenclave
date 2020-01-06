@@ -8,6 +8,7 @@
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 
 #include <resolver_test_t.h>
 #include <stdio.h>

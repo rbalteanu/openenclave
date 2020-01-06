@@ -8,6 +8,7 @@ oeedl_file(../tls_e2e.edl host gen)
 add_executable(tls_e2e_host host.cpp tls_e2e_u.c ${gen})
 
 target_include_directories(tls_e2e_host PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR})
 

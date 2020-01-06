@@ -3,6 +3,7 @@
 
 // clang-format off
 #include <openenclave/edger8r/enclave.h>
+#include <openenclave/syscall/module.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/tests.h>
 #include <openenclave/internal/raise.h>

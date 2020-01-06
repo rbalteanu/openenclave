@@ -21,6 +21,7 @@
 #include <openenclave/enclave.h>
 // clang-format on
 
+#include <openenclave/syscall/module.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/syscall/dirent.h>

@@ -11,6 +11,7 @@
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <unistd.h>
 
 #include <socket_test_t.h>

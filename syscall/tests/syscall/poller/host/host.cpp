@@ -7,9 +7,9 @@
 #include "../../platform/linux.h"
 #endif
 
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <stdio.h>
 #include <time.h>
 #include "../client.h"

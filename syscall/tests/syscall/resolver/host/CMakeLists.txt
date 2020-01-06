@@ -13,6 +13,8 @@ add_executable(resolver_host
     ${resolver_test_u}
 )
 
-target_include_directories(resolver_host PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(resolver_host PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include
+    ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(resolver_host oesyscallhost oehostapp)

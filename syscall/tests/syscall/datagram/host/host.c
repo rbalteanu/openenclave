@@ -1,9 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <stdio.h>
 #include "test_datagram_u.h"
 

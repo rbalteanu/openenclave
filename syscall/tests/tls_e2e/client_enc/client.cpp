@@ -11,6 +11,7 @@
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 
 #include <errno.h> // For errno & error defs
 #include <stdio.h>

@@ -8,6 +8,7 @@
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/mount.h>

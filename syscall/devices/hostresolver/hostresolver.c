@@ -19,7 +19,7 @@
 #include <openenclave/internal/print.h>
 #include <openenclave/corelibc/stdlib.h>
 #include <openenclave/corelibc/string.h>
-#include <openenclave/bits/module.h>
+#include <openenclave/syscall/module.h>
 #include <openenclave/internal/trace.h>
 #include "syscall_t.h"
 

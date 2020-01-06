@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 #include <limits.h>
-#include <openenclave/bits/module.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

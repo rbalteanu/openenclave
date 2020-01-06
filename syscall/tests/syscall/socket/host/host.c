@@ -10,10 +10,10 @@
 #endif
 
 #include <inttypes.h>
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
 #include <openenclave/internal/types.h>
+#include <openenclave/syscall/module.h>
 #include "socket_test_u.h"
 
 #define SERVER_PORT "12345"

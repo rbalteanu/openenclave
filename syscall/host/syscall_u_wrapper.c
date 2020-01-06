@@ -3,10 +3,10 @@
 
 #include <openenclave/host.h>
 
-#include <openenclave/bits/module.h>
 #include <openenclave/edger8r/host.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/syscall/bits/calls.h>
+#include <openenclave/syscall/module.h>
 #include "../../host/hostthread.h"
 
 #if defined(_MSC_VER)

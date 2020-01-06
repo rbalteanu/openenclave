@@ -19,6 +19,7 @@
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/module.h>
 #include "syscall_t.h"
 
 /* The map allocation grows in multiples of the chunk size. */

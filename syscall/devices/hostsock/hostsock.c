@@ -20,6 +20,7 @@
 #include <openenclave/corelibc/stdlib.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/bits/safecrt.h>
+#include <openenclave/syscall/module.h>
 #include "syscall_t.h"
 
 #define DEVICE_MAGIC 0x536f636b

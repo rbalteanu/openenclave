@@ -4,6 +4,7 @@
 #include <openenclave/enclave.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include "../client.h"
 #include "../server.h"
 

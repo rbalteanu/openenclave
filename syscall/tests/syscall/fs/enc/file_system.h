@@ -7,7 +7,6 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <openenclave/bits/fs.h>
 #include <openenclave/corelibc/errno.h>
 #include <openenclave/corelibc/stdio.h>
 #include <openenclave/corelibc/stdlib.h>
@@ -17,6 +16,7 @@
 #include <openenclave/internal/syscall/sys/mount.h>
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <openenclave/syscall/fs.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>

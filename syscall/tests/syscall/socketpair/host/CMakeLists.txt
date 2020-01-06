@@ -8,6 +8,8 @@ oeedl_file(../socketpair_test.edl host socketpair_test_u
 
 add_executable(socketpair_host host.c ${socketpair_test_u})
 
-target_include_directories(socketpair_host PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(socketpair_host PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include
+    ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(socketpair_host oesyscallhost oehostapp)

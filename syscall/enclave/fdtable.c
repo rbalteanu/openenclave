@@ -1,7 +1,6 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/bits/module.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/corelibc/errno.h>
 #include <openenclave/corelibc/stdio.h>
@@ -16,6 +15,7 @@
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
+#include <openenclave/syscall/fs.h>
 #include "consolefs.h"
 
 /*

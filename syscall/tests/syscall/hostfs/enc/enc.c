@@ -3,6 +3,8 @@
 
 #include <assert.h>
 #include <openenclave/enclave.h>
+#include <openenclave/syscall/fs.h>
+#include <openenclave/syscall/module.h>
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>

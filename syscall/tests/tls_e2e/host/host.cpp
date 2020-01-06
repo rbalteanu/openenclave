@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 #include <limits.h>
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/error.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>

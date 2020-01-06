@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 #define OE_LIBC_SUPPRESS_DEPRECATIONS
-#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/tests.h>
+#include <openenclave/syscall/module.h>
 #if defined(_MSC_VER)
 #define OE_NEED_STD_NAMES
 // clang-format off
