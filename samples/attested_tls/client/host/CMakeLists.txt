@@ -11,4 +11,5 @@ target_include_directories(tls_client_host PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(tls_client_host openenclave::oehostapp)
+target_link_libraries(tls_client_host
+    openenclave::oesyscallhost openenclave::oehostapp)

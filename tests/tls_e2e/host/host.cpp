@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include <limits.h>
+#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/error.h>
 #include <openenclave/internal/raise.h>
@@ -342,6 +343,8 @@ int main(int argc, const char* argv[])
     flags = oe_get_create_flags();
     if ((flags & OE_ENCLAVE_FLAG_SIMULATE) != 0)
         return SKIP_RETURN_CODE;
+
+    OE_TEST(oe_load_module_syscall() == OE_OK);
 
     if ((result = oe_create_tls_e2e_enclave(
              argv[1],

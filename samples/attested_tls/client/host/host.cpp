@@ -1,6 +1,7 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+#include <openenclave/bits/module.h>
 #include <openenclave/host.h>
 #include <stdio.h>
 #include "tls_client_u.h"
@@ -96,6 +97,12 @@ int main(int argc, const char* argv[])
         }
     }
     printf("server port = [%s]\n", server_port);
+
+    if (oe_load_module_syscall() != OE_OK)
+    {
+        fprintf(stderr, "%s: oe_load_module_syscall() failed\n", argv[0]);
+        goto exit;
+    }
 
     printf("Host: Creating two enclaves\n");
     enclave = create_enclave(argv[1]);

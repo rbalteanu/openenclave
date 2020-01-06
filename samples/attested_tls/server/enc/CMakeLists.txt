@@ -36,9 +36,10 @@ target_include_directories(tls_server_enc PRIVATE
   ${CMAKE_BINARY_DIR}/server/enc)
 
 target_link_libraries(tls_server_enc
-		openenclave::oeenclave
-		openenclave::oelibcxx
 		openenclave::oehostsock
-		openenclave::oehostresolver)
+		openenclave::oehostresolver
+		openenclave::oesyscall
+		openenclave::oelibcxx
+		openenclave::oeenclave)
 
 add_custom_target(tls_server_sign_enc ALL DEPENDS tls_server_enc.signed tls_server_enc_mrenclave.h)

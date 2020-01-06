@@ -19,4 +19,5 @@ target_include_directories(tls_client_enc PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(tls_client_enc oeenclave oelibc oehostsock oehostresolver)
+target_link_libraries(tls_client_enc
+    oeenclave oelibc oehostsock oesyscall oehostresolver)
