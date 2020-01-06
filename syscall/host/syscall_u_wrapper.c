@@ -1,0 +1,78 @@
+// Copyright (c) Open Enclave SDK contributors.
+// Licensed under the MIT License.
+
+#include <openenclave/host.h>
+
+#include <openenclave/bits/module.h>
+#include <openenclave/edger8r/host.h>
+#include <openenclave/internal/calls.h>
+#include <openenclave/internal/syscall/bits/calls.h>
+#include "../../host/hostthread.h"
+
+#if defined(_MSC_VER)
+#define st_atime st_atime
+#define st_mtime st_mtime
+#define st_ctime st_ctime
+#endif
+
+/* Override oe_call_enclave_function() calls with _call_enclave_function(). */
+#define oe_call_enclave_function _call_enclave_function
+
+/* The ocall edge routines will use this function to route ecalls. */
+static oe_result_t _call_enclave_function(
+    oe_enclave_t* enclave,
+    uint32_t function_id,
+    const void* input_buffer,
+    size_t input_buffer_size,
+    void* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written)
+{
+    const oe_table_id_t table_id = OE_SYSCALL_ECALL_FUNCTION_TABLE_ID;
+
+    return oe_call_enclave_function_by_table_id(
+        enclave,
+        &table_id,
+        function_id,
+        input_buffer,
+        input_buffer_size,
+        output_buffer,
+        output_buffer_size,
+        output_bytes_written);
+}
+
+/* Ignore missing edge-routine prototypes. */
+#if defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
+
+#include "syscall_u.c"
+
+static oe_once_type _once = OE_H_ONCE_INITIALIZER;
+
+static void _once_function(void)
+{
+    const oe_table_id_t table_id = OE_SYSCALL_OCALL_FUNCTION_TABLE_ID;
+
+    if (oe_register_ocall_function_table(
+            &table_id,
+            __syscall_ocall_function_table,
+            OE_COUNTOF(__syscall_ocall_function_table)) != OE_OK)
+    {
+        const char func[] = "oe_register_syscall_ocall_function_table()";
+
+        fprintf(stderr, "%s(%u): %s(): failed\n", __FILE__, __LINE__, func);
+        abort();
+    }
+}
+
+void oe_register_syscall_ocall_function_table(void)
+{
+    oe_once(&_once, _once_function);
+}
+
+oe_result_t oe_load_module_syscall(void)
+{
+    oe_register_syscall_ocall_function_table();
+    return OE_OK;
+}
