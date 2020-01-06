@@ -7,8 +7,8 @@
  * This file defines functions to load the optional modules available.
  *
  */
-#ifndef _OE_BITS_MODULE_H
-#define _OE_BITS_MODULE_H
+#ifndef _OE_SYSCALL_MODULE_H
+#define _OE_SYSCALL_MODULE_H
 
 /*
 **==============================================================================
@@ -89,4 +89,4 @@ oe_result_t oe_load_module_host_epoll(void);
 
 OE_EXTERNC_END
 
-#endif /* _OE_BITS_MODULE_H */
+#endif /* _OE_SYSCALL_MODULE_H */

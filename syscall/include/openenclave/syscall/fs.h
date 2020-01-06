@@ -1,8 +1,8 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#ifndef _OE_BITS_FS_H
-#define _OE_BITS_FS_H
+#ifndef _OE_SYSCALL_FS_H
+#define _OE_SYSCALL_FS_H
 
 /*
 **==============================================================================
@@ -27,4 +27,4 @@ OE_EXTERNC_BEGIN
 
 OE_EXTERNC_END
 
-#endif /* _OE_BITS_FS_H */
+#endif /* _OE_SYSCALL_FS_H */
