@@ -66,6 +66,11 @@ int test(char test_name[201], uint32_t pid)
     g_pid = pid;
     printf("RUNNING: %s\n", __TEST__);
 
+    if (!(__environ = (char**)calloc(1, sizeof(char**))))
+    {
+        return rval;
+    }
+
     static const char* argv[] = {
         "test",
         NULL,
