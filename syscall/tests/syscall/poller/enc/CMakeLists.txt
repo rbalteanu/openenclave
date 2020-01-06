@@ -8,5 +8,8 @@ add_executable(poller_enc
 
 maybe_build_using_clangw(poller_enc)
 
+target_include_directories(poller_enc PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include)
+
 target_link_libraries(poller_enc
     oelibcxx oeenclave oehostepoll oesyscall oehostsock)

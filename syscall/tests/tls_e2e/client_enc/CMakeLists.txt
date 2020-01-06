@@ -16,6 +16,7 @@ set_source_files_properties(
    PROPERTIES COMPILE_FLAGS "-Wno-conversion")
 
 target_include_directories(tls_client_enc PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR})
 

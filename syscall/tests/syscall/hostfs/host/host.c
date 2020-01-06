@@ -3,7 +3,6 @@
 
 #include <openenclave/bits/module.h>
 #include <openenclave/host.h>
-#include <openenclave/internal/syscall/host.h>
 #include <openenclave/internal/tests.h>
 #include <stdio.h>
 #include "test_hostfs_u.h"

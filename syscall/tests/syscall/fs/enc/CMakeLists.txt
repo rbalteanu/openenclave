@@ -13,7 +13,9 @@ oeedl_file(${EDL_FILE} enclave gen --edl-search-dir ${EDL_SEARCH_DIR})
 
 add_enclave(TARGET fs_enc SOURCES enc.cpp ${gen})
 
-target_include_directories(fs_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(fs_enc PRIVATE
+    ${PROJECT_SOURCE_DIR}/syscall/include
+    ${CMAKE_CURRENT_BINARY_DIR})
 
 if (TEST_SGXFS)
     target_compile_definitions(fs_enc PRIVATE TEST_SGXFS=1)
