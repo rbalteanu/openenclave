@@ -26,6 +26,18 @@
 OE_EXTERNC_BEGIN
 
 /**
+ * Load the syscall module.
+ *
+ * This function loads the syscall module, which installs a hook to handle
+ * MUSL libc syscalls.
+ *
+ * @retval OE_OK The module was successfully loaded.
+ * @retval OE_FAILURE Module failed to load.
+ *
+ */
+oe_result_t oe_load_module_syscall(void);
+
+/**
  * Load the host file system module.
  *
  * This function loads the host file system module
@@ -74,6 +86,7 @@ oe_result_t oe_load_module_host_resolver(void);
  * @retval OE_FAILURE Module failed to load.
  */
 oe_result_t oe_load_module_host_epoll(void);
+
 OE_EXTERNC_END
 
 #endif /* _OE_BITS_MODULE_H */

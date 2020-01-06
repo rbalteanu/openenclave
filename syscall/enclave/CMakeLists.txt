@@ -34,6 +34,7 @@ add_library(oesyscall STATIC
     fdtable.c
     iov.c
     mount.c
+    musl.c
     netdb.c
     poll.c
     epoll.c
@@ -45,6 +46,7 @@ add_library(oesyscall STATIC
     stub.c
     syscall.c
     unistd.c
+    syscall_t_wrapper.c
     utsname.c)
 
 maybe_build_using_clangw(oesyscall)
@@ -56,7 +58,7 @@ target_include_directories(oesyscall PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
 
-target_link_libraries(oesyscall oecore)
+target_link_libraries(oesyscall oelibc oecore)
 
 set_source_files_properties(
     ${CMAKE_CURRENT_BINARY_DIR}/syscall_t.c

@@ -1000,6 +1000,8 @@ oe_result_t oe_load_module_host_socket_interface(void)
     {
         const uint64_t devid = OE_DEVID_HOST_SOCKET_INTERFACE;
 
+        OE_CHECK(oe_load_module_syscall());
+
         if (oe_device_table_set(devid, &_device.base) != 0)
         {
             /* Do not propagate errno to caller. */

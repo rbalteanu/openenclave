@@ -27,7 +27,9 @@ add_custom_target(syscall_untrusted_edl
 
 set(TARGET oesyscallhost)
 
-add_library(${TARGET} STATIC linux/syscall.c)
+add_library(${TARGET} STATIC
+    syscall_u_wrapper.c
+    linux/syscall.c)
 
 maybe_build_using_clangw(${TARGET})
 

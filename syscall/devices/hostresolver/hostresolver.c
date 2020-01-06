@@ -12,6 +12,7 @@
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/resolver.h>
+#include <openenclave/internal/raise.h>
 #include <openenclave/bits/safemath.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/thread.h>
@@ -293,6 +294,8 @@ oe_result_t oe_load_module_host_resolver(void)
 
     if (!_loaded)
     {
+        OE_CHECK(oe_load_module_syscall());
+
         if (oe_register_resolver(&_hostresolver.base) != 0)
             OE_RAISE_ERRNO(oe_errno);
 

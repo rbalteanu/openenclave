@@ -1256,6 +1256,8 @@ oe_result_t oe_load_module_host_file_system(void)
 
     if (!_loaded)
     {
+        OE_CHECK(oe_load_module_syscall());
+
         if (oe_device_table_set(OE_DEVID_HOST_FILE_SYSTEM, &_hostfs.base) != 0)
         {
             /* Do not propagate errno to caller. */

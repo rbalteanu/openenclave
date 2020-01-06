@@ -853,6 +853,8 @@ oe_result_t oe_load_module_host_epoll(void)
 
     if (!_loaded)
     {
+        OE_CHECK(oe_load_module_syscall());
+
         if (oe_device_table_set(OE_DEVID_HOST_EPOLL, &_device.base) != 0)
         {
             /* Do not propagate errno to caller. */
