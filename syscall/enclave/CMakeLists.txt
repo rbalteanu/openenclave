@@ -56,14 +56,9 @@ add_dependencies(oesyscall syscall_trusted_edl)
 target_include_directories(oesyscall PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/syscall/include
-    ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
+    ${PROJECT_SOURCE_DIR}/syscall/include)
 
 target_link_libraries(oesyscall oelibc oecore)
-
-set_source_files_properties(
-    ${CMAKE_CURRENT_BINARY_DIR}/syscall_t.c
-    PROPERTIES COMPILE_FLAGS -DOE_NEED_STDC_NAMES)
 
 install(TARGETS oesyscall EXPORT openenclave-targets ARCHIVE
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/openenclave/enclave)

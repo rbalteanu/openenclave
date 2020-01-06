@@ -9,8 +9,7 @@ add_dependencies(oehostfs syscall_trusted_edl)
 
 target_include_directories(oehostfs PRIVATE
     ${CMAKE_BINARY_DIR}/syscall/enclave
-    ${PROJECT_SOURCE_DIR}/syscall/include
-    ${PROJECT_SOURCE_DIR}/include/openenclave/corelibc)
+    ${PROJECT_SOURCE_DIR}/syscall/include)
 
 target_link_libraries(oehostfs oesyscall)
 

@@ -7,6 +7,7 @@
 
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/corelibc/stdio.h>
+#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/corelibc/string.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/raise.h>
