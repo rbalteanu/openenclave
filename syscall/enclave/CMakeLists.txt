@@ -33,6 +33,7 @@ add_library(oesyscall STATIC
     fcntl.c
     fdtable.c
     iov.c
+    log.c
     mount.c
     musl.c
     netdb.c

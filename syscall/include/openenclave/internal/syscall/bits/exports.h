@@ -20,22 +20,6 @@ typedef volatile uint32_t oe_spinlock_t;
 
 typedef uint32_t oe_once_t;
 
-typedef struct _oe_mutex
-{
-    uint64_t __impl[4];
-} oe_mutex_t;
-
-typedef enum _oe_log_level
-{
-    OE_LOG_LEVEL_NONE = 0,
-    OE_LOG_LEVEL_FATAL,
-    OE_LOG_LEVEL_ERROR,
-    OE_LOG_LEVEL_WARNING,
-    OE_LOG_LEVEL_INFO,
-    OE_LOG_LEVEL_VERBOSE,
-    OE_LOG_LEVEL_MAX
-} oe_log_level_t;
-
 typedef struct _oe_table_id
 {
     uint64_t d1;
@@ -57,8 +41,6 @@ oe_result_t oe_register_ecall_function_table(
     const oe_ecall_func_t* ecalls,
     size_t num_ecalls);
 
-oe_result_t oe_log(oe_log_level_t level, const char* fmt, ...);
-
 typedef oe_result_t (*oe_syscall_hook_t)(
     long number,
     long arg1,
@@ -76,10 +58,6 @@ oe_result_t oe_spin_lock(oe_spinlock_t* spinlock);
 oe_result_t oe_spin_unlock(oe_spinlock_t* spinlock);
 
 oe_result_t oe_once(oe_once_t* once, void (*func)(void));
-
-oe_result_t oe_mutex_lock(oe_mutex_t* mutex);
-
-oe_result_t oe_mutex_unlock(oe_mutex_t* mutex);
 
 int memcmp(const void* vl, const void* vr, size_t n);
 

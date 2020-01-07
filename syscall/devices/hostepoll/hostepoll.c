@@ -4,6 +4,7 @@
 #define _GNU_SOURCE
 
 #include <openenclave/enclave.h>
+#include <pthread.h>
 
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
@@ -48,7 +49,7 @@ typedef struct _epoll
     oe_fd_t base;
 
     /* Should be EPOLL_MAGIC */
-    uint32_t magic;
+    uint32_t __magic;
 
     /* The host file descriptor created by epoll_create(). */
     oe_host_fd_t host_fd;
@@ -59,7 +60,7 @@ typedef struct _epoll
     size_t map_capacity;
 
     /* Synchronizes access to this structure. */
-    oe_mutex_t lock;
+    pthread_mutex_t lock;
 } epoll_t;
 
 static oe_epoll_ops_t _get_epoll_ops(void);
@@ -78,7 +79,7 @@ static epoll_t* _cast_epoll(const oe_fd_t* epoll_)
 {
     epoll_t* epoll = (epoll_t*)epoll_;
 
-    if (epoll == NULL || epoll->magic != EPOLL_MAGIC)
+    if (epoll == NULL || epoll->__magic != EPOLL_MAGIC)
         return NULL;
 
     return epoll;
@@ -165,8 +166,9 @@ static oe_fd_t* _epoll_create1(oe_device_t* device_, int32_t flags)
 
     epoll->base.type = OE_FD_TYPE_EPOLL;
     epoll->base.ops.epoll = _get_epoll_ops();
-    epoll->magic = EPOLL_MAGIC;
+    epoll->__magic = EPOLL_MAGIC;
     epoll->host_fd = retval;
+    pthread_mutex_init(&epoll->lock, NULL);
 
     ret = &epoll->base;
     epoll = NULL;
@@ -228,7 +230,7 @@ static int _epoll_ctl_add(epoll_t* epoll, int fd, struct oe_epoll_event* event)
 
     // The host call and the map update must be done in an atomic operation.
     locked = true;
-    oe_mutex_lock(&epoll->lock);
+    pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
             &retval, host_epfd, OE_EPOLL_CTL_ADD, host_fd, &host_event) !=
@@ -252,7 +254,7 @@ static int _epoll_ctl_add(epoll_t* epoll, int fd, struct oe_epoll_event* event)
 done:
 
     if (locked)
-        oe_mutex_unlock(&epoll->lock);
+        pthread_mutex_unlock(&epoll->lock);
 
     return ret;
 }
@@ -296,7 +298,7 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
 
     // The host call and the map update must be done in an atomic operation.
     locked = true;
-    oe_mutex_lock(&epoll->lock);
+    pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
             &retval, host_epfd, OE_EPOLL_CTL_MOD, host_fd, &host_event) !=
@@ -319,7 +321,7 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
 
 done:
     if (locked)
-        oe_mutex_unlock(&epoll->lock);
+        pthread_mutex_unlock(&epoll->lock);
 
     return ret;
 }
@@ -351,7 +353,7 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
 
     // The host call and the map update must be done in an atomic operation.
     locked = true;
-    oe_mutex_lock(&epoll->lock);
+    pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
             &retval, host_epfd, OE_EPOLL_CTL_DEL, host_fd, NULL) != OE_OK)
@@ -383,7 +385,7 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
 
 done:
     if (locked)
-        oe_mutex_unlock(&epoll->lock);
+        pthread_mutex_unlock(&epoll->lock);
 
     return ret;
 }
@@ -468,7 +470,7 @@ static int _epoll_wait(
             OE_RAISE_ERRNO(OE_EINVAL);
 
         locked = true;
-        oe_mutex_lock(&epoll->lock);
+        pthread_mutex_lock(&epoll->lock);
 
         for (int i = 0; i < retval; i++)
         {
@@ -492,7 +494,7 @@ static int _epoll_wait(
 
 done:
     if (locked)
-        oe_mutex_unlock(&epoll->lock);
+        pthread_mutex_unlock(&epoll->lock);
 
     return ret;
 }
@@ -518,6 +520,8 @@ static int _epoll_close(oe_fd_t* epoll_)
 
     if (epoll->map)
         oe_free(epoll->map);
+
+    pthread_mutex_destroy(&epoll->lock);
 
     oe_free(epoll);
 
@@ -782,8 +786,9 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
 
         new_epoll->base.type = OE_FD_TYPE_EPOLL;
         new_epoll->base.ops.epoll = _get_epoll_ops();
-        new_epoll->magic = EPOLL_MAGIC;
+        new_epoll->__magic = EPOLL_MAGIC;
         new_epoll->host_fd = retval;
+        pthread_mutex_init(&new_epoll->lock, NULL);
 
         if (epoll->map && epoll->map_size)
         {
