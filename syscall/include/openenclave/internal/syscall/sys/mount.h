@@ -6,10 +6,9 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
+#include <sys/mount.h>
 
 OE_EXTERNC_BEGIN
-
-#define OE_MS_RDONLY 1
 
 int oe_mount(
     const char* source,

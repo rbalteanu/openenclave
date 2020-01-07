@@ -636,11 +636,8 @@ void test_fs(const char* src_dir, const char* tmp_dir)
 
         OE_TEST(
             oe_mount(
-                "/",
-                "/",
-                OE_DEVICE_NAME_HOST_FILE_SYSTEM,
-                OE_MS_RDONLY,
-                NULL) == 0);
+                "/", "/", OE_DEVICE_NAME_HOST_FILE_SYSTEM, MS_RDONLY, NULL) ==
+            0);
         OE_TEST(oe_open(path, flags, MODE) == -1);
         OE_TEST(errno == EPERM);
         OE_TEST(oe_umount("/") == 0);

@@ -113,7 +113,7 @@ static struct oe_dirent* _hostfs_readdir(oe_fd_t* desc);
 /* Return true if the file system was mounted as read-only. */
 OE_INLINE bool _is_read_only(const device_t* fs)
 {
-    return fs->mount.flags & OE_MS_RDONLY;
+    return fs->mount.flags & MS_RDONLY;
 }
 
 static device_t* _cast_device(const oe_device_t* device)
@@ -222,7 +222,7 @@ static int _hostfs_mount(
         OE_RAISE_ERRNO(EINVAL);
 
     /* Remember whether this is a read-only mount. */
-    if ((flags & OE_MS_RDONLY))
+    if ((flags & MS_RDONLY))
         fs->mount.flags = flags;
 
     /* Save the source parameter (will be needed to form host paths). */
