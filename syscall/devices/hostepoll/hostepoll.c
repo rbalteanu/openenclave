@@ -54,7 +54,7 @@ typedef struct _epoll
     /* The host file descriptor created by epoll_create(). */
     oe_host_fd_t host_fd;
 
-    /* Mappings added by epoll_ctl(OE_EPOLL_CTL_ADD) */
+    /* Mappings added by epoll_ctl(EPOLL_CTL_ADD) */
     mapping_t* map;
     size_t map_size;
     size_t map_capacity;
@@ -233,8 +233,7 @@ static int _epoll_ctl_add(epoll_t* epoll, int fd, struct oe_epoll_event* event)
     pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
-            &retval, host_epfd, OE_EPOLL_CTL_ADD, host_fd, &host_event) !=
-        OE_OK)
+            &retval, host_epfd, EPOLL_CTL_ADD, host_fd, &host_event) != OE_OK)
     {
         OE_RAISE_ERRNO(EINVAL);
     }
@@ -301,8 +300,7 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
     pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
-            &retval, host_epfd, OE_EPOLL_CTL_MOD, host_fd, &host_event) !=
-        OE_OK)
+            &retval, host_epfd, EPOLL_CTL_MOD, host_fd, &host_event) != OE_OK)
     {
         OE_RAISE_ERRNO(errno);
     }
@@ -356,7 +354,7 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
     pthread_mutex_lock(&epoll->lock);
 
     if (oe_syscall_epoll_ctl_ocall(
-            &retval, host_epfd, OE_EPOLL_CTL_DEL, host_fd, NULL) != OE_OK)
+            &retval, host_epfd, EPOLL_CTL_DEL, host_fd, NULL) != OE_OK)
     {
         OE_RAISE_ERRNO(EINVAL);
     }
@@ -405,19 +403,19 @@ static int _epoll_ctl(
 
     switch (op)
     {
-        case OE_EPOLL_CTL_ADD:
+        case EPOLL_CTL_ADD:
         {
             ret = _epoll_ctl_add(epoll, fd, event);
             goto done;
         }
 
-        case OE_EPOLL_CTL_MOD:
+        case EPOLL_CTL_MOD:
         {
             ret = _epoll_ctl_mod(epoll, fd, event);
             goto done;
         }
 
-        case OE_EPOLL_CTL_DEL:
+        case EPOLL_CTL_DEL:
         {
             ret = _epoll_ctl_del(epoll, fd);
             goto done;

@@ -3,7 +3,7 @@
 
 #include <openenclave/enclave.h>
 
-#include <openenclave/internal/syscall/arpa/inet.h>
+#include <arpa/inet.h>
 #include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/netinet/in.h>
@@ -34,10 +34,9 @@ int ecall_getnameinfo(char* buffer, size_t bufflen)
     char host[256] = {0};
     char serv[256] = {0};
 
-    struct oe_sockaddr_in addr = {
-        .sin_family = OE_AF_INET,
-        .sin_port = 22,
-        .sin_addr.s_addr = oe_htonl(OE_INADDR_LOOPBACK)};
+    struct oe_sockaddr_in addr = {.sin_family = OE_AF_INET,
+                                  .sin_port = 22,
+                                  .sin_addr.s_addr = htonl(INADDR_LOOPBACK)};
 
     printf("s_addr=%x\n", addr.sin_addr.s_addr);
 

@@ -4,28 +4,11 @@
 #ifndef _OE_SYSCALL_NETINET_IN_H
 #define _OE_SYSCALL_NETINET_IN_H
 
+#include <netinet/in.h>
 #include <openenclave/bits/defs.h>
 #include <openenclave/internal/syscall/bits/types.h>
 
 OE_EXTERNC_BEGIN
-
-/* Address to accept any incoming messages. */
-#define OE_INADDR_ANY ((oe_in_addr_t)0x00000000)
-
-/* Address to send to all hosts. */
-#define OE_INADDR_BROADCAST ((oe_in_addr_t)0xffffffff)
-
-/* Address indicating an error return. */
-#define OE_INADDR_NONE ((oe_in_addr_t)0xffffffff)
-
-/* Address to loopback in software to local host. */
-#define OE_INADDR_LOOPBACK ((oe_in_addr_t)0x7f000001) /* Inet 127.0.0.1.  */
-
-#define OE_SOCK_STREAM 1
-#define OE_SOCK_DGRAM 2
-
-#define IPPROTO_TCP 6
-#define IPPROTO_UDP 17
 
 // clang-format off
 #define OE_IN6ADDR_ANY_INIT { { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } } }

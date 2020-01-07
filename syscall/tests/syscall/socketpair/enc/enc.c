@@ -4,8 +4,8 @@
 #include <openenclave/enclave.h>
 
 // enclave.h must come before socket.h
+#include <arpa/inet.h>
 #include <errno.h>
-#include <openenclave/internal/syscall/arpa/inet.h>
 #include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
@@ -40,7 +40,7 @@ int init_enclave()
     }
 
     {
-        if (oe_socketpair(OE_AF_LOCAL, OE_SOCK_STREAM, 0, sockfd) < 0)
+        if (oe_socketpair(OE_AF_LOCAL, SOCK_STREAM, 0, sockfd) < 0)
         {
             printf("could not create socketpair. errno = %d\n", errno);
             OE_TEST(errno == 0);
