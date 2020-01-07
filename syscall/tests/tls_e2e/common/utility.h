@@ -9,7 +9,7 @@
 #include <mbedtls/platform.h>
 // clang-format on
 
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 
 oe_result_t generate_certificate_and_pkey(
     mbedtls_x509_crt* cert,

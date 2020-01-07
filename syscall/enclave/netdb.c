@@ -7,7 +7,6 @@
 #include <openenclave/internal/syscall/resolver.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 
 static oe_resolver_t* _resolver;

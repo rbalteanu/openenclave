@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include <openenclave/enclave.h>
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/stdlib.h>

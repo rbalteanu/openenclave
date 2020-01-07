@@ -23,7 +23,7 @@
 
 #include <openenclave/syscall/module.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/thread.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/dirent.h>
 #include <openenclave/internal/syscall/sys/mount.h>
 #include <openenclave/internal/syscall/unistd.h>

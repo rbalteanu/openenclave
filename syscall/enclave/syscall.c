@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safemath.h>
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/dirent.h>
 #include <openenclave/internal/syscall/errno.h>

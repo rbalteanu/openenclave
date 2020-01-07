@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <openenclave/enclave.h>
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/syscall/fs.h>
 #include <openenclave/syscall/module.h>

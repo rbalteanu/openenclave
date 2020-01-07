@@ -12,7 +12,6 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
-#include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
 

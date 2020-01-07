@@ -3,7 +3,6 @@
 
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/enclave.h>
-#include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fd.h>
@@ -13,7 +12,6 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>
 #include <openenclave/internal/utils.h>
 #include <openenclave/syscall/fs.h>

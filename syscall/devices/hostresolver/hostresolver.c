@@ -15,8 +15,8 @@
 #include <openenclave/internal/raise.h>
 #include <openenclave/bits/safemath.h>
 #include <openenclave/internal/calls.h>
-#include <openenclave/internal/thread.h>
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/syscall/module.h>

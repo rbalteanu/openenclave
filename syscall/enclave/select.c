@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/internal/print.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/poll.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>

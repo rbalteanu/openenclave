@@ -8,7 +8,7 @@
 // clang-format on
 
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/thread.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/raise.h>

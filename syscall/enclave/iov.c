@@ -3,7 +3,6 @@
 
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/bits/safemath.h>
-#include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/iov.h>
 #include <openenclave/internal/syscall/limits.h>
