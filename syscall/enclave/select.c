@@ -108,7 +108,7 @@ int oe_select(
 
     if (readfds)
     {
-        const short events = OE_POLLIN | OE_POLLRDNORM | OE_POLLRDBAND;
+        const short events = POLLIN | POLLRDNORM | POLLRDBAND;
 
         if (_fdset_to_fds(&fds, events, readfds, nfds) != 0)
             goto done;
@@ -116,7 +116,7 @@ int oe_select(
 
     if (writefds)
     {
-        const short events = OE_POLLOUT | OE_POLLWRNORM | OE_POLLWRBAND;
+        const short events = POLLOUT | POLLWRNORM | POLLWRBAND;
 
         if (_fdset_to_fds(&fds, events, writefds, nfds) != 0)
             goto done;
@@ -124,7 +124,7 @@ int oe_select(
 
     if (exceptfds)
     {
-        const short events = OE_POLLERR | OE_POLLHUP | OE_POLLRDHUP;
+        const short events = POLLERR | POLLHUP | POLLRDHUP;
 
         if (_fdset_to_fds(&fds, events, exceptfds, nfds) != 0)
             goto done;
@@ -144,7 +144,7 @@ int oe_select(
 
     if (readfds)
     {
-        short events = OE_POLLIN | OE_POLLRDNORM | OE_POLLRDBAND;
+        short events = POLLIN | POLLRDNORM | POLLRDBAND;
         int n;
 
         if ((n = _fds_to_fdset(&fds, events, readfds)) > num_ready)
@@ -153,7 +153,7 @@ int oe_select(
 
     if (writefds)
     {
-        short events = OE_POLLOUT | OE_POLLWRNORM | OE_POLLWRBAND;
+        short events = POLLOUT | POLLWRNORM | POLLWRBAND;
         int n;
 
         if ((n = _fds_to_fdset(&fds, events, writefds)) > num_ready)
@@ -162,7 +162,7 @@ int oe_select(
 
     if (exceptfds)
     {
-        short events = OE_POLLERR | OE_POLLHUP | OE_POLLRDHUP;
+        short events = POLLERR | POLLHUP | POLLRDHUP;
         int n;
 
         if ((n = _fds_to_fdset(&fds, events, exceptfds)) > num_ready)

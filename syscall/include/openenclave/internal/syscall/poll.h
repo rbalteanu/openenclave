@@ -5,5 +5,6 @@
 #define _OE_SYSCALL_POLL_H
 
 #include <openenclave/internal/syscall/sys/poll.h>
+#include <poll.h>
 
 #endif /* _OE_SYSCALL_POLL_H */
