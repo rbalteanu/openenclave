@@ -13,7 +13,7 @@
 #include "../platform/linux.h"
 #endif
 
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 
 extern "C" void oe_abort();
 

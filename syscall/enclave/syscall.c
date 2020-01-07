@@ -810,7 +810,7 @@ static long _syscall(
         default:
         {
             oe_errno = OE_ENOSYS;
-            OE_TRACE_WARNING("syscall num=%ld not handled", num);
+            oe_host_printf("syscall num=%ld not handled", num);
             goto done;
         }
     }

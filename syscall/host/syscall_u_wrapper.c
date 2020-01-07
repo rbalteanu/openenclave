@@ -4,7 +4,6 @@
 #include <openenclave/host.h>
 
 #include <openenclave/edger8r/host.h>
-#include <openenclave/internal/calls.h>
 #include <openenclave/internal/syscall/bits/calls.h>
 #include <openenclave/syscall/module.h>
 #include "../../host/hostthread.h"
@@ -17,6 +16,27 @@
 
 /* Override oe_call_enclave_function() calls with _call_enclave_function(). */
 #define oe_call_enclave_function _call_enclave_function
+
+typedef struct _oe_table_id
+{
+    uint64_t d1;
+    uint64_t d2;
+} oe_table_id_t;
+
+oe_result_t oe_call_enclave_function_by_table_id(
+    oe_enclave_t* enclave,
+    const oe_table_id_t* table_id,
+    uint64_t function_id,
+    const void* input_buffer,
+    size_t input_buffer_size,
+    void* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written);
+
+oe_result_t oe_register_ocall_function_table(
+    const oe_table_id_t* table_id,
+    const oe_ocall_func_t* ocalls,
+    size_t num_ocalls);
 
 /* The ocall edge routines will use this function to route ecalls. */
 static oe_result_t _call_enclave_function(

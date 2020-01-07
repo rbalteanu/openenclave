@@ -7,6 +7,7 @@
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/result.h>
 #include <openenclave/bits/types.h>
+#include <openenclave/edger8r/enclave.h>
 
 /* The syscall layer depends on these non-exported OE symbols. */
 
@@ -23,6 +24,52 @@ typedef struct _oe_mutex
 {
     uint64_t __impl[4];
 } oe_mutex_t;
+
+typedef enum _oe_log_level
+{
+    OE_LOG_LEVEL_NONE = 0,
+    OE_LOG_LEVEL_FATAL,
+    OE_LOG_LEVEL_ERROR,
+    OE_LOG_LEVEL_WARNING,
+    OE_LOG_LEVEL_INFO,
+    OE_LOG_LEVEL_VERBOSE,
+    OE_LOG_LEVEL_MAX
+} oe_log_level_t;
+
+typedef struct _oe_table_id
+{
+    uint64_t d1;
+    uint64_t d2;
+} oe_table_id_t;
+
+oe_result_t oe_call_host_function_by_table_id(
+    const oe_table_id_t* table_id,
+    size_t function_id,
+    const void* input_buffer,
+    size_t input_buffer_size,
+    void* output_buffer,
+    size_t output_buffer_size,
+    size_t* output_bytes_written,
+    bool switchless);
+
+oe_result_t oe_register_ecall_function_table(
+    const oe_table_id_t* table_id,
+    const oe_ecall_func_t* ecalls,
+    size_t num_ecalls);
+
+oe_result_t oe_log(oe_log_level_t level, const char* fmt, ...);
+
+typedef oe_result_t (*oe_syscall_hook_t)(
+    long number,
+    long arg1,
+    long arg2,
+    long arg3,
+    long arg4,
+    long arg5,
+    long arg6,
+    long* ret);
+
+void oe_register_syscall_hook(oe_syscall_hook_t hook);
 
 oe_result_t oe_spin_lock(oe_spinlock_t* spinlock);
 

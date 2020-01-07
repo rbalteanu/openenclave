@@ -29,7 +29,7 @@ typedef SOCKET socket_t;
 #include <unistd.h>
 typedef int socket_t;
 #endif
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 
 void oe_abort(void);
 

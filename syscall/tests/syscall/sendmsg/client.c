@@ -23,7 +23,7 @@ static void sleep(int n)
 #include <unistd.h>
 typedef int socket_t;
 #endif
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>

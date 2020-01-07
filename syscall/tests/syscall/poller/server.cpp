@@ -7,8 +7,7 @@
 #include "../platform/linux.h"
 #endif
 
-#include <openenclave/internal/tests.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -131,7 +130,7 @@ extern "C" void run_server(
                     sock_set_blocking(sock, false);
                     OE_TEST(poller->add(sock, POLLER_READ) == 0);
 
-                    printf("client %lld connect\n", OE_LLD((int64_t)sock));
+                    printf("client %lld connect\n", (long long)((int64_t)sock));
                     fflush(stdout);
                 }
                 else
@@ -162,7 +161,7 @@ extern "C" void run_server(
                     {
                         printf(
                             "client %lld input: %zd bytes\n",
-                            OE_LLD((int64_t)client->sock),
+                            (long long)((int64_t)client->sock),
                             n);
                         fflush(stdout);
 
@@ -173,7 +172,7 @@ extern "C" void run_server(
                     {
                         printf(
                             "client %lld disconnect\n",
-                            OE_LLD((int64_t)client->sock));
+                            (long long)((int64_t)client->sock));
                         fflush(stdout);
 
                         /* Client disconnect. */
@@ -226,7 +225,7 @@ extern "C" void run_server(
                     {
                         printf(
                             "client %lld output: %zd bytes\n",
-                            OE_LLD((int64_t)client->sock),
+                            (long long)((int64_t)client->sock),
                             n);
                         fflush(stdout);
 

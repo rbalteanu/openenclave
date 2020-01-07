@@ -2,15 +2,14 @@
 /* Licensed under the MIT License. */
 
 #include <openenclave/enclave.h>
-#include <openenclave/internal/time.h>
 
 // enclave.h must come before socket.h
 #include <openenclave/internal/syscall/arpa/inet.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/tests.h>
 #include <openenclave/syscall/module.h>
 #include <unistd.h>
 

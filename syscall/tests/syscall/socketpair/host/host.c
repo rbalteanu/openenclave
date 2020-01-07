@@ -15,8 +15,8 @@
 
 #define OE_LIBC_SUPPRESS_DEPRECATIONS
 #if defined(_MSC_VER)
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/netinet/in.h>
-#include <openenclave/internal/tests.h>
 #include <windows.h>
 
 typedef oe_socklen_t socklen_t;
@@ -33,7 +33,7 @@ typedef HANDLE pthread_t;
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <openenclave/host.h>
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/syscall/module.h>
 #include <pthread.h>
 #include <signal.h>

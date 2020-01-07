@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include <openenclave/host.h>
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/syscall/module.h>
 #include <cstdio>
 #include <thread>

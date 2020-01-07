@@ -11,8 +11,7 @@
 
 #include <inttypes.h>
 #include <openenclave/host.h>
-#include <openenclave/internal/tests.h>
-#include <openenclave/internal/types.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/syscall/module.h>
 #include "socket_test_u.h"
 
@@ -68,7 +67,7 @@ void* host_server_thread(void* arg)
         printf("host: accepting\n");
         connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
 
-        printf("accepted fd=%lld\n", OE_LLD((int64_t)connfd));
+        printf("accepted fd=%lld\n", (long long)((int64_t)connfd));
 
         if (connfd >= 0)
         {
@@ -108,7 +107,7 @@ char* host_client(in_port_t port)
 
     int retries = 0;
     static const int max_retries = 400;
-    printf("host client:socket fd = %lld\n", OE_LLD((int64_t)sockfd));
+    printf("host client:socket fd = %lld\n", (long long)((int64_t)sockfd));
     printf("host client:Connecting...\n");
 
     while (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)

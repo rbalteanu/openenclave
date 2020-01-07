@@ -27,7 +27,6 @@
 // clang-format on
 
 #include <openenclave/internal/syscall/errno.h>
-#include <openenclave/internal/atomic.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/dirent.h>
 #include <openenclave/internal/syscall/unistd.h>
@@ -692,13 +691,21 @@ static oe_host_fd_t _dup_socket(oe_host_fd_t oldfd)
     return -1;
 }
 
+static bool _atomic_compare_and_swap(
+    int64_t volatile* dest,
+    int64_t old,
+    int64_t newval)
+{
+    return _InterlockedCompareExchange64(dest, newval, old) == old;
+}
+
 static int _wsa_startup()
 {
     static int64_t wsa_init_done = FALSE;
     WSADATA wsaData;
     int ret = 0;
 
-    if (oe_atomic_compare_and_swap(
+    if (_atomic_compare_and_swap(
             (volatile int64_t*)&wsa_init_done, (int64_t)0, (int64_t)1))
     {
         ret = WSAStartup(2, &wsaData);

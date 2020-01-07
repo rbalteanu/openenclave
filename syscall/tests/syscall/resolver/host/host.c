@@ -3,7 +3,7 @@
 
 #define OE_LIBC_SUPPRESS_DEPRECATIONS
 #include <openenclave/host.h>
-#include <openenclave/internal/tests.h>
+#include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/syscall/module.h>
 #if defined(_MSC_VER)
 #define OE_NEED_STD_NAMES

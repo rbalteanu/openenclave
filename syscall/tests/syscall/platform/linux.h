@@ -20,6 +20,8 @@
 
 #define INVALID_SOCKET ((socket_t)-1)
 
+OE_EXTERNC_BEGIN
+
 typedef int socket_t;
 typedef size_t length_t;
 
@@ -121,5 +123,7 @@ OE_INLINE bool test_would_block()
 {
     return errno == EAGAIN;
 }
+
+OE_EXTERNC_END
 
 #endif /* _PLATFORM_LINUX_H */
