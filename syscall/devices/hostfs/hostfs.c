@@ -668,7 +668,7 @@ static oe_off_t _hostfs_lseek_dir(oe_fd_t* desc, oe_off_t offset, int whence)
     oe_off_t ret = -1;
     file_t* file = _cast_file(desc);
 
-    if (!file || !file->dir || offset != 0 || whence != OE_SEEK_SET)
+    if (!file || !file->dir || offset != 0 || whence != SEEK_SET)
         OE_RAISE_ERRNO(EINVAL);
 
     if ((ret = _hostfs_rewinddir(file->dir)) == -1)
@@ -987,7 +987,7 @@ static int _hostfs_access(oe_device_t* device, const char* pathname, int mode)
     int ret = -1;
     device_t* fs = _cast_device(device);
     char host_path[PATH_MAX];
-    const uint32_t MASK = (OE_R_OK | OE_W_OK | OE_X_OK);
+    const uint32_t MASK = (R_OK | W_OK | X_OK);
     int retval = -1;
 
     if (!fs || !pathname || ((uint32_t)mode & ~MASK))

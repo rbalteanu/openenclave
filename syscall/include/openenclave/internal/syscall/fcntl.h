@@ -11,16 +11,13 @@
 
 OE_EXTERNC_BEGIN
 
-struct oe_flock
-{
-    short l_type;
-    short l_whence;
-    oe_off_t l_start;
-    oe_off_t l_len;
-    oe_pid_t l_pid;
-};
+#define __OE_FLOCK oe_flock
+#include <openenclave/internal/syscall/bits/flock.h>
+#undef __OE_FLOCK
 
-#define oe_flock64 oe_flock
+#define __OE_FLOCK oe_flock64
+#include <openenclave/internal/syscall/bits/flock.h>
+#undef __OE_FLOCK
 
 struct oe_f_owner_ex
 {

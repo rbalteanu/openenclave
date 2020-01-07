@@ -45,7 +45,7 @@ static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
 static void _atexit_handler(void)
 {
     /* Free the standard fds (but do not close them). */
-    for (size_t i = 0; i <= OE_STDERR_FILENO; i++)
+    for (size_t i = 0; i <= STDERR_FILENO; i++)
     {
         oe_fd_t* desc = _table[i];
 
@@ -113,30 +113,30 @@ static int _initialize(void)
         {
             oe_fd_t* file;
 
-            if (!(file = oe_consolefs_create_file(OE_STDIN_FILENO)))
+            if (!(file = oe_consolefs_create_file(STDIN_FILENO)))
                 OE_RAISE_ERRNO(ENOMEM);
 
-            _table[OE_STDIN_FILENO] = file;
+            _table[STDIN_FILENO] = file;
         }
 
         /* Create the STDOUT file. */
         {
             oe_fd_t* file;
 
-            if (!(file = oe_consolefs_create_file(OE_STDOUT_FILENO)))
+            if (!(file = oe_consolefs_create_file(STDOUT_FILENO)))
                 OE_RAISE_ERRNO(ENOMEM);
 
-            _table[OE_STDOUT_FILENO] = file;
+            _table[STDOUT_FILENO] = file;
         }
 
         /* Create the STDERR file. */
         {
             oe_fd_t* file;
 
-            if (!(file = oe_consolefs_create_file(OE_STDERR_FILENO)))
+            if (!(file = oe_consolefs_create_file(STDERR_FILENO)))
                 OE_RAISE_ERRNO(ENOMEM);
 
-            _table[OE_STDERR_FILENO] = file;
+            _table[STDERR_FILENO] = file;
         }
 
         /* Install the atexit handler that will release the table. */

@@ -8,25 +8,9 @@
 #include <openenclave/internal/syscall/bits/types.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 OE_EXTERNC_BEGIN
-
-#define OE_STDIN_FILENO 0
-#define OE_STDOUT_FILENO 1
-#define OE_STDERR_FILENO 2
-
-/* access() mode flags. */
-#define OE_F_OK 0
-#define OE_R_OK 4
-#define OE_W_OK 2
-#define OE_X_OK 1
-
-/* lseek() whence parameters. */
-#define OE_SEEK_SET 0
-#define OE_SEEK_CUR 1
-#define OE_SEEK_END 2
-
-#define OE_NGROUP_MAX 256
 
 int oe_access(const char* pathname, int mode);
 

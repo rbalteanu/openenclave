@@ -99,7 +99,7 @@ void oe_rewinddir(OE_DIR* dir)
 {
     if (dir && dir->magic == DIR_MAGIC)
     {
-        oe_lseek(dir->fd, 0, OE_SEEK_SET);
+        oe_lseek(dir->fd, 0, SEEK_SET);
         dir->buf.d_off = 0;
     }
 }

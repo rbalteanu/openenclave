@@ -388,7 +388,7 @@ static oe_fd_t* _new_file(uint32_t fileno)
     oe_fd_t* ret = NULL;
     file_t* file = NULL;
 
-    if (fileno > OE_STDERR_FILENO)
+    if (fileno > STDERR_FILENO)
         goto done;
 
     /* Create the file struct. */
@@ -429,12 +429,12 @@ oe_fd_t* oe_consolefs_create_file(uint32_t fileno)
 {
     switch (fileno)
     {
-        case OE_STDIN_FILENO:
-            return _new_file(OE_STDIN_FILENO);
-        case OE_STDOUT_FILENO:
-            return _new_file(OE_STDOUT_FILENO);
-        case OE_STDERR_FILENO:
-            return _new_file(OE_STDERR_FILENO);
+        case STDIN_FILENO:
+            return _new_file(STDIN_FILENO);
+        case STDOUT_FILENO:
+            return _new_file(STDOUT_FILENO);
+        case STDERR_FILENO:
+            return _new_file(STDERR_FILENO);
         default:
             return NULL;
     }

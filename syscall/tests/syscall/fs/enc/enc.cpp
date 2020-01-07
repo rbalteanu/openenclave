@@ -138,14 +138,14 @@ static void test_read_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Read "lmnop" */
     {
-        OE_TEST(fs.lseek(file, 11, OE_SEEK_SET) == 11);
+        OE_TEST(fs.lseek(file, 11, SEEK_SET) == 11);
         OE_TEST(fs.read(file, buf, 5) == 5);
         OE_TEST(memcmp(buf, "lmnop", 5) == 0);
     }
 
     /* Read one character at a time. */
     {
-        OE_TEST(fs.lseek(file, 0, OE_SEEK_SET) == 0);
+        OE_TEST(fs.lseek(file, 0, SEEK_SET) == 0);
 
         for (size_t i = 0; i < OE_COUNTOF(ALPHABET); i++)
         {
@@ -493,8 +493,8 @@ void test_zero_sized_iovs(void)
 {
     struct oe_iovec iov;
 
-    OE_TEST(oe_writev(OE_STDOUT_FILENO, &iov, 0) == 0);
-    OE_TEST(oe_readv(OE_STDIN_FILENO, &iov, 0) == 0);
+    OE_TEST(oe_writev(STDOUT_FILENO, &iov, 0) == 0);
+    OE_TEST(oe_readv(STDIN_FILENO, &iov, 0) == 0);
 }
 
 extern "C" void test_dup_case1(const char* tmp_dir)
@@ -515,10 +515,10 @@ extern "C" void test_dup_case1(const char* tmp_dir)
         OE_TEST(close(fd) == 0);
     }
 
-    OE_TEST(dup2(OE_STDERR_FILENO, fd) == fd);
-    OE_TEST(close(OE_STDERR_FILENO) == 0);
+    OE_TEST(dup2(STDERR_FILENO, fd) == fd);
+    OE_TEST(close(STDERR_FILENO) == 0);
     OE_TEST((stream = fdopen(fd, "w")));
-    OE_TEST(dup2(fd, OE_STDERR_FILENO) == OE_STDERR_FILENO);
+    OE_TEST(dup2(fd, STDERR_FILENO) == STDERR_FILENO);
     fclose(stream);
 
     OE_TEST(umount("/") == 0);
@@ -539,11 +539,11 @@ extern "C" void test_dup_case2(const char* tmp_dir)
     OE_TEST(fd >= 0);
 
     /* Close standard output. */
-    int r = oe_close(OE_STDOUT_FILENO);
+    int r = oe_close(STDOUT_FILENO);
     OE_TEST(r == 0);
 
     /* Dup "STDOUT" file to STDOUT */
-    OE_TEST(oe_dup2(fd, OE_STDOUT_FILENO) == OE_STDOUT_FILENO);
+    OE_TEST(oe_dup2(fd, STDOUT_FILENO) == STDOUT_FILENO);
 
     OE_TEST(close(fd) == 0);
 
@@ -650,8 +650,8 @@ void test_fs(const char* src_dir, const char* tmp_dir)
     {
         static const char DATA[] = "abcdefghijklmnopqrstuvwxyz\n";
         static const size_t n = sizeof(DATA) - 1;
-        OE_TEST(oe_write(OE_STDOUT_FILENO, DATA, n) == n);
-        OE_TEST(oe_write(OE_STDERR_FILENO, DATA, n) == n);
+        OE_TEST(oe_write(STDOUT_FILENO, DATA, n) == n);
+        OE_TEST(oe_write(STDERR_FILENO, DATA, n) == n);
     }
 
     /* Test mounting. */
