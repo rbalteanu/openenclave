@@ -41,7 +41,7 @@ int init_enclave()
     }
 
     {
-        if (oe_socketpair(OE_AF_LOCAL, SOCK_STREAM, 0, sockfd) < 0)
+        if (oe_socketpair(AF_LOCAL, SOCK_STREAM, 0, sockfd) < 0)
         {
             printf("could not create socketpair. errno = %d\n", errno);
             OE_TEST(errno == 0);
@@ -125,7 +125,7 @@ int run_enclave_server()
 
     // Shutdown the writing
 
-    if (oe_shutdown(sockfd[0], OE_SHUT_WR) < 0)
+    if (oe_shutdown(sockfd[0], SHUT_WR) < 0)
     {
         printf("could not shutdown socket %d. errno = %d\n", sockfd[0], errno);
         OE_TEST(errno == 0);

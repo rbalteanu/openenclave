@@ -50,12 +50,12 @@ int ecall_run_client(char* recv_buff, ssize_t* recv_buff_len)
 
     memset(recv_buff, '0', buff_len);
     printf("create socket\n");
-    if ((sockfd = oe_socket(OE_AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((sockfd = oe_socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Error : Could not create socket \n");
         return OE_FAILURE;
     }
-    serv_addr.sin_family = OE_AF_INET;
+    serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     serv_addr.sin_port = htons(1492);
 
@@ -111,20 +111,20 @@ int ecall_run_server()
     _initialize();
     int status = OE_FAILURE;
     static const char TESTDATA[] = "This is TEST DATA\n";
-    int listenfd = oe_socket(OE_AF_INET, SOCK_STREAM, 0);
+    int listenfd = oe_socket(AF_INET, SOCK_STREAM, 0);
     int connfd = 0;
     struct oe_sockaddr_in serv_addr = {0};
 
     const int optVal = 1;
     const socklen_t optLen = sizeof(optVal);
     int rtn = oe_setsockopt(
-        listenfd, OE_SOL_SOCKET, OE_SO_REUSEADDR, (void*)&optVal, optLen);
+        listenfd, SOL_SOCKET, SO_REUSEADDR, (void*)&optVal, optLen);
     if (rtn > 0)
     {
         printf("oe_setsockopt failed errno = %d\n", errno);
     }
 
-    serv_addr.sin_family = OE_AF_INET;
+    serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     serv_addr.sin_port = htons(1493);
 
@@ -151,7 +151,7 @@ int ecall_run_server()
         connfd = oe_accept(
             listenfd, (struct oe_sockaddr*)&peer_addr, &peer_addr_len);
         OE_TEST(peer_addr_len == sizeof(peer_addr));
-        OE_TEST(peer_addr.sin_family == OE_AF_INET);
+        OE_TEST(peer_addr.sin_family == AF_INET);
         OE_TEST(ntohs(peer_addr.sin_port) >= 1024);
         OE_TEST(ntohl(peer_addr.sin_addr.s_addr) == INADDR_LOOPBACK);
 
