@@ -22,7 +22,6 @@
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
 
 typedef int (*ioctl_proc)(
     int fd,

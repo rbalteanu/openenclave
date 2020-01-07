@@ -12,15 +12,12 @@
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/resolver.h>
-#include <openenclave/internal/raise.h>
 #include <openenclave/bits/safemath.h>
-#include <openenclave/internal/calls.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/syscall/module.h>
-#include <openenclave/internal/trace.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include "syscall_t.h"
 
@@ -295,7 +292,13 @@ oe_result_t oe_load_module_host_resolver(void)
 
     if (!_loaded)
     {
-        OE_CHECK(oe_load_module_syscall());
+        oe_result_t r = oe_load_module_syscall();
+
+        if (r != OE_OK)
+        {
+            result = r;
+            goto done;
+        }
 
         if (oe_register_resolver(&_hostresolver.base) != 0)
             OE_RAISE_ERRNO(oe_errno);

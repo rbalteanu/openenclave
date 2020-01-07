@@ -9,7 +9,6 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/select.h>
-#include <openenclave/internal/trace.h>
 
 typedef struct _poll_fds
 {

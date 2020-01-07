@@ -6,8 +6,6 @@
 #include <openenclave/enclave.h>
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/internal/calls.h>
-#include <openenclave/internal/raise.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/fcntl.h>
@@ -17,8 +15,6 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
-#include <openenclave/internal/trace.h>
-#include <openenclave/internal/utils.h>
 #include <openenclave/syscall/module.h>
 #include "syscall_t.h"
 
@@ -88,12 +84,17 @@ static epoll_t* _cast_epoll(const oe_fd_t* epoll_)
     return epoll;
 }
 
+static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
+{
+    return (x + m - 1) / m * m;
+}
+
 /* Reserve space in the mapping array (does not change map_size). */
 static int _map_reserve(epoll_t* epoll, size_t new_capacity)
 {
     int ret = -1;
 
-    new_capacity = oe_round_up_to_multiple(new_capacity, MAP_CHUNK_SIZE);
+    new_capacity = _round_up_to_multiple(new_capacity, MAP_CHUNK_SIZE);
 
     if (new_capacity > epoll->map_capacity)
     {
@@ -854,13 +855,20 @@ oe_result_t oe_load_module_host_epoll(void)
 
     if (!_loaded)
     {
-        OE_CHECK(oe_load_module_syscall());
+        oe_result_t r = oe_load_module_syscall();
+
+        if (r != OE_OK)
+        {
+            result = r;
+            goto done;
+        }
 
         if (oe_device_table_set(OE_DEVID_HOST_EPOLL, &_device.base) != 0)
         {
             /* Do not propagate errno to caller. */
             oe_errno = 0;
-            OE_RAISE(OE_FAILURE);
+            result = OE_FAILURE;
+            goto done;
         }
 
         _loaded = true;

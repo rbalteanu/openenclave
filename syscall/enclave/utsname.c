@@ -4,7 +4,6 @@
 #include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
-#include <openenclave/internal/trace.h>
 #include "syscall_t.h"
 
 int oe_uname(struct oe_utsname* buf)

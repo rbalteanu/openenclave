@@ -10,7 +10,6 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/trace.h>
 
 static uint64_t _default_socket_devid = OE_DEVID_NONE;
 static oe_spinlock_t _default_socket_devid_lock = OE_SPINLOCK_INITIALIZER;

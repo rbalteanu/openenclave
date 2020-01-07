@@ -4,7 +4,6 @@
 #include <openenclave/enclave.h>
 
 #include <openenclave/edger8r/enclave.h>
-#include <openenclave/internal/calls.h>
 #include <openenclave/internal/syscall/bits/calls.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>

@@ -17,7 +17,6 @@
 #include <openenclave/internal/syscall/iov.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/stdio.h>
-#include <openenclave/internal/raise.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/syscall/module.h>
 #include <openenclave/internal/syscall/bits/exports.h>
@@ -1000,14 +999,19 @@ oe_result_t oe_load_module_host_socket_interface(void)
     if (!_loaded)
     {
         const uint64_t devid = OE_DEVID_HOST_SOCKET_INTERFACE;
+        oe_result_t r = oe_load_module_syscall();
 
-        OE_CHECK(oe_load_module_syscall());
+        if (r != OE_OK)
+        {
+            result = r;
+            goto done;
+        }
 
         if (oe_device_table_set(devid, &_device.base) != 0)
         {
             /* Do not propagate errno to caller. */
             oe_errno = 0;
-            OE_RAISE(OE_FAILURE);
+            result = OE_FAILURE;
         }
 
         _loaded = true;

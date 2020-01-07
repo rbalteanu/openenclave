@@ -7,7 +7,6 @@
 #include <openenclave/internal/syscall/resolver.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
-#include <openenclave/internal/trace.h>
 
 static oe_resolver_t* _resolver;
 static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;

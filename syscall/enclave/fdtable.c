@@ -12,8 +12,6 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
-#include <openenclave/internal/utils.h>
 #include <openenclave/syscall/fs.h>
 #include "consolefs.h"
 
@@ -33,6 +31,11 @@ typedef oe_fd_t* entry_t;
 static entry_t* _table;
 static size_t _table_size;
 static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
+
+static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
+{
+    return (x + m - 1) / m * m;
+}
 
 static void _atexit_handler(void)
 {
@@ -57,7 +60,7 @@ static int _resize_table(size_t new_size)
         goto done;
 
     /* Round the new capacity up to the next multiple of the chunk size. */
-    new_size = oe_round_up_to_multiple(new_size, TABLE_CHUNK_SIZE);
+    new_size = _round_up_to_multiple(new_size, TABLE_CHUNK_SIZE);
 
     if (new_size > OE_INT_MAX)
         new_size = OE_INT_MAX;

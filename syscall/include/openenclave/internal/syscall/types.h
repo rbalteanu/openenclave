@@ -4,8 +4,7 @@
 #ifndef _OE_SYSCALL_TYPES_H
 #define _OE_SYSCALL_TYPES_H
 
-#include <openenclave/bits/types.h>
-#include <openenclave/internal/defs.h>
+#include <openenclave/internal/syscall/bits/defs.h>
 
 OE_EXTERNC_BEGIN
 
@@ -19,6 +18,7 @@ struct oe_host_pollfd
     short int revents;
 };
 
+OE_STATIC_ASSERT(sizeof(struct oe_host_pollfd) == (2 * sizeof(uint64_t)));
 OE_STATIC_ASSERT(sizeof(struct oe_host_pollfd) == (2 * sizeof(uint64_t)));
 OE_STATIC_ASSERT(OE_OFFSETOF(struct oe_host_pollfd, fd) == 0);
 OE_STATIC_ASSERT(OE_OFFSETOF(struct oe_host_pollfd, events) == 8);

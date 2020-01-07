@@ -8,7 +8,6 @@
 #include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
 #include "mount.h"
 #include "syscall_t.h"
 

@@ -4,7 +4,6 @@
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/sys/stat.h>
-#include <openenclave/internal/trace.h>
 #include "mount.h"
 
 int oe_stat(const char* pathname, struct oe_stat* buf)

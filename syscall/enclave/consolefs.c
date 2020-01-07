@@ -14,7 +14,6 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
 #include "syscall_t.h"
 
 #define MAGIC 0x0b292bab

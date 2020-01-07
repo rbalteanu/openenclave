@@ -13,8 +13,6 @@
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/time.h>
-#include <openenclave/internal/trace.h>
 #include "mount.h"
 #include "syscall_t.h"
 

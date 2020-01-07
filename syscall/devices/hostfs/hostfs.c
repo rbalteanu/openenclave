@@ -33,8 +33,6 @@
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/iov.h>
-#include <openenclave/internal/raise.h>
-#include <openenclave/internal/hexdump.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 
@@ -1258,13 +1256,20 @@ oe_result_t oe_load_module_host_file_system(void)
 
     if (!_loaded)
     {
-        OE_CHECK(oe_load_module_syscall());
+        oe_result_t r = oe_load_module_syscall();
+
+        if (r != OE_OK)
+        {
+            result = r;
+            goto done;
+        }
 
         if (oe_device_table_set(OE_DEVID_HOST_FILE_SYSTEM, &_hostfs.base) != 0)
         {
             /* Do not propagate errno to caller. */
             oe_errno = 0;
-            OE_RAISE(OE_FAILURE);
+            result = OE_FAILURE;
+            goto done;
         }
 
         _loaded = true;

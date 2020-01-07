@@ -9,7 +9,6 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
 
 char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 {

@@ -11,7 +11,6 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/types.h>
-#include <openenclave/internal/utils.h>
 
 int oe_iov_pack(
     const struct oe_iovec* iov,

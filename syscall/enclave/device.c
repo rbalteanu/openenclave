@@ -4,7 +4,6 @@
 #include <openenclave/enclave.h>
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/internal/raise.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/errno.h>
@@ -12,8 +11,6 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
-#include <openenclave/internal/trace.h>
-#include <openenclave/internal/utils.h>
 
 /*
 **==============================================================================
@@ -31,6 +28,11 @@ static size_t _table_size;
 static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
 static bool _installed_atexit_handler;
 
+static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
+{
+    return (x + m - 1) / m * m;
+}
+
 static void _atexit_handler(void)
 {
     oe_free(_table);
@@ -47,7 +49,7 @@ static int _resize_table(size_t new_size)
     }
 
     /* Round the new capacity up to the next multiple of the chunk size. */
-    new_size = oe_round_up_to_multiple(new_size, TABLE_CHUNK_SIZE);
+    new_size = _round_up_to_multiple(new_size, TABLE_CHUNK_SIZE);
 
     if (new_size > _table_size)
     {

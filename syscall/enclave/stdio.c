@@ -6,7 +6,6 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
-#include <openenclave/internal/trace.h>
 #include "mount.h"
 
 int oe_rename(const char* oldpath, const char* newpath)

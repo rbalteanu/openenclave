@@ -72,6 +72,8 @@ int oe_host_printf(const char* fmt, ...);
 
 extern int* __oe_errno_location(void);
 
+int oe_sleep_msec(uint64_t milliseconds);
+
 OE_EXTERNC_END
 
 #endif /* _OE_SYSCALL_INTERNAL_EXPORTS_H */

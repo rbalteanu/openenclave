@@ -10,7 +10,6 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/unistd.h>
-#include <openenclave/internal/trace.h>
 
 #define DIR_MAGIC 0x09180827
 
