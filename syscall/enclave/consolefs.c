@@ -103,7 +103,7 @@ static int _consolefs_ioctl(oe_fd_t* file_, unsigned long request, uint64_t arg)
      * block works around this problem by implementing TIOCGWINSZ on the
      * enclave side. Other terminal control ioctls are left unimplemented.
      */
-    if (request == OE_TIOCGWINSZ)
+    if (request == TIOCGWINSZ)
     {
         struct winsize
         {

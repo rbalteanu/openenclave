@@ -7,10 +7,9 @@
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
 #include <stdarg.h>
+#include <sys/ioctl.h>
 
 OE_EXTERNC_BEGIN
-
-#define OE_TIOCGWINSZ 0x5413
 
 int __oe_ioctl(int fd, unsigned long request, uint64_t arg);
 
