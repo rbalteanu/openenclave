@@ -5,7 +5,6 @@
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/dirent.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdarg.h>
@@ -41,7 +40,7 @@ static long _syscall(
     long arg6)
 {
     long ret = -1;
-    oe_errno = 0;
+    errno = 0;
 
     /* Handle the software system call. */
     switch (num)
@@ -55,12 +54,12 @@ static long _syscall(
 
             ret = oe_open(pathname, flags, mode);
 
-            if (oe_errno == OE_ENOENT)
+            if (errno == ENOENT)
             {
                 /* If the file was not found, give the caller (libc) a chance
                  * to handle this syscall.
                  */
-                oe_errno = OE_ENOSYS;
+                errno = ENOSYS;
                 goto done;
             }
 
@@ -76,7 +75,7 @@ static long _syscall(
 
             ret = oe_open(pathname, flags, mode);
 
-            if (ret < 0 && oe_errno == OE_ENOENT)
+            if (ret < 0 && errno == ENOENT)
                 goto done;
 
             goto done;
@@ -91,13 +90,13 @@ static long _syscall(
 
             if (dirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             ret = oe_open(pathname, flags, mode);
 
-            if (ret < 0 && oe_errno == OE_ENOENT)
+            if (ret < 0 && errno == ENOENT)
                 goto done;
 
             goto done;
@@ -178,7 +177,7 @@ static long _syscall(
 
             if (flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -203,13 +202,13 @@ static long _syscall(
 
             if (dirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -235,19 +234,19 @@ static long _syscall(
 
             if (olddirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (newdirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -271,13 +270,13 @@ static long _syscall(
 
             if (dirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (flags != OE_AT_REMOVEDIR && flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -308,19 +307,19 @@ static long _syscall(
 
             if (olddirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (newdirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -353,7 +352,7 @@ static long _syscall(
 
             if (dirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
@@ -387,13 +386,13 @@ static long _syscall(
 
             if (dirfd != OE_AT_FDCWD)
             {
-                oe_errno = OE_EBADF;
+                errno = EBADF;
                 goto done;
             }
 
             if (flags != 0)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -666,7 +665,7 @@ static long _syscall(
 
             if (sigmask != NULL)
             {
-                oe_errno = OE_EINVAL;
+                errno = EINVAL;
                 goto done;
             }
 
@@ -678,7 +677,7 @@ static long _syscall(
 
                 if (oe_safe_mul_s64(ts->tv_sec, 1000, &mul) != OE_OK)
                 {
-                    oe_errno = OE_EINVAL;
+                    errno = EINVAL;
                     goto done;
                 }
 
@@ -686,13 +685,13 @@ static long _syscall(
 
                 if (oe_safe_add_s64(mul, div, &sum) != OE_OK)
                 {
-                    oe_errno = OE_EINVAL;
+                    errno = EINVAL;
                     goto done;
                 }
 
                 if (sum < OE_INT_MIN || sum > OE_INT_MAX)
                 {
-                    oe_errno = OE_EINVAL;
+                    errno = EINVAL;
                     goto done;
                 }
 
@@ -809,7 +808,7 @@ static long _syscall(
 #endif
         default:
         {
-            oe_errno = OE_ENOSYS;
+            errno = ENOSYS;
             oe_host_printf("syscall num=%ld not handled", num);
             goto done;
         }

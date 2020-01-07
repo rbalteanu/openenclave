@@ -44,21 +44,21 @@ typedef oe_result_t (*oe_syscall_hook_t)(
     long arg6,
     long* ret);
 
+////////////////////////////////////////////////////////////////////////////////
+
 void oe_register_syscall_hook(oe_syscall_hook_t hook);
+
+////////////////////////////////////////////////////////////////////////////////
 
 size_t oe_strlcpy(char* dest, const char* src, size_t size);
 
 size_t oe_strlcat(char* dest, const char* src, size_t size);
-
-char* oe_strtok_r(char* str, const char* delim, char** saveptr);
 
 void oe_abort(void);
 
 int oe_atexit(void (*function)(void));
 
 int oe_host_printf(const char* fmt, ...);
-
-extern int* __oe_errno_location(void);
 
 int oe_sleep_msec(uint64_t milliseconds);
 

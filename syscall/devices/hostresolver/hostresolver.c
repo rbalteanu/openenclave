@@ -57,7 +57,7 @@ static int _hostresolver_getnameinfo(
 
     OE_UNUSED(dev);
 
-    oe_errno = 0;
+    errno = 0;
 
     if (oe_syscall_getnameinfo_ocall(
             &ret, sa, salen, host, hostlen, serv, servlen, flags) != OE_OK)
@@ -91,7 +91,7 @@ static int _hostresolver_getaddrinfo(
     if (!res)
     {
         ret = OE_EAI_SYSTEM;
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Get the handle for enumerating addrinfo structures. */
@@ -102,7 +102,7 @@ static int _hostresolver_getaddrinfo(
                 &retval, node, service, hints, &handle) != OE_OK)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
         }
 
         if (!handle)
@@ -140,7 +140,7 @@ static int _hostresolver_getaddrinfo(
                 NULL) != OE_OK)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
         }
 
         /* If this is the final element in the enumeration. */
@@ -148,10 +148,10 @@ static int _hostresolver_getaddrinfo(
             break;
 
         /* Expecting that addr and canonname buffers were too small. */
-        if (retval != -1 || oe_errno != OE_ENAMETOOLONG)
+        if (retval != -1 || errno != ENAMETOOLONG)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
         }
 
         if (p->ai_addrlen && !(p->ai_addr = calloc(1, p->ai_addrlen)))
@@ -181,7 +181,7 @@ static int _hostresolver_getaddrinfo(
                 p->ai_canonname) != OE_OK)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
         }
 
         /* Append to the list. */
@@ -207,7 +207,7 @@ static int _hostresolver_getaddrinfo(
         if (oe_syscall_getaddrinfo_close_ocall(&retval, handle) != OE_OK)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
         }
 
         handle = 0;
@@ -215,7 +215,7 @@ static int _hostresolver_getaddrinfo(
         if (retval != 0)
         {
             ret = OE_EAI_SYSTEM;
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
         }
     }
 
@@ -223,7 +223,7 @@ static int _hostresolver_getaddrinfo(
     if (!head)
     {
         ret = OE_EAI_SYSTEM;
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     *res = head;
@@ -253,10 +253,10 @@ static int _hostresolver_release(oe_resolver_t* resolv_)
     int ret = -1;
     resolver_t* resolver = _cast_resolver(resolv_);
 
-    oe_errno = 0;
+    errno = 0;
 
     if (!resolver)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     // resolv_ is a static object, there is no need to free
     ret = 0;
@@ -308,7 +308,7 @@ oe_result_t oe_load_module_host_resolver(void)
         }
 
         if (oe_register_resolver(&_hostresolver.base) != 0)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         _loaded = true;
     }

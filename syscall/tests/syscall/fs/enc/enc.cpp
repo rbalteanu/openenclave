@@ -643,7 +643,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
                 OE_MS_RDONLY,
                 NULL) == 0);
         OE_TEST(oe_open(path, flags, MODE) == -1);
-        OE_TEST(oe_errno == EPERM);
+        OE_TEST(errno == EPERM);
         OE_TEST(oe_umount("/") == 0);
     }
 

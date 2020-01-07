@@ -13,7 +13,7 @@ int oe_stat(const char* pathname, struct oe_stat* buf)
     char filepath[OE_PATH_MAX];
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.stat(fs, filepath, buf);
 
@@ -34,7 +34,7 @@ int oe_stat_d(uint64_t devid, const char* pathname, struct oe_stat* buf)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.stat(dev, pathname, buf);
     }
@@ -50,7 +50,7 @@ int oe_mkdir(const char* pathname, oe_mode_t mode)
     char filepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.mkdir(fs, filepath, mode);
 
@@ -71,7 +71,7 @@ int oe_mkdir_d(uint64_t devid, const char* pathname, oe_mode_t mode)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.mkdir(dev, pathname, mode);
     }

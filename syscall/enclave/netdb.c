@@ -35,7 +35,7 @@ int oe_register_resolver(oe_resolver_t* resolver)
     if (!resolver || !resolver->ops || !resolver->ops->getaddrinfo ||
         !resolver->ops->getnameinfo)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     pthread_spin_lock(&_lock);
@@ -43,7 +43,7 @@ int oe_register_resolver(oe_resolver_t* resolver)
 
     /* This function can be called only once. */
     if (_resolver != NULL)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     _resolver = resolver;
 
@@ -76,7 +76,7 @@ int oe_getaddrinfo(
     if (res_out)
         *res_out = NULL;
     else
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     pthread_spin_lock(&_lock);
     locked = true;
@@ -84,7 +84,7 @@ int oe_getaddrinfo(
     if (!_resolver)
     {
         ret = OE_EAI_SYSTEM;
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     ret = (_resolver->ops->getaddrinfo)(_resolver, node, service, hints, &res);
@@ -118,7 +118,7 @@ int oe_getnameinfo(
     if (!_resolver)
     {
         ret = OE_EAI_SYSTEM;
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     ret = (*_resolver->ops->getnameinfo)(

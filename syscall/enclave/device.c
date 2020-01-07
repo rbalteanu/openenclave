@@ -6,7 +6,6 @@
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
@@ -149,7 +148,7 @@ int oe_device_table_set(uint64_t devid, oe_device_t* device)
     bool locked = false;
 
     if (!device)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 #if !defined(NDEBUG)
     _assert_device(device);
@@ -159,10 +158,10 @@ int oe_device_table_set(uint64_t devid, oe_device_t* device)
     locked = true;
 
     if (_resize_table(devid + 1) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     if (_table[devid] != NULL)
-        OE_RAISE_ERRNO(OE_EEXIST);
+        OE_RAISE_ERRNO(EEXIST);
 
     _table[devid] = device;
 
@@ -182,7 +181,7 @@ static oe_device_t* _get_device(uint64_t devid, oe_device_type_t type)
     oe_device_t* device;
 
     if (devid == OE_DEVID_NONE || devid >= _table_size)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     device = _table[devid];
 
@@ -254,10 +253,10 @@ int oe_device_table_remove(uint64_t devid)
     locked = true;
 
     if (!(device = _get_device(devid, OE_DEVICE_TYPE_ANY)))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (devid >= _table_size || _table[devid] == NULL)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     _table[devid] = NULL;
 
@@ -268,7 +267,7 @@ int oe_device_table_remove(uint64_t devid)
     }
 
     if (device->ops.device.release(device) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = 0;
 

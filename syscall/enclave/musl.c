@@ -3,8 +3,8 @@
 
 /* Integration with MUSL C library */
 
+#include <errno.h>
 #include <openenclave/internal/syscall/bits/exports.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/sys/syscall.h>
 #include <openenclave/syscall/fs.h>
@@ -81,7 +81,7 @@ static oe_result_t _syscall_hook(
             x2 = (long)&oe_stat;
             *ret = oe_syscall(OE_SYS_stat, x1, x2, x3, x4, x5, x6);
 
-            if (*ret == OE_ENOSYS)
+            if (*ret == ENOSYS)
                 goto done;
 
             _oe_stat_to_stat(&oe_stat, stat);
@@ -97,7 +97,7 @@ static oe_result_t _syscall_hook(
             x3 = (long)&oe_stat;
             *ret = oe_syscall(OE_SYS_newfstatat, x1, x2, x3, x4, x5, x6);
 
-            if (*ret == OE_ENOSYS)
+            if (*ret == ENOSYS)
                 goto done;
 
             _oe_stat_to_stat(&oe_stat, stat);
@@ -105,7 +105,7 @@ static oe_result_t _syscall_hook(
         }
         default:
         {
-            if ((*ret = oe_syscall(n, x1, x2, x3, x4, x5, x6)) == OE_ENOSYS)
+            if ((*ret = oe_syscall(n, x1, x2, x3, x4, x5, x6)) == ENOSYS)
                 goto done;
 
             break;

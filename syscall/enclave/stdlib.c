@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #include <openenclave/internal/syscall/bits/exports.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
@@ -27,32 +26,32 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     size_t nout = 0;
 
     if (!path)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Allocate variables on the heap since too big for the stack. */
     if (!(v = calloc(1, sizeof(variables_t))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     if (path[0] == '/')
     {
         if (oe_strlcpy(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
     }
     else
     {
         char cwd[OE_PATH_MAX];
 
         if (!oe_getcwd(cwd, sizeof(cwd)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (oe_strlcpy(v->buf, cwd, sizeof(v->buf)) >= sizeof(v->buf))
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
 
         if (oe_strlcat(v->buf, "/", sizeof(v->buf)) >= sizeof(v->buf))
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
 
         if (oe_strlcat(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
     }
 
     /* Split the path into elements. */
@@ -62,8 +61,8 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
         v->in[nin++] = "/";
 
-        for (p = oe_strtok_r(v->buf, "/", &save); p;
-             p = oe_strtok_r(NULL, "/", &save))
+        for (p = strtok_r(v->buf, "/", &save); p;
+             p = strtok_r(NULL, "/", &save))
         {
             v->in[nin++] = p;
         }
@@ -94,12 +93,12 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
         for (size_t i = 0; i < nout; i++)
         {
             if (oe_strlcat(v->resolved, v->out[i], OE_PATH_MAX) >= OE_PATH_MAX)
-                OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+                OE_RAISE_ERRNO(ENAMETOOLONG);
 
             if (i != 0 && i + 1 != nout)
             {
                 if (oe_strlcat(v->resolved, "/", OE_PATH_MAX) >= OE_PATH_MAX)
-                    OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+                    OE_RAISE_ERRNO(ENAMETOOLONG);
             }
         }
     }
@@ -108,7 +107,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     {
         if (oe_strlcpy(resolved_path->buf, v->resolved, OE_PATH_MAX) >=
             OE_PATH_MAX)
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
 
         ret = resolved_path->buf;
         goto done;
@@ -118,7 +117,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
         char* p = strdup(v->resolved);
 
         if (!p)
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         ret = p;
         goto done;

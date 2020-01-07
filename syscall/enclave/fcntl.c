@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/fdtable.h>
 #include <openenclave/internal/syscall/limits.h>
@@ -22,7 +21,7 @@ int __oe_fcntl(int fd, int cmd, uint64_t arg)
     }
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = desc->ops.fd.fcntl(desc, cmd, arg);
 
@@ -39,13 +38,13 @@ int oe_open(const char* pathname, int flags, oe_mode_t mode)
     char filepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (!(file = fs->ops.fs.open(fs, filepath, flags, mode)))
-        OE_RAISE_ERRNO_MSG(oe_errno, "pathname=%s", pathname);
+        OE_RAISE_ERRNO_MSG(errno, "pathname=%s", pathname);
 
     if ((fd = oe_fdtable_assign(file)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fd;
     file = NULL;
@@ -74,13 +73,13 @@ int oe_open_d(uint64_t devid, const char* pathname, int flags, oe_mode_t mode)
             oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM);
 
         if (!dev)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (!(file = dev->ops.fs.open(dev, pathname, flags, mode)))
-            OE_RAISE_ERRNO_MSG(oe_errno, "pathname=%s mode=%u", pathname, mode);
+            OE_RAISE_ERRNO_MSG(errno, "pathname=%s mode=%u", pathname, mode);
 
         if ((fd = oe_fdtable_assign(file)) == -1)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
     }
 
     ret = fd;

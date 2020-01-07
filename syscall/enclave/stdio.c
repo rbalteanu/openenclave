@@ -22,16 +22,16 @@ int oe_rename(const char* oldpath, const char* newpath)
     variables_t* v = NULL;
 
     if (!(v = malloc(sizeof(variables_t))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     if (!(fs = oe_mount_resolve(oldpath, v->filepath)))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(newfs = oe_mount_resolve(newpath, v->newfilepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (fs != newfs)
-        OE_RAISE_ERRNO(OE_EXDEV);
+        OE_RAISE_ERRNO(EXDEV);
 
     ret = fs->ops.fs.rename(fs, v->filepath, v->newfilepath);
 
@@ -56,16 +56,12 @@ int oe_rename_d(uint64_t devid, const char* oldpath, const char* newpath)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if ((ret = dev->ops.fs.rename(dev, oldpath, newpath)) == -1)
         {
             OE_RAISE_ERRNO_MSG(
-                oe_errno,
-                "ret=%d oldpath=%s newpath=%s",
-                ret,
-                oldpath,
-                newpath);
+                errno, "ret=%d oldpath=%s newpath=%s", ret, oldpath, newpath);
         }
     }
 

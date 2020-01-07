@@ -4,9 +4,9 @@
 #include <openenclave/enclave.h>
 
 // enclave.h must come before socket.h
+#include <errno.h>
 #include <openenclave/internal/syscall/arpa/inet.h>
 #include <openenclave/internal/syscall/bits/tests.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/unistd.h>
@@ -120,7 +120,7 @@ int ecall_run_server()
         listenfd, OE_SOL_SOCKET, OE_SO_REUSEADDR, (void*)&optVal, optLen);
     if (rtn > 0)
     {
-        printf("oe_setsockopt failed errno = %d\n", oe_errno);
+        printf("oe_setsockopt failed errno = %d\n", errno);
     }
 
     serv_addr.sin_family = OE_AF_INET;
@@ -131,13 +131,13 @@ int ecall_run_server()
     rtn = oe_bind(listenfd, (struct oe_sockaddr*)&serv_addr, sizeof(serv_addr));
     if (rtn < 0)
     {
-        printf("bind error errno = %d\n", oe_errno);
+        printf("bind error errno = %d\n", errno);
     }
     oe_host_printf("enclave: listening\n");
     rtn = oe_listen(listenfd, 10);
     if (rtn < 0)
     {
-        printf("listen error errno = %d\n", oe_errno);
+        printf("listen error errno = %d\n", errno);
     }
 
     while (1)
@@ -169,7 +169,7 @@ int ecall_run_server()
                 }
                 else
                 {
-                    printf("write test data n = %ld errno = %d\n", n, oe_errno);
+                    printf("write test data n = %ld errno = %d\n", n, errno);
                 }
                 oe_sleep_msec(3);
             } while (1);
@@ -178,7 +178,7 @@ int ecall_run_server()
         }
         else
         {
-            printf("enc: accept failed errno = %d \n", oe_errno);
+            printf("enc: accept failed errno = %d \n", errno);
         }
     }
 

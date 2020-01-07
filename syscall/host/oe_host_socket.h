@@ -4,7 +4,7 @@
 #ifndef _OE_HOST_SOCKET_H
 #define _OE_HOST_SOCKET_H
 
-#include <openenclave/internal/syscall/errno.h>
+#include <errno.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/types.h>
 #include <stdint.h>
@@ -78,20 +78,20 @@ int _getaddrinfo_read(
     if (!handle || !ai_flags || !ai_family || !ai_socktype || !ai_protocol ||
         !ai_addrlen || !ai_canonnamelen)
     {
-        *err_no = OE_EINVAL;
+        *err_no = EINVAL;
 
         goto done;
     }
 
     if (!ai_addr && ai_addrlen_in)
     {
-        *err_no = OE_EINVAL;
+        *err_no = EINVAL;
         goto done;
     }
 
     if (!ai_canonname && ai_canonnamelen_in)
     {
-        *err_no = OE_EINVAL;
+        *err_no = EINVAL;
         goto done;
     }
 
@@ -112,13 +112,13 @@ int _getaddrinfo_read(
 
         if (*ai_addrlen > ai_addrlen_in)
         {
-            *err_no = OE_ENAMETOOLONG;
+            *err_no = ENAMETOOLONG;
             goto done;
         }
 
         if (*ai_canonnamelen > ai_canonnamelen_in)
         {
-            *err_no = OE_ENAMETOOLONG;
+            *err_no = ENAMETOOLONG;
             goto done;
         }
 

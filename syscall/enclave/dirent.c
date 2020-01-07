@@ -29,10 +29,10 @@ OE_DIR* oe_opendir_d(uint64_t devid, const char* pathname)
     const int flags = OE_O_RDONLY | OE_O_DIRECTORY | OE_O_CLOEXEC;
 
     if (!dir)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if ((fd = oe_open_d(devid, pathname, flags, 0)) < 0)
-        OE_RAISE_ERRNO_MSG(oe_errno, "pathname=%s", pathname);
+        OE_RAISE_ERRNO_MSG(errno, "pathname=%s", pathname);
 
     dir->magic = DIR_MAGIC;
     dir->fd = fd;
@@ -63,12 +63,12 @@ struct oe_dirent* oe_readdir(OE_DIR* dir)
     unsigned int count = (unsigned int)sizeof(struct oe_dirent);
 
     if (!dir || dir->magic != DIR_MAGIC)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_getdents64((unsigned int)dir->fd, &dir->buf, count) != (int)count)
     {
-        if (oe_errno)
-            OE_RAISE_ERRNO(oe_errno);
+        if (errno)
+            OE_RAISE_ERRNO(errno);
 
         goto done;
     }
@@ -84,7 +84,7 @@ int oe_closedir(OE_DIR* dir)
     int ret = -1;
 
     if (!dir || dir->magic != DIR_MAGIC)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = oe_close(dir->fd);
 
@@ -110,7 +110,7 @@ int oe_getdents64(unsigned int fd, struct oe_dirent* dirp, unsigned int count)
     oe_fd_t* file;
 
     if (!(file = oe_fdtable_get((int)fd, OE_FD_TYPE_FILE)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = file->ops.file.getdents64(file, dirp, count);
 

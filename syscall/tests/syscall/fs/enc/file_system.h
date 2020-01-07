@@ -9,7 +9,6 @@
 #include <fcntl.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/syscall/dirent.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>

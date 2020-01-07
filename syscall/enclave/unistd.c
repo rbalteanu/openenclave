@@ -3,7 +3,6 @@
 
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fdtable.h>
 #include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/raise.h>
@@ -23,7 +22,7 @@ int oe_gethostname(char* name, size_t len)
     struct oe_utsname uts;
 
     if ((ret = oe_uname(&uts)) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     oe_strlcpy(name, uts.nodename, len);
     ret = 0;
@@ -38,7 +37,7 @@ int oe_getdomainname(char* name, size_t len)
     struct oe_utsname uts;
 
     if ((ret = oe_uname(&uts)) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     oe_strlcpy(name, uts.domainname, len);
 
@@ -64,7 +63,7 @@ char* oe_getcwd(char* buf, size_t size)
     bool locked = false;
 
     if (buf && size == 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!buf)
     {
@@ -72,7 +71,7 @@ char* oe_getcwd(char* buf, size_t size)
         p = malloc(n);
 
         if (!p)
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
     }
     else
     {
@@ -84,7 +83,7 @@ char* oe_getcwd(char* buf, size_t size)
     locked = true;
 
     if (oe_strlcpy(p, _cwd, n) >= n)
-        OE_RAISE_ERRNO(OE_ERANGE);
+        OE_RAISE_ERRNO(ERANGE);
 
     ret = p;
     p = NULL;
@@ -114,14 +113,14 @@ int oe_chdir(const char* path)
     /* Fail if unable to stat the path. */
     if (oe_stat(real_path.buf, &st) != 0)
     {
-        // oe_errno set by oe_stat().
+        // errno set by oe_stat().
         return -1;
     }
 
     /* Fail if path not a directory. */
     if (!OE_S_ISDIR(st.st_mode))
     {
-        oe_errno = OE_ENOTDIR;
+        errno = ENOTDIR;
         return -1;
     }
 
@@ -130,7 +129,7 @@ int oe_chdir(const char* path)
     locked = true;
 
     if (oe_strlcpy(_cwd, real_path.buf, OE_PATH_MAX) >= OE_PATH_MAX)
-        OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+        OE_RAISE_ERRNO(ENAMETOOLONG);
 
     ret = 0;
 
@@ -206,7 +205,7 @@ oe_pid_t oe_getpgid(oe_pid_t pid)
 
     if (oe_syscall_getpgid_ocall(&retval, pid) != OE_OK)
     {
-        oe_errno = OE_EINVAL;
+        errno = EINVAL;
         goto done;
     }
 
@@ -223,7 +222,7 @@ int oe_getgroups(int size, oe_gid_t list[])
 
     if (oe_syscall_getgroups_ocall(&retval, (size_t)size, list) != OE_OK)
     {
-        oe_errno = OE_EINVAL;
+        errno = EINVAL;
         goto done;
     }
 
@@ -239,7 +238,7 @@ ssize_t oe_read(int fd, void* buf, size_t count)
     oe_fd_t* desc;
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = desc->ops.fd.read(desc, buf, count);
 
@@ -253,7 +252,7 @@ ssize_t oe_write(int fd, const void* buf, size_t count)
     oe_fd_t* desc;
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = desc->ops.fd.write(desc, buf, count);
 
@@ -267,7 +266,7 @@ int oe_close(int fd)
     oe_fd_t* desc;
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if ((ret = desc->ops.fd.close(desc)) == 0)
         oe_fdtable_release(fd);
@@ -284,13 +283,13 @@ int oe_dup(int oldfd)
     int newfd;
 
     if (!(old_desc = oe_fdtable_get(oldfd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (old_desc->ops.fd.dup(old_desc, &new_desc) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if ((newfd = oe_fdtable_assign(new_desc)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = newfd;
     new_desc = NULL;
@@ -314,13 +313,13 @@ int oe_dup2(int oldfd, int newfd)
         return newfd;
 
     if (!(old_desc = oe_fdtable_get(oldfd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if ((retval = old_desc->ops.fd.dup(old_desc, &new_desc)) < 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_fdtable_reassign(newfd, new_desc, &reassigned_desc) == -1)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (reassigned_desc)
         reassigned_desc->ops.fd.close(reassigned_desc);
@@ -342,7 +341,7 @@ int oe_rmdir(const char* pathname)
     char filepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.rmdir(fs, filepath);
 
@@ -363,7 +362,7 @@ int oe_rmdir_d(uint64_t devid, const char* pathname)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.rmdir(dev, pathname);
     }
@@ -381,13 +380,13 @@ int oe_link(const char* oldpath, const char* newpath)
     char newfilepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(oldpath, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (!(newfs = oe_mount_resolve(newpath, newfilepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (fs != newfs)
-        OE_RAISE_ERRNO(OE_EXDEV);
+        OE_RAISE_ERRNO(EXDEV);
 
     ret = fs->ops.fs.link(fs, filepath, newfilepath);
 
@@ -408,7 +407,7 @@ int oe_link_d(uint64_t devid, const char* oldpath, const char* newpath)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.link(dev, oldpath, newpath);
     }
@@ -424,7 +423,7 @@ int oe_unlink(const char* pathname)
     char filepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.unlink(fs, filepath);
 
@@ -445,7 +444,7 @@ int oe_unlink_d(uint64_t devid, const char* pathname)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.unlink(dev, pathname);
     }
@@ -461,7 +460,7 @@ int oe_truncate(const char* pathname, oe_off_t length)
     char filepath[OE_PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.truncate(fs, filepath, length);
 
@@ -482,7 +481,7 @@ int oe_truncate_d(uint64_t devid, const char* path, oe_off_t length)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = dev->ops.fs.truncate(dev, path, length);
     }
@@ -497,7 +496,7 @@ oe_off_t oe_lseek(int fd, oe_off_t offset, int whence)
     oe_fd_t* file;
 
     if (!(file = oe_fdtable_get(fd, OE_FD_TYPE_FILE)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = file->ops.file.lseek(file, offset, whence);
 
@@ -511,7 +510,7 @@ ssize_t oe_readv(int fd, const struct oe_iovec* iov, int iovcnt)
     oe_fd_t* desc;
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = desc->ops.fd.readv(desc, iov, iovcnt);
 
@@ -526,7 +525,7 @@ ssize_t oe_writev(int fd, const struct oe_iovec* iov, int iovcnt)
     oe_fd_t* desc;
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = desc->ops.fd.writev(desc, iov, iovcnt);
 
@@ -541,7 +540,7 @@ int oe_access(const char* pathname, int mode)
     char suffix[OE_PATH_MAX];
 
     if (!(fs = oe_mount_resolve(pathname, suffix)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     ret = fs->ops.fs.access(fs, suffix, mode);
 
@@ -562,10 +561,10 @@ int oe_access_d(uint64_t devid, const char* pathname, int mode)
         oe_device_t* dev;
 
         if (!(dev = oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (!pathname)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         ret = oe_access(pathname, mode);
     }

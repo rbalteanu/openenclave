@@ -18,10 +18,10 @@ int oe_poll(struct oe_pollfd* fds, oe_nfds_t nfds, int timeout)
     oe_nfds_t i;
 
     if (!fds || nfds == 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(host_fds = calloc(nfds, sizeof(struct oe_host_pollfd))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Convert enclave fds to host fds. */
     for (i = 0; i < nfds; i++)
@@ -31,18 +31,18 @@ int oe_poll(struct oe_pollfd* fds, oe_nfds_t nfds, int timeout)
 
         /* Fetch the fd struct for this fd struct. */
         if (!(desc = oe_fdtable_get(fds[i].fd, OE_FD_TYPE_ANY)))
-            OE_RAISE_ERRNO(OE_EBADF);
+            OE_RAISE_ERRNO(EBADF);
 
         /* Get the host fd for this fd struct. */
         if ((host_fd = desc->ops.fd.get_host_fd(desc)) == -1)
-            OE_RAISE_ERRNO(OE_EBADF);
+            OE_RAISE_ERRNO(EBADF);
 
         host_fds[i].events = fds[i].events;
         host_fds[i].fd = host_fd;
     }
 
     if (oe_syscall_poll_ocall(&retval, host_fds, nfds, timeout) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Update fds[] with any recieved events. */
     for (i = 0; i < nfds; i++)

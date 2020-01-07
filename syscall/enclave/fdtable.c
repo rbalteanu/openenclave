@@ -4,7 +4,6 @@
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/syscall/bits/exports.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fd.h>
 #include <openenclave/internal/syscall/fdtable.h>
 #include <openenclave/internal/syscall/raise.h>
@@ -109,14 +108,14 @@ static int _initialize(void)
     {
         /* Make the table more than large enough for standard files. */
         if (_resize_table(TABLE_CHUNK_SIZE) != 0)
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         /* Create the STDIN file. */
         {
             oe_fd_t* file;
 
             if (!(file = oe_consolefs_create_file(OE_STDIN_FILENO)))
-                OE_RAISE_ERRNO(OE_ENOMEM);
+                OE_RAISE_ERRNO(ENOMEM);
 
             _table[OE_STDIN_FILENO] = file;
         }
@@ -126,7 +125,7 @@ static int _initialize(void)
             oe_fd_t* file;
 
             if (!(file = oe_consolefs_create_file(OE_STDOUT_FILENO)))
-                OE_RAISE_ERRNO(OE_ENOMEM);
+                OE_RAISE_ERRNO(ENOMEM);
 
             _table[OE_STDOUT_FILENO] = file;
         }
@@ -136,7 +135,7 @@ static int _initialize(void)
             oe_fd_t* file;
 
             if (!(file = oe_consolefs_create_file(OE_STDERR_FILENO)))
-                OE_RAISE_ERRNO(OE_ENOMEM);
+                OE_RAISE_ERRNO(ENOMEM);
 
             _table[OE_STDERR_FILENO] = file;
         }
@@ -222,13 +221,13 @@ int oe_fdtable_assign(oe_fd_t* desc)
     bool locked = false;
 
     if (!desc)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     pthread_spin_lock(&_lock);
     locked = true;
 
     if (_initialize() != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
 #if !defined(NDEBUG)
     _assert_fd(desc);
@@ -245,7 +244,7 @@ int oe_fdtable_assign(oe_fd_t* desc)
     if (index == _table_size)
     {
         if (_resize_table(_table_size + 1) != 0)
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
     }
 
     _table[index] = desc;
@@ -266,15 +265,15 @@ int oe_fdtable_release(int fd)
     pthread_spin_lock(&_lock);
 
     if (_initialize() != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Fail if fd is out of range. */
     if (!(fd >= 0 && (size_t)fd < _table_size))
-        OE_RAISE_ERRNO(OE_EBADF);
+        OE_RAISE_ERRNO(EBADF);
 
     /* Fail if entry was never assigned. */
     if (!_table[fd])
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     _table[fd] = NULL;
 
@@ -293,7 +292,7 @@ int oe_fdtable_reassign(int fd, oe_fd_t* new_desc, oe_fd_t** old_desc)
     bool locked = false;
 
     if (!new_desc || !old_desc)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 #if !defined(NDEBUG)
     _assert_fd(new_desc);
@@ -305,14 +304,14 @@ int oe_fdtable_reassign(int fd, oe_fd_t* new_desc, oe_fd_t** old_desc)
     locked = true;
 
     if (_initialize() != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Make table big enough to contain this file-descriptor. */
     if (fd >= 0)
         _resize_table((size_t)fd + 1);
 
     if (fd < 0 || (size_t)fd >= _table_size)
-        OE_RAISE_ERRNO(OE_EBADF);
+        OE_RAISE_ERRNO(EBADF);
 
     *old_desc = _table[fd];
 
@@ -335,13 +334,13 @@ static oe_fd_t* _get_fd(int fd)
     pthread_spin_lock(&_lock);
 
     if (_initialize() != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (fd < 0 || (size_t)fd >= _table_size)
-        OE_RAISE_ERRNO(OE_EBADF);
+        OE_RAISE_ERRNO(EBADF);
 
     if (_table[fd] == NULL)
-        OE_RAISE_ERRNO(OE_EBADF);
+        OE_RAISE_ERRNO(EBADF);
 
     ret = _table[fd];
 
@@ -358,12 +357,12 @@ oe_fd_t* oe_fdtable_get(int fd, oe_fd_type_t type)
     oe_fd_t* desc;
 
     if (!(desc = _get_fd(fd)))
-        OE_RAISE_ERRNO(OE_EBADF);
+        OE_RAISE_ERRNO(EBADF);
 
     if (type != OE_FD_TYPE_ANY && desc->type != type)
     {
         OE_RAISE_ERRNO_MSG(
-            OE_EINVAL, "fd=%d type=%u fd->type=%u", fd, type, desc->type);
+            EINVAL, "fd=%d type=%u fd->type=%u", fd, type, desc->type);
     }
 
     ret = desc;

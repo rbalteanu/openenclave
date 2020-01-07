@@ -4,10 +4,10 @@
 #ifndef _OE_SYSCALL_RAISE_H
 #define _OE_SYSCALL_RAISE_H
 
+#include <errno.h>
 #include <openenclave/bits/result.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/syscall/log.h>
 
 OE_EXTERNC_BEGIN
@@ -18,9 +18,9 @@ OE_EXTERNC_BEGIN
     {                                                 \
         int __err = ERRNO;                            \
         oe_syscall_log(OE_SYSCALL_LOG_LEVEL_ERROR,    \
-            "oe_errno=%d [%s %s:%d]\n",               \
+            "errno=%d [%s %s:%d]\n",                  \
             __err, __FILE__, __FUNCTION__, __LINE__); \
-        oe_errno = __err;                             \
+        errno = __err;                                \
         goto done;                                    \
     }                                                 \
     while (0)
@@ -32,9 +32,9 @@ OE_EXTERNC_BEGIN
     {                                                                \
         int __err = ERRNO;                                           \
         oe_syscall_log(OE_SYSCALL_LOG_LEVEL_ERROR,                   \
-            FMT " oe_errno=%d [%s %s:%d]\n",                         \
+            FMT " errno=%d [%s %s:%d]\n",                            \
             ##__VA_ARGS__, __err, __FILE__, __FUNCTION__, __LINE__); \
-        oe_errno = __err;                                            \
+        errno = __err;                                               \
         goto done;                                                   \
     }                                                                \
     while (0)

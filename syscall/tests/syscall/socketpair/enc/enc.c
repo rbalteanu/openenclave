@@ -4,9 +4,9 @@
 #include <openenclave/enclave.h>
 
 // enclave.h must come before socket.h
+#include <errno.h>
 #include <openenclave/internal/syscall/arpa/inet.h>
 #include <openenclave/internal/syscall/bits/tests.h>
-#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/unistd.h>
@@ -42,8 +42,8 @@ int init_enclave()
     {
         if (oe_socketpair(OE_AF_LOCAL, OE_SOCK_STREAM, 0, sockfd) < 0)
         {
-            printf("could not create socketpair. errno = %d\n", oe_errno);
-            OE_TEST(oe_errno == 0);
+            printf("could not create socketpair. errno = %d\n", errno);
+            OE_TEST(errno == 0);
         }
     }
     ret = 0;
@@ -117,7 +117,7 @@ int run_enclave_server()
         }
         else
         {
-            printf("write test data n = %ld errno = %d\n", n, oe_errno);
+            printf("write test data n = %ld errno = %d\n", n, errno);
         }
         oe_sleep_msec(1000);
     } while (!done);
@@ -126,9 +126,8 @@ int run_enclave_server()
 
     if (oe_shutdown(sockfd[0], OE_SHUT_WR) < 0)
     {
-        printf(
-            "could not shutdown socket %d. errno = %d\n", sockfd[0], oe_errno);
-        OE_TEST(oe_errno == 0);
+        printf("could not shutdown socket %d. errno = %d\n", sockfd[0], errno);
+        OE_TEST(errno == 0);
     }
 
     ssize_t bytes_written = oe_write(sockfd[0], TESTDATA, strlen(TESTDATA));

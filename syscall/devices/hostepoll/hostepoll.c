@@ -151,16 +151,16 @@ static oe_fd_t* _epoll_create1(oe_device_t* device_, int32_t flags)
     device_t* device = _cast_device(device_);
     oe_host_fd_t retval;
 
-    oe_errno = 0;
+    errno = 0;
 
     if (!device)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(epoll = calloc(1, sizeof(epoll_t))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     if (oe_syscall_epoll_create1_ocall(&retval, flags) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (retval < 0)
         goto done;
@@ -202,28 +202,28 @@ static int _epoll_ctl_add(epoll_t* epoll, int fd, struct oe_epoll_event* event)
     int retval;
     bool locked = false;
 
-    oe_errno = 0;
+    errno = 0;
 
     /* Check parameters. */
     if (!epoll || !event)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Get the host fd for the epoll object. */
     host_epfd = epoll->host_fd;
 
     /* Get the host fd for the fd. */
     if ((host_fd = desc->ops.fd.get_host_fd(desc)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Initialize the host event. */
     {
         const size_t num_bytes = sizeof(host_event);
 
         if (oe_memset_s(&host_event, num_bytes, 0, num_bytes) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         host_event.events = event->events;
         host_event.data.fd = fd;
@@ -237,13 +237,13 @@ static int _epoll_ctl_add(epoll_t* epoll, int fd, struct oe_epoll_event* event)
             &retval, host_epfd, OE_EPOLL_CTL_ADD, host_fd, &host_event) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     if (retval == 0)
     {
         if (_map_reserve(epoll, epoll->map_size + 1) != 0)
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         epoll->map[epoll->map_size].fd = fd;
         epoll->map[epoll->map_size].event = *event;
@@ -270,28 +270,28 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
     int retval;
     bool locked = false;
 
-    oe_errno = 0;
+    errno = 0;
 
     /* Check parameters. */
     if (!epoll || !event)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Get the host fd for the epoll device. */
     host_epfd = epoll->host_fd;
 
     /* Get the host fd for the device. */
     if ((host_fd = desc->ops.fd.get_host_fd(desc)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Initialize the host event. */
     {
         const size_t num_bytes = sizeof(host_event);
 
         if (oe_memset_s(&host_event, num_bytes, 0, num_bytes) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         host_event.events = event->events;
         host_event.data.fd = fd;
@@ -305,7 +305,7 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
             &retval, host_epfd, OE_EPOLL_CTL_MOD, host_fd, &host_event) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
     }
 
     /* Modify the mapping. */
@@ -313,7 +313,7 @@ static int _epoll_ctl_mod(epoll_t* epoll, int fd, struct oe_epoll_event* event)
     {
         mapping_t* const mapping = _map_find(epoll, fd);
         if (!mapping)
-            OE_RAISE_ERRNO(OE_ENOENT);
+            OE_RAISE_ERRNO(ENOENT);
 
         mapping->event = *event;
     }
@@ -336,21 +336,21 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
     int retval;
     bool locked = false;
 
-    oe_errno = 0;
+    errno = 0;
 
     /* Check parameters. */
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(desc = oe_fdtable_get(fd, OE_FD_TYPE_ANY)))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Get the host fd for the epoll device. */
     host_epfd = epoll->host_fd;
 
     /* Get the host fd for the device. */
     if ((host_fd = desc->ops.fd.get_host_fd(desc)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     // The host call and the map update must be done in an atomic operation.
     locked = true;
@@ -359,7 +359,7 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
     if (oe_syscall_epoll_ctl_ocall(
             &retval, host_epfd, OE_EPOLL_CTL_DEL, host_fd, NULL) != OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Delete the mapping. */
@@ -379,7 +379,7 @@ static int _epoll_ctl_del(epoll_t* epoll, int fd)
         }
 
         if (!found)
-            OE_RAISE_ERRNO(OE_ENOENT);
+            OE_RAISE_ERRNO(ENOENT);
     }
 
     ret = 0;
@@ -402,7 +402,7 @@ static int _epoll_ctl(
     epoll_t* epoll = _cast_epoll(epoll_);
 
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     switch (op)
     {
@@ -426,7 +426,7 @@ static int _epoll_ctl(
 
         default:
         {
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
             return -1;
         }
     }
@@ -451,24 +451,24 @@ static int _epoll_wait(
     oe_host_fd_t host_epfd = -1;
 
     if (!epoll || !events || maxevents <= 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
-    oe_errno = 0;
+    errno = 0;
 
     if ((host_epfd = epoll_->ops.fd.get_host_fd(epoll_)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_epoll_wait_ocall(
             &retval, host_epfd, events, (unsigned int)maxevents, timeout) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     if (retval > 0)
     {
         if (retval > maxevents)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         locked = true;
         pthread_mutex_lock(&epoll->lock);
@@ -507,17 +507,17 @@ static int _epoll_close(oe_fd_t* epoll_)
     epoll_t* epoll = _cast_epoll(epoll_);
     int retval = -1;
 
-    oe_errno = 0;
+    errno = 0;
 
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Close the file descriptor on the host side. */
     if (oe_syscall_epoll_close_ocall(&retval, epoll->host_fd) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (retval == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (epoll->map)
         free(epoll->map);
@@ -537,10 +537,10 @@ static int _epoll_release(oe_device_t* device_)
     int ret = -1;
     device_t* device = _cast_device(device_);
 
-    oe_errno = 0;
+    errno = 0;
 
     if (!device)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     free(device);
 
@@ -564,7 +564,7 @@ static int _epoll_ioctl(oe_fd_t* desc, unsigned long request, uint64_t arg)
     void* argout = NULL;
 
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /*
      * MUSL uses the TIOCGWINSZ ioctl request to determine whether the file
@@ -575,14 +575,14 @@ static int _epoll_ioctl(oe_fd_t* desc, unsigned long request, uint64_t arg)
     switch (request)
     {
         default:
-            OE_RAISE_ERRNO(OE_ENOTTY);
+            OE_RAISE_ERRNO(ENOTTY);
     }
 
     /* Call the host to perform the ioctl() operation. */
     if (oe_syscall_ioctl_ocall(
             &ret, epoll->host_fd, request, arg, argsize, argout) != OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -597,7 +597,7 @@ static int _epoll_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
     uint64_t argsize = 0;
 
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     switch (cmd)
     {
@@ -643,12 +643,12 @@ static int _epoll_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
         case OE_F_SETOWN_EX:
         case OE_F_GETOWN_EX:
         case OE_F_GETOWNER_UIDS:
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
     }
 
     if (oe_syscall_fcntl_ocall(
             &ret, epoll->host_fd, cmd, arg, argsize, argout) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -659,14 +659,14 @@ static ssize_t _epoll_read(oe_fd_t* epoll_, void* buf, size_t count)
     ssize_t ret = -1;
     epoll_t* file = _cast_epoll(epoll_);
 
-    oe_errno = 0;
+    errno = 0;
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Call the host. */
     if (oe_syscall_read_ocall(&ret, file->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -677,11 +677,11 @@ static ssize_t _epoll_write(oe_fd_t* epoll_, const void* buf, size_t count)
     ssize_t ret = -1;
     epoll_t* epoll = _cast_epoll(epoll_);
 
-    oe_errno = 0;
+    errno = 0;
 
     /* Call the host. */
     if (oe_syscall_write_ocall(&ret, epoll->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -698,22 +698,22 @@ static ssize_t _epoll_readv(
     size_t buf_size = 0;
 
     if (!file || (iovcnt && !iov) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_readv_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Synchronize data read with IO vector. */
     if (oe_iov_sync(iov, iovcnt, buf, buf_size) != 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
 
@@ -734,17 +734,17 @@ static ssize_t _epoll_writev(
     size_t buf_size = 0;
 
     if (!file || (iovcnt && !iov) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_writev_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -762,28 +762,28 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
     epoll_t* new_epoll = NULL;
     oe_host_fd_t retval;
 
-    oe_errno = 0;
+    errno = 0;
 
     if (new_epoll_out)
         *new_epoll_out = NULL;
 
     /* Check parameters. */
     if (!epoll)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Call host: */
     {
         if (oe_syscall_dup_ocall(&retval, epoll->host_fd) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (retval == -1)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
     }
 
     /* Create the new epoll object. */
     {
         if (!(new_epoll = calloc(1, sizeof(epoll_t))))
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         new_epoll->base.type = OE_FD_TYPE_EPOLL;
         new_epoll->base.ops.epoll = _get_epoll_ops();
@@ -796,7 +796,7 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
             mapping_t* map;
 
             if (!(map = calloc(epoll->map_size, sizeof(mapping_t))))
-                OE_RAISE_ERRNO(OE_ENOMEM);
+                OE_RAISE_ERRNO(ENOMEM);
 
             memcpy(map, epoll->map, epoll->map_size * sizeof(mapping_t));
             new_epoll->map = map;
@@ -878,7 +878,7 @@ oe_result_t oe_load_module_host_epoll(void)
         if (oe_device_table_set(OE_DEVID_HOST_EPOLL, &_device.base) != 0)
         {
             /* Do not propagate errno to caller. */
-            oe_errno = 0;
+            errno = 0;
             result = OE_FAILURE;
             goto done;
         }

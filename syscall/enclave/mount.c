@@ -53,7 +53,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
     bool locked = false;
 
     if (!path || !suffix)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* First check whether a device id is set for this thread. */
     {
@@ -66,12 +66,12 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
             if (!(device =
                       oe_device_table_get(devid, OE_DEVICE_TYPE_FILE_SYSTEM)))
             {
-                OE_RAISE_ERRNO(OE_EINVAL);
+                OE_RAISE_ERRNO(EINVAL);
             }
 
             /* Use this device. */
             if (oe_strlcpy(suffix, path, OE_PATH_MAX) >= OE_PATH_MAX)
-                OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+                OE_RAISE_ERRNO(ENAMETOOLONG);
 
             ret = device;
             goto done;
@@ -80,7 +80,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
 
     /* Find the real path (the absolute non-relative path). */
     if (!oe_realpath(path, &realpath))
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     pthread_spin_lock(&_lock);
     locked = true;
@@ -124,7 +124,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
     }
 
     if (!ret)
-        OE_RAISE_ERRNO_MSG(OE_ENOENT, "path=%s", path);
+        OE_RAISE_ERRNO_MSG(ENOENT, "path=%s", path);
 
 done:
 
@@ -150,12 +150,12 @@ int oe_mount(
     mount_point_t mount_point = {0};
 
     if (!target || !filesystemtype)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Normalize the target path. */
     {
         if (!oe_realpath(target, &target_path))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         target = target_path.buf;
     }
@@ -164,7 +164,7 @@ int oe_mount(
     if (source)
     {
         if (!oe_realpath(source, &source_path))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         source = source_path.buf;
     }
@@ -172,7 +172,7 @@ int oe_mount(
     /* Resolve the device for the given filesystemtype. */
     device = oe_device_table_find(filesystemtype, OE_DEVICE_TYPE_FILE_SYSTEM);
     if (!device)
-        OE_RAISE_ERRNO_MSG(OE_ENODEV, "filesystemtype=%s", filesystemtype);
+        OE_RAISE_ERRNO_MSG(ENODEV, "filesystemtype=%s", filesystemtype);
 
     /* Be sure the full_target directory exists (if not root). */
     if (strcmp(target, "/") != 0)
@@ -181,10 +181,10 @@ int oe_mount(
         int retval = -1;
 
         if ((retval = oe_stat(target, &buf)) != 0)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         if (!OE_S_ISDIR(buf.st_mode))
-            OE_RAISE_ERRNO(OE_ENOTDIR);
+            OE_RAISE_ERRNO(ENOTDIR);
     }
 
     /* Lock the mount table. */
@@ -200,23 +200,23 @@ int oe_mount(
 
     /* Fail if mount table exhausted. */
     if (_mount_table_size == MAX_MOUNT_TABLE_SIZE)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Reject duplicate mount paths. */
     for (size_t i = 0; i < _mount_table_size; i++)
     {
         if (strcmp(_mount_table[i].path, target) == 0)
-            OE_RAISE_ERRNO(OE_EEXIST);
+            OE_RAISE_ERRNO(EEXIST);
     }
 
     /* Clone the device. */
     if (device->ops.fs.clone(device, &new_device) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Assign and initialize new mount point. */
     {
         if (!(mount_point.path = strdup(target)))
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         mount_point.path_size = strlen(target) + 1;
         mount_point.fs = new_device;
@@ -259,19 +259,19 @@ int oe_umount2(const char* target, int flags)
     oe_syscall_path_t target_path;
 
     if (!target)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Normalize the target path. */
     {
         if (!oe_realpath(target, &target_path))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         target = target_path.buf;
     }
 
     /* Resolve the device. */
     if (!(device = oe_mount_resolve(target, suffix)))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     pthread_spin_lock(&_lock);
     locked = true;
@@ -288,7 +288,7 @@ int oe_umount2(const char* target, int flags)
 
     /* If mount point not found. */
     if (index == (size_t)-1)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Remove the entry by swapping with the last entry. */
     {
@@ -299,7 +299,7 @@ int oe_umount2(const char* target, int flags)
         _mount_table_size--;
 
         if (fs->ops.fs.umount2(fs, target, flags) != 0)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         fs->ops.device.release(fs);
     }

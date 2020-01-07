@@ -135,7 +135,7 @@ static file_t* _cast_file(const oe_fd_t* desc)
     file_t* file = (file_t*)desc;
 
     if (file == NULL || file->magic != FILE_MAGIC)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = file;
 
@@ -149,7 +149,7 @@ static dir_t* _cast_dir(const oe_fd_t* desc)
     dir_t* dir = (dir_t*)desc;
 
     if (dir == NULL || dir->magic != DIR_MAGIC)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = dir;
 
@@ -169,20 +169,20 @@ static int _make_host_path(
     if (strcmp(fs->mount.source, "/") == 0)
     {
         if (oe_strlcpy(host_path, enclave_path, OE_PATH_MAX) >= n)
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
     }
     else
     {
         if (oe_strlcpy(host_path, fs->mount.source, OE_PATH_MAX) >= n)
-            OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+            OE_RAISE_ERRNO(ENAMETOOLONG);
 
         if (strcmp(enclave_path, "/") != 0)
         {
             if (oe_strlcat(host_path, "/", OE_PATH_MAX) >= n)
-                OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+                OE_RAISE_ERRNO(ENAMETOOLONG);
 
             if (oe_strlcat(host_path, enclave_path, OE_PATH_MAX) >= n)
-                OE_RAISE_ERRNO(OE_ENAMETOOLONG);
+                OE_RAISE_ERRNO(ENAMETOOLONG);
         }
     }
 
@@ -206,19 +206,19 @@ static int _hostfs_mount(
 
     /* Fail if required parameters are null. */
     if (!fs || !source || !target)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if this file system is already mounted. */
     if (fs->is_mounted)
-        OE_RAISE_ERRNO(OE_EBUSY);
+        OE_RAISE_ERRNO(EBUSY);
 
     /* Cross check the file system type. */
     if (strcmp(filesystemtype, OE_DEVICE_NAME_HOST_FILE_SYSTEM) != 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* The data parameter is not supported for host file systems. */
     if (data)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Remember whether this is a read-only mount. */
     if ((flags & OE_MS_RDONLY))
@@ -249,15 +249,15 @@ static int _hostfs_umount2(oe_device_t* device, const char* target, int flags)
 
     /* Fail if any required parameters are null. */
     if (!fs || !target)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if this file system is not mounted. */
     if (!fs->is_mounted)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Cross check target parameter with the one passed to mount(). */
     if (strcmp(target, fs->mount.target) != 0)
-        OE_RAISE_ERRNO(OE_ENOENT);
+        OE_RAISE_ERRNO(ENOENT);
 
     /* Clear the cached mount parameters. */
     oe_memset_s(&fs->mount, sizeof(fs->mount), 0, sizeof(fs->mount));
@@ -279,10 +279,10 @@ static int _hostfs_clone(oe_device_t* device, oe_device_t** new_device)
     device_t* new_fs = NULL;
 
     if (!fs || !new_device)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!(new_fs = calloc(1, sizeof(device_t))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     *new_fs = *fs;
     *new_device = &new_fs->base;
@@ -300,7 +300,7 @@ static int _hostfs_release(oe_device_t* device)
     device_t* fs = _cast_device(device);
 
     if (!fs)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     free(fs);
     ret = 0;
@@ -323,16 +323,16 @@ static oe_fd_t* _hostfs_open_file(
 
     /* Fail if any required parameters are null. */
     if (!fs || !pathname)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
     if (_is_read_only(fs) && (flags & ACCESS_MODE_MASK) != OE_O_RDONLY)
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     /* Create new file struct. */
     {
         if (!(file = calloc(1, sizeof(file_t))))
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         file->base.type = OE_FD_TYPE_FILE;
         file->magic = FILE_MAGIC;
@@ -342,10 +342,10 @@ static oe_fd_t* _hostfs_open_file(
     /* Ask the host to open the file. */
     {
         if (_make_host_path(fs, pathname, host_path) != 0)
-            OE_RAISE_ERRNO_MSG(oe_errno, "pathname=%s", pathname);
+            OE_RAISE_ERRNO_MSG(errno, "pathname=%s", pathname);
 
         if (oe_syscall_open_ocall(&retval, host_path, flags, mode) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (retval < 0)
             goto done;
@@ -376,20 +376,20 @@ static oe_fd_t* _hostfs_open_directory(
 
     /* Check parameters */
     if (!fs || !pathname || !(flags & OE_O_DIRECTORY))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Directories can only be opened for read access. */
     if ((flags & ACCESS_MODE_MASK) != OE_O_RDONLY)
-        OE_RAISE_ERRNO(OE_EACCES);
+        OE_RAISE_ERRNO(EACCES);
 
     /* Attempt to open the directory. */
     if (!(dir = _hostfs_opendir(device, pathname)))
-        OE_RAISE_ERRNO_MSG(oe_errno, "pathname=%s", pathname);
+        OE_RAISE_ERRNO_MSG(errno, "pathname=%s", pathname);
 
     /* Allocate and initialize the file struct. */
     {
         if (!(file = calloc(1, sizeof(file_t))))
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         file->base.type = OE_FD_TYPE_FILE;
         file->magic = FILE_MAGIC;
@@ -437,18 +437,18 @@ static int _hostfs_dup(oe_fd_t* desc, oe_fd_t** new_file_out)
     file_t* new_file = NULL;
 
     if (!new_file_out)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     *new_file_out = NULL;
 
     /* Check parameters. */
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Create and initialize the new file structure. */
     {
         if (!(new_file = calloc(1, sizeof(file_t))))
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         new_file->base.type = OE_FD_TYPE_FILE;
         new_file->base.ops.file = _get_file_ops();
@@ -460,10 +460,10 @@ static int _hostfs_dup(oe_fd_t* desc, oe_fd_t** new_file_out)
         oe_host_fd_t retval = -1;
 
         if (oe_syscall_dup_ocall(&retval, file->host_fd) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (retval == -1)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         new_file->host_fd = retval;
     }
@@ -486,11 +486,11 @@ static ssize_t _hostfs_read(oe_fd_t* desc, void* buf, size_t count)
     file_t* file = _cast_file(desc);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Call the host to perform the read(). */
     if (oe_syscall_read_ocall(&ret, file->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -509,20 +509,20 @@ static int _hostfs_getdents64(
     unsigned int n = count / sizeof(struct oe_dirent);
 
     if (!file || !file->dir || !dirp)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Read the entries one-by-one. */
     for (i = 0; i < n; i++)
     {
         struct oe_dirent* ent;
 
-        oe_errno = 0;
+        errno = 0;
 
         if (!(ent = _hostfs_readdir(file->dir)))
         {
-            if (oe_errno)
+            if (errno)
             {
-                OE_RAISE_ERRNO(oe_errno);
+                OE_RAISE_ERRNO(errno);
                 goto done;
             }
 
@@ -547,11 +547,11 @@ static ssize_t _hostfs_write(oe_fd_t* desc, const void* buf, size_t count)
 
     /* Check parameters. */
     if (!file || (count && !buf))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Call the host. */
     if (oe_syscall_write_ocall(&ret, file->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -568,24 +568,24 @@ static ssize_t _hostfs_readv(
     size_t buf_size = 0;
 
     if (!file || (!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_readv_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Synchronize data read with IO vector. */
     if (ret > 0)
     {
         if (oe_iov_sync(iov, iovcnt, buf, buf_size) != 0)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -607,17 +607,17 @@ static ssize_t _hostfs_writev(
     size_t buf_size = 0;
 
     if (!file || !iov || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_writev_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -634,10 +634,10 @@ static oe_off_t _hostfs_lseek_file(oe_fd_t* desc, oe_off_t offset, int whence)
     file_t* file = _cast_file(desc);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_lseek_ocall(&ret, file->host_fd, offset, whence) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -650,10 +650,10 @@ static int _hostfs_rewinddir(oe_fd_t* desc)
     dir_t* dir = _cast_dir(desc);
 
     if (!dir)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_rewinddir_ocall(dir->host_dir) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = 0;
 
@@ -668,10 +668,10 @@ static oe_off_t _hostfs_lseek_dir(oe_fd_t* desc, oe_off_t offset, int whence)
     file_t* file = _cast_file(desc);
 
     if (!file || !file->dir || offset != 0 || whence != OE_SEEK_SET)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if ((ret = _hostfs_rewinddir(file->dir)) == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
 done:
     return ret;
@@ -683,7 +683,7 @@ static oe_off_t _hostfs_lseek(oe_fd_t* desc, oe_off_t offset, int whence)
     file_t* file = _cast_file(desc);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (file->dir)
         ret = _hostfs_lseek_dir(desc, offset, whence);
@@ -701,13 +701,13 @@ static int _hostfs_close_file(oe_fd_t* desc)
     file_t* file = _cast_file(desc);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_close_ocall(&retval, file->host_fd) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (retval == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     free(file);
 
@@ -725,11 +725,11 @@ static int _hostfs_close_directory(oe_fd_t* desc)
 
     /* Check parameters. */
     if (!file || !file->dir)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Release the directory object. */
     if (_hostfs_closedir(file->dir) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* Release the file object. */
     free(file);
@@ -746,7 +746,7 @@ static int _hostfs_close(oe_fd_t* desc)
     file_t* file = _cast_file(desc);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (file->dir)
         ret = _hostfs_close_directory(desc);
@@ -765,7 +765,7 @@ static int _hostfs_ioctl(oe_fd_t* desc, unsigned long request, uint64_t arg)
     void* argout = NULL;
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /*
      * MUSL uses the TIOCGWINSZ ioctl request to determine whether the file
@@ -776,14 +776,14 @@ static int _hostfs_ioctl(oe_fd_t* desc, unsigned long request, uint64_t arg)
     switch (request)
     {
         default:
-            OE_RAISE_ERRNO(OE_ENOTTY);
+            OE_RAISE_ERRNO(ENOTTY);
     }
 
     /* Call the host to perform the ioctl() operation. */
     if (oe_syscall_ioctl_ocall(
             &ret, file->host_fd, request, arg, argsize, argout) != OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -798,7 +798,7 @@ static int _hostfs_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
     uint64_t argsize = 0;
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     switch (cmd)
     {
@@ -844,12 +844,12 @@ static int _hostfs_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
         case OE_F_SETOWN_EX:
         case OE_F_GETOWN_EX:
         case OE_F_GETOWNER_UIDS:
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
     }
 
     if (oe_syscall_fcntl_ocall(
             &ret, file->host_fd, cmd, arg, argsize, argout) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -865,19 +865,19 @@ static oe_fd_t* _hostfs_opendir(oe_device_t* device, const char* name)
     uint64_t retval = 0;
 
     if (!fs || !name)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (_make_host_path(fs, name, host_name) != 0)
-        OE_RAISE_ERRNO_MSG(oe_errno, "name=%s", name);
+        OE_RAISE_ERRNO_MSG(errno, "name=%s", name);
 
     if (!(dir = calloc(1, sizeof(dir_t))))
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     if (oe_syscall_opendir_ocall(&retval, host_name) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (!retval)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     dir->base.type = OE_FD_TYPE_FILE;
     dir->magic = DIR_MAGIC;
@@ -903,17 +903,17 @@ static struct oe_dirent* _hostfs_readdir(oe_fd_t* desc)
     int retval = -1;
 
     if (!dir)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Call the host to get the next directory entry. */
     if (oe_syscall_readdir_ocall(&retval, dir->host_dir, &dir->entry) != OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Handle any error. */
     if (retval == -1)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     /* If end of file, then return NULL. */
     if (retval == 1)
@@ -921,7 +921,7 @@ static struct oe_dirent* _hostfs_readdir(oe_fd_t* desc)
 
     /* Check for an unexpected return value (indicates a coding error). */
     if (retval != 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = &dir->entry;
 
@@ -938,10 +938,10 @@ static int _hostfs_closedir(oe_fd_t* desc)
     int retval = -1;
 
     if (!dir)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_closedir_ocall(&retval, dir->host_dir) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     free(dir);
 
@@ -966,13 +966,13 @@ static int _hostfs_stat(
         oe_memset_s(buf, sizeof(*buf), 0, sizeof(*buf));
 
     if (!fs || !pathname || !buf)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (_make_host_path(fs, pathname, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_stat_ocall(&retval, host_path, buf) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -990,13 +990,13 @@ static int _hostfs_access(oe_device_t* device, const char* pathname, int mode)
     int retval = -1;
 
     if (!fs || !pathname || ((uint32_t)mode & ~MASK))
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (_make_host_path(fs, pathname, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_access_ocall(&retval, host_path, mode) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1017,20 +1017,20 @@ static int _hostfs_link(
     int retval = -1;
 
     if (!fs || !oldpath || !newpath)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, oldpath, host_oldpath) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (_make_host_path(fs, newpath, host_newpath) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_link_ocall(&retval, host_oldpath, host_newpath) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1047,17 +1047,17 @@ static int _hostfs_unlink(oe_device_t* device, const char* pathname)
     int retval = -1;
 
     if (!fs)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, pathname, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_unlink_ocall(&retval, host_path) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1078,19 +1078,19 @@ static int _hostfs_rename(
     int retval = -1;
 
     if (!fs || !oldpath || !newpath)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, oldpath, host_oldpath) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (_make_host_path(fs, newpath, host_newpath) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_rename_ocall(&retval, host_oldpath, host_newpath) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1110,16 +1110,16 @@ static int _hostfs_truncate(
     int retval = -1;
 
     if (!fs)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, path, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_truncate_ocall(&retval, host_path, length) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1139,17 +1139,17 @@ static int _hostfs_mkdir(
     int retval = -1;
 
     if (!fs)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, pathname, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_mkdir_ocall(&retval, host_path, mode) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1166,17 +1166,17 @@ static int _hostfs_rmdir(oe_device_t* device, const char* pathname)
     int retval = -1;
 
     if (!fs)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
     if (_is_read_only(fs))
-        OE_RAISE_ERRNO(OE_EPERM);
+        OE_RAISE_ERRNO(EPERM);
 
     if (_make_host_path(fs, pathname, host_path) != 0)
-        OE_RAISE_ERRNO(oe_errno);
+        OE_RAISE_ERRNO(errno);
 
     if (oe_syscall_rmdir_ocall(&retval, host_path) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = retval;
 
@@ -1275,7 +1275,7 @@ oe_result_t oe_load_module_host_file_system(void)
         if (oe_device_table_set(OE_DEVID_HOST_FILE_SYSTEM, &_hostfs.base) != 0)
         {
             /* Do not propagate errno to caller. */
-            oe_errno = 0;
+            errno = 0;
             result = OE_FAILURE;
             goto done;
         }

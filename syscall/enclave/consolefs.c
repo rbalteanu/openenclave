@@ -49,12 +49,12 @@ static int _consolefs_dup(oe_fd_t* file_, oe_fd_t** new_file_out)
         *new_file_out = NULL;
 
     if (!file || !new_file_out)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Allocate and initialize a new file structure. */
     {
         if (!(new_file = calloc(1, sizeof(file_t))))
-            OE_RAISE_ERRNO(OE_ENOMEM);
+            OE_RAISE_ERRNO(ENOMEM);
 
         new_file->base.type = OE_FD_TYPE_FILE;
         new_file->base.ops.file = _get_ops();
@@ -66,10 +66,10 @@ static int _consolefs_dup(oe_fd_t* file_, oe_fd_t** new_file_out)
         oe_host_fd_t retval = -1;
 
         if (oe_syscall_dup_ocall(&retval, file->host_fd) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (retval == -1)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
 
         new_file->host_fd = retval;
     }
@@ -93,7 +93,7 @@ static int _consolefs_ioctl(oe_fd_t* file_, unsigned long request, uint64_t arg)
     file_t* file = _cast_file(file_);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /*
      * MUSL uses the TIOCGWINSZ ioctl request to determine whether the file
@@ -116,7 +116,7 @@ static int _consolefs_ioctl(oe_fd_t* file_, unsigned long request, uint64_t arg)
         struct winsize* p;
 
         if (!(p = (struct winsize*)arg))
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         p->ws_row = 24;
         p->ws_col = 80;
@@ -129,7 +129,7 @@ static int _consolefs_ioctl(oe_fd_t* file_, unsigned long request, uint64_t arg)
 
     if (oe_syscall_ioctl_ocall(&ret, file->host_fd, request, arg, 0, NULL) !=
         OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -143,7 +143,7 @@ static int _consolefs_fcntl(oe_fd_t* file_, int cmd, uint64_t arg)
     uint64_t argsize = 0;
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     switch (cmd)
     {
@@ -189,12 +189,12 @@ static int _consolefs_fcntl(oe_fd_t* file_, int cmd, uint64_t arg)
         case OE_F_SETOWN_EX:
         case OE_F_GETOWN_EX:
         case OE_F_GETOWNER_UIDS:
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
     }
 
     if (oe_syscall_fcntl_ocall(
             &ret, file->host_fd, cmd, arg, argsize, argout) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -206,10 +206,10 @@ static ssize_t _consolefs_read(oe_fd_t* file_, void* buf, size_t count)
     file_t* file = _cast_file(file_);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_read_ocall(&ret, file->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -221,10 +221,10 @@ static ssize_t _consolefs_write(oe_fd_t* file_, const void* buf, size_t count)
     file_t* file = _cast_file(file_);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     if (oe_syscall_write_ocall(&ret, file->host_fd, buf, count) != OE_OK)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
     return ret;
@@ -241,22 +241,22 @@ static ssize_t _consolefs_readv(
     size_t buf_size = 0;
 
     if (!file || !iov || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_readv_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
     /* Synchronize data read with IO vector. */
     if (oe_iov_sync(iov, iovcnt, buf, buf_size) != 0)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
 done:
 
@@ -277,17 +277,17 @@ static ssize_t _consolefs_writev(
     size_t buf_size = 0;
 
     if (!file || (!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
     if (oe_iov_pack(iov, iovcnt, &buf, &buf_size) != 0)
-        OE_RAISE_ERRNO(OE_ENOMEM);
+        OE_RAISE_ERRNO(ENOMEM);
 
     /* Call the host. */
     if (oe_syscall_writev_ocall(&ret, file->host_fd, buf, iovcnt, buf_size) !=
         OE_OK)
     {
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
     }
 
 done:
@@ -304,7 +304,7 @@ static oe_host_fd_t _consolefs_gethostfd(oe_fd_t* file_)
     file_t* file = _cast_file(file_);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     ret = file->host_fd;
 
@@ -319,7 +319,7 @@ static oe_off_t _consolefs_lseek(oe_fd_t* file_, oe_off_t offset, int whence)
     OE_UNUSED(file_);
     OE_UNUSED(offset);
     OE_UNUSED(whence);
-    OE_RAISE_ERRNO(OE_ESPIPE);
+    OE_RAISE_ERRNO(ESPIPE);
 
 done:
     return ret;
@@ -331,15 +331,15 @@ static int _consolefs_close(oe_fd_t* file_)
     file_t* file = _cast_file(file_);
 
     if (!file)
-        OE_RAISE_ERRNO(OE_EINVAL);
+        OE_RAISE_ERRNO(EINVAL);
 
     /* Ask the host to perform this operation. */
     {
         if (oe_syscall_close_ocall(&ret, file->host_fd) != OE_OK)
-            OE_RAISE_ERRNO(OE_EINVAL);
+            OE_RAISE_ERRNO(EINVAL);
 
         if (ret == -1)
-            OE_RAISE_ERRNO(oe_errno);
+            OE_RAISE_ERRNO(errno);
     }
 
     /* Free the file structure. */
@@ -359,7 +359,7 @@ static int _consolefs_getdents64(
     OE_UNUSED(count);
 
     /* The standard devices are not directories, so this is unsupported. */
-    OE_RAISE_ERRNO(OE_ENOTSUP);
+    OE_RAISE_ERRNO(ENOTSUP);
 
 done:
     return -1;
