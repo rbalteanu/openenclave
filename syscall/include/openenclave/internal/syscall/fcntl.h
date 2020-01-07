@@ -22,12 +22,12 @@ OE_EXTERNC_BEGIN
 struct oe_f_owner_ex
 {
     int type;
-    oe_pid_t pid;
+    pid_t pid;
 };
 
-int oe_open(const char* pathname, int flags, oe_mode_t mode);
+int oe_open(const char* pathname, int flags, mode_t mode);
 
-int oe_open_d(uint64_t devid, const char* pathname, int flags, oe_mode_t mode);
+int oe_open_d(uint64_t devid, const char* pathname, int flags, mode_t mode);
 
 int __oe_fcntl(int fd, int cmd, uint64_t arg);
 

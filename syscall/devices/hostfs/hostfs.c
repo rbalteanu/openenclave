@@ -314,7 +314,7 @@ static oe_fd_t* _hostfs_open_file(
     oe_device_t* device,
     const char* pathname,
     int flags,
-    oe_mode_t mode)
+    mode_t mode)
 {
     oe_fd_t* ret = NULL;
     device_t* fs = _cast_device(device);
@@ -418,7 +418,7 @@ static oe_fd_t* _hostfs_open(
     oe_device_t* fs,
     const char* pathname,
     int flags,
-    oe_mode_t mode)
+    mode_t mode)
 {
     if ((flags & O_DIRECTORY))
     {
@@ -629,9 +629,9 @@ done:
     return ret;
 }
 
-static oe_off_t _hostfs_lseek_file(oe_fd_t* desc, oe_off_t offset, int whence)
+static off_t _hostfs_lseek_file(oe_fd_t* desc, off_t offset, int whence)
 {
-    oe_off_t ret = -1;
+    off_t ret = -1;
     file_t* file = _cast_file(desc);
 
     if (!file)
@@ -663,9 +663,9 @@ done:
 }
 
 /* Perform lseek on a dir struct (only rewind is permitted on a directory). */
-static oe_off_t _hostfs_lseek_dir(oe_fd_t* desc, oe_off_t offset, int whence)
+static off_t _hostfs_lseek_dir(oe_fd_t* desc, off_t offset, int whence)
 {
-    oe_off_t ret = -1;
+    off_t ret = -1;
     file_t* file = _cast_file(desc);
 
     if (!file || !file->dir || offset != 0 || whence != SEEK_SET)
@@ -678,9 +678,9 @@ done:
     return ret;
 }
 
-static oe_off_t _hostfs_lseek(oe_fd_t* desc, oe_off_t offset, int whence)
+static off_t _hostfs_lseek(oe_fd_t* desc, off_t offset, int whence)
 {
-    oe_off_t ret = -1;
+    off_t ret = -1;
     file_t* file = _cast_file(desc);
 
     if (!file)
@@ -1100,10 +1100,7 @@ done:
     return ret;
 }
 
-static int _hostfs_truncate(
-    oe_device_t* device,
-    const char* path,
-    oe_off_t length)
+static int _hostfs_truncate(oe_device_t* device, const char* path, off_t length)
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
@@ -1129,10 +1126,7 @@ done:
     return ret;
 }
 
-static int _hostfs_mkdir(
-    oe_device_t* device,
-    const char* pathname,
-    oe_mode_t mode)
+static int _hostfs_mkdir(oe_device_t* device, const char* pathname, mode_t mode)
 {
     int ret = -1;
     device_t* fs = _cast_device(device);

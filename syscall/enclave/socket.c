@@ -129,7 +129,7 @@ int oe_socket(int domain, int type, int protocol)
     return oe_socket_d(devid, domain, type, protocol);
 }
 
-int oe_connect(int sockfd, const struct oe_sockaddr* addr, oe_socklen_t addrlen)
+int oe_connect(int sockfd, const struct oe_sockaddr* addr, socklen_t addrlen)
 {
     int ret = -1;
     oe_fd_t* sock;
@@ -143,7 +143,7 @@ done:
     return ret;
 }
 
-int oe_accept(int sockfd, struct oe_sockaddr* addr, oe_socklen_t* addrlen)
+int oe_accept(int sockfd, struct oe_sockaddr* addr, socklen_t* addrlen)
 {
     oe_fd_t* sock;
     oe_fd_t* new_sock = NULL;
@@ -202,7 +202,7 @@ ssize_t oe_recvfrom(
     size_t len,
     int flags,
     const struct oe_sockaddr* src_addr,
-    oe_socklen_t* addrlen)
+    socklen_t* addrlen)
 {
     ssize_t ret = -1;
     oe_fd_t* sock;
@@ -236,7 +236,7 @@ ssize_t oe_sendto(
     size_t len,
     int flags,
     const struct oe_sockaddr* dest_addr,
-    oe_socklen_t addrlen)
+    socklen_t addrlen)
 {
     ssize_t ret = -1;
     oe_fd_t* sock;
@@ -292,7 +292,7 @@ done:
     return ret;
 }
 
-int oe_getsockname(int sockfd, struct oe_sockaddr* addr, oe_socklen_t* addrlen)
+int oe_getsockname(int sockfd, struct oe_sockaddr* addr, socklen_t* addrlen)
 {
     int ret = -1;
     oe_fd_t* sock;
@@ -306,7 +306,7 @@ done:
     return ret;
 }
 
-int oe_getpeername(int sockfd, struct oe_sockaddr* addr, oe_socklen_t* addrlen)
+int oe_getpeername(int sockfd, struct oe_sockaddr* addr, socklen_t* addrlen)
 {
     int ret = -1;
     oe_fd_t* sock;
@@ -325,7 +325,7 @@ int oe_getsockopt(
     int level,
     int optname,
     void* optval,
-    oe_socklen_t* optlen)
+    socklen_t* optlen)
 {
     int ret = -1;
     oe_fd_t* sock;
@@ -344,7 +344,7 @@ int oe_setsockopt(
     int level,
     int optname,
     const void* optval,
-    oe_socklen_t optlen)
+    socklen_t optlen)
 {
     int ret = -1;
     oe_fd_t* sock;
@@ -358,7 +358,7 @@ done:
     return ret;
 }
 
-int oe_bind(int sockfd, const struct oe_sockaddr* name, oe_socklen_t namelen)
+int oe_bind(int sockfd, const struct oe_sockaddr* name, socklen_t namelen)
 {
     int ret = -1;
     oe_fd_t* sock;

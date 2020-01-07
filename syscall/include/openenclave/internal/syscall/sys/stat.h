@@ -30,9 +30,9 @@ int oe_stat(const char* pathname, struct oe_stat* buf);
 
 int oe_stat_d(uint64_t devid, const char* pathname, struct oe_stat* buf);
 
-int oe_mkdir(const char* pathname, oe_mode_t mode);
+int oe_mkdir(const char* pathname, mode_t mode);
 
-int oe_mkdir_d(uint64_t devid, const char* pathname, oe_mode_t mode);
+int oe_mkdir_d(uint64_t devid, const char* pathname, mode_t mode);
 
 OE_EXTERNC_END
 

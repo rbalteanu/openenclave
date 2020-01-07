@@ -17,7 +17,7 @@ OE_EXTERNC_BEGIN
 
 struct oe_in_addr
 {
-    oe_in_addr_t s_addr;
+    in_addr_t s_addr;
 };
 
 #define __OE_IN6_ADDR oe_in6_addr

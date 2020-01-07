@@ -45,11 +45,11 @@ static resolver_t _hostresolver;
 static int _hostresolver_getnameinfo(
     oe_resolver_t* dev,
     const struct oe_sockaddr* sa,
-    oe_socklen_t salen,
+    socklen_t salen,
     char* host,
-    oe_socklen_t hostlen,
+    socklen_t hostlen,
     char* serv,
-    oe_socklen_t servlen,
+    socklen_t servlen,
     int flags)
 {
     int ret = EAI_FAIL;

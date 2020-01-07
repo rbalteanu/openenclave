@@ -3,6 +3,6 @@
 
 struct __OE_SOCKADDR
 {
-    oe_sa_family_t sa_family;
+    sa_family_t sa_family;
     char sa_data[14];
 };

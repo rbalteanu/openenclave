@@ -29,7 +29,7 @@ done:
     return ret;
 }
 
-int oe_open(const char* pathname, int flags, oe_mode_t mode)
+int oe_open(const char* pathname, int flags, mode_t mode)
 {
     int ret = -1;
     int fd;
@@ -57,7 +57,7 @@ done:
     return ret;
 }
 
-int oe_open_d(uint64_t devid, const char* pathname, int flags, oe_mode_t mode)
+int oe_open_d(uint64_t devid, const char* pathname, int flags, mode_t mode)
 {
     int ret = -1;
     int fd;

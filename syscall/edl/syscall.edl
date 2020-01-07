@@ -45,7 +45,7 @@ enclave {
         oe_host_fd_t oe_syscall_open_ocall(
             [in, string] const char* pathname,
             int flags,
-            oe_mode_t mode)
+            mode_t mode)
             propagate_errno;
 
         ssize_t oe_syscall_read_ocall(
@@ -74,9 +74,9 @@ enclave {
             size_t iov_buf_size)
             propagate_errno;
 
-        oe_off_t oe_syscall_lseek_ocall(
+        off_t oe_syscall_lseek_ocall(
             oe_host_fd_t fd,
-            oe_off_t offset,
+            off_t offset,
             int whence)
             propagate_errno;
 
@@ -135,12 +135,12 @@ enclave {
 
         int oe_syscall_truncate_ocall(
             [in, string] const char* path,
-            oe_off_t length)
+            off_t length)
             propagate_errno;
 
         int oe_syscall_mkdir_ocall(
             [in, string] const char* pathname,
-            oe_mode_t mode)
+            mode_t mode)
             propagate_errno;
 
         int oe_syscall_rmdir_ocall(
@@ -163,20 +163,20 @@ enclave {
         int oe_syscall_connect_ocall(
             oe_host_fd_t sockfd,
             [in, size=addrlen] const struct oe_sockaddr* addr,
-            oe_socklen_t addrlen)
+            socklen_t addrlen)
             propagate_errno;
 
         oe_host_fd_t oe_syscall_accept_ocall(
             oe_host_fd_t sockfd,
             [in, out, size=addrlen_in] struct oe_sockaddr* addr,
-            oe_socklen_t addrlen_in,
-            [out, count=1] oe_socklen_t* addrlen_out)
+            socklen_t addrlen_in,
+            [out, count=1] socklen_t* addrlen_out)
             propagate_errno;
 
         int oe_syscall_bind_ocall(
             oe_host_fd_t sockfd,
             [in, size=addrlen] const struct oe_sockaddr* addr,
-            oe_socklen_t addrlen)
+            socklen_t addrlen)
             propagate_errno;
 
         int oe_syscall_listen_ocall(
@@ -187,8 +187,8 @@ enclave {
         ssize_t oe_syscall_recvmsg_ocall(
             oe_host_fd_t sockfd,
             [out, size=msg_namelen] void* msg_name,
-            oe_socklen_t msg_namelen,
-            [out, count=1] oe_socklen_t* msg_namelen_out,
+            socklen_t msg_namelen,
+            [out, count=1] socklen_t* msg_namelen_out,
             [in, out, size=msg_iov_buf_size] void* msg_iov_buf,
             size_t msg_iovlen,
             size_t msg_iov_buf_size,
@@ -201,7 +201,7 @@ enclave {
         ssize_t oe_syscall_sendmsg_ocall(
             oe_host_fd_t sockfd,
             [in, size=msg_namelen] const void* msg_name,
-            oe_socklen_t msg_namelen,
+            socklen_t msg_namelen,
             [in, size=msg_iov_buf_size] void* msg_iov_buf,
             size_t msg_iovlen,
             size_t msg_iov_buf_size,
@@ -223,8 +223,8 @@ enclave {
             size_t len,
             int flags,
             [in, out, size=addrlen_in] struct oe_sockaddr* src_addr,
-            oe_socklen_t addrlen_in,
-            [out, count=1] oe_socklen_t* addrlen_out)
+            socklen_t addrlen_in,
+            [out, count=1] socklen_t* addrlen_out)
             propagate_errno;
 
         ssize_t oe_syscall_send_ocall(
@@ -240,7 +240,7 @@ enclave {
             size_t len,
             int flags,
             [in, size=addrlen] const struct oe_sockaddr* dest_addr,
-            oe_socklen_t addrlen)
+            socklen_t addrlen)
             propagate_errno;
 
         ssize_t oe_syscall_recvv_ocall(
@@ -283,7 +283,7 @@ enclave {
             int level,
             int optname,
             [in, size=optlen] const void* optval,
-            oe_socklen_t optlen)
+            socklen_t optlen)
             propagate_errno;
 
         int oe_syscall_getsockopt_ocall(
@@ -291,22 +291,22 @@ enclave {
             int level,
             int optname,
             [out, size=optlen_in] void* optval,
-            oe_socklen_t optlen_in,
-            [out] oe_socklen_t* optlen_out)
+            socklen_t optlen_in,
+            [out] socklen_t* optlen_out)
             propagate_errno;
 
         int oe_syscall_getsockname_ocall(
             oe_host_fd_t sockfd,
             [in, out, size=addrlen_in] struct oe_sockaddr* addr,
-            oe_socklen_t addrlen_in,
-            [out, size=1] oe_socklen_t* addrlen_out)
+            socklen_t addrlen_in,
+            [out, size=1] socklen_t* addrlen_out)
             propagate_errno;
 
         int oe_syscall_getpeername_ocall(
             oe_host_fd_t sockfd,
             [in, out, size=addrlen_in] struct oe_sockaddr* addr,
-            oe_socklen_t addrlen_in,
-            [out, size=1] oe_socklen_t* addrlen_out)
+            socklen_t addrlen_in,
+            [out, size=1] socklen_t* addrlen_out)
             propagate_errno;
 
         int oe_syscall_shutdown_sockets_device_ocall(
@@ -331,8 +331,8 @@ enclave {
             [out, count=1] int* ai_family,
             [out, count=1] int* ai_socktype,
             [out, count=1] int* ai_protocol,
-            oe_socklen_t ai_addrlen_in,
-            [out, count=1] oe_socklen_t* ai_addrlen,
+            socklen_t ai_addrlen_in,
+            [out, count=1] socklen_t* ai_addrlen,
             [out, size=ai_addrlen_in] struct oe_sockaddr* ai_addr,
             size_t ai_canonnamelen_in,
             [out, count=1] size_t* ai_canonnamelen,
@@ -345,11 +345,11 @@ enclave {
 
         int oe_syscall_getnameinfo_ocall(
             [in, size=salen] const struct oe_sockaddr* sa,
-            oe_socklen_t salen,
+            socklen_t salen,
             [out, size=hostlen] char* host,
-            oe_socklen_t hostlen,
+            socklen_t hostlen,
             [out, size=servlen] char* serv,
-            oe_socklen_t servlen,
+            socklen_t servlen,
             int flags)
             propagate_errno;
 

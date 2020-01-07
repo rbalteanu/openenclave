@@ -116,7 +116,7 @@ int ecall_run_server()
     struct oe_sockaddr_in serv_addr = {0};
 
     const int optVal = 1;
-    const oe_socklen_t optLen = sizeof(optVal);
+    const socklen_t optLen = sizeof(optVal);
     int rtn = oe_setsockopt(
         listenfd, OE_SOL_SOCKET, OE_SO_REUSEADDR, (void*)&optVal, optLen);
     if (rtn > 0)
@@ -147,7 +147,7 @@ int ecall_run_server()
         printf("enc: accepting\n");
 
         struct oe_sockaddr_in peer_addr = {0};
-        oe_socklen_t peer_addr_len = sizeof(peer_addr);
+        socklen_t peer_addr_len = sizeof(peer_addr);
         connfd = oe_accept(
             listenfd, (struct oe_sockaddr*)&peer_addr, &peer_addr_len);
         OE_TEST(peer_addr_len == sizeof(peer_addr));

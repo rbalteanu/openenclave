@@ -196,7 +196,7 @@ typedef struct
 static int _hostsock_connect(
     oe_fd_t* sock_,
     const struct oe_sockaddr* addr,
-    oe_socklen_t addrlen)
+    socklen_t addrlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
@@ -224,12 +224,12 @@ done:
 static oe_fd_t* _hostsock_accept(
     oe_fd_t* sock_,
     struct oe_sockaddr* addr,
-    oe_socklen_t* addrlen)
+    socklen_t* addrlen)
 {
     oe_fd_t* ret = NULL;
     sock_t* sock = _cast_sock(sock_);
     sockaddr_t buf;
-    oe_socklen_t addrlen_in = 0;
+    socklen_t addrlen_in = 0;
     sock_t* new_sock = NULL;
 
     errno = 0;
@@ -298,7 +298,7 @@ done:
 static int _hostsock_bind(
     oe_fd_t* sock_,
     const struct oe_sockaddr* addr,
-    oe_socklen_t addrlen)
+    socklen_t addrlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
@@ -371,11 +371,11 @@ static ssize_t _hostsock_recvfrom(
     size_t count,
     int flags,
     const struct oe_sockaddr* src_addr,
-    oe_socklen_t* addrlen)
+    socklen_t* addrlen)
 {
     ssize_t ret = -1;
     sock_t* sock = _cast_sock(sock_);
-    oe_socklen_t addrlen_in = 0;
+    socklen_t addrlen_in = 0;
 
     errno = 0;
 
@@ -483,7 +483,7 @@ static ssize_t _hostsock_sendto(
     size_t count,
     int flags,
     const struct oe_sockaddr* dest_addr,
-    oe_socklen_t addrlen)
+    socklen_t addrlen)
 {
     ssize_t ret = -1;
     sock_t* sock = _cast_sock(sock_);
@@ -621,7 +621,7 @@ static int _hostsock_fcntl(oe_fd_t* sock_, int cmd, uint64_t arg)
             break;
 
         case F_GETOWNER_UIDS:
-            argsize = sizeof(oe_uid_t[2]);
+            argsize = sizeof(uid_t[2]);
             argout = (void*)arg;
             break;
     }
@@ -681,11 +681,11 @@ static int _hostsock_getsockopt(
     int level,
     int optname,
     void* optval,
-    oe_socklen_t* optlen)
+    socklen_t* optlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
-    oe_socklen_t optlen_in = 0;
+    socklen_t optlen_in = 0;
 
     errno = 0;
 
@@ -712,7 +712,7 @@ static int _hostsock_setsockopt(
     int level,
     int optname,
     const void* optval,
-    oe_socklen_t optlen)
+    socklen_t optlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
@@ -755,11 +755,11 @@ done:
 static int _hostsock_getpeername(
     oe_fd_t* sock_,
     struct oe_sockaddr* addr,
-    oe_socklen_t* addrlen)
+    socklen_t* addrlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
-    oe_socklen_t addrlen_in = 0;
+    socklen_t addrlen_in = 0;
 
     errno = 0;
 
@@ -787,11 +787,11 @@ done:
 static int _hostsock_getsockname(
     oe_fd_t* sock_,
     struct oe_sockaddr* addr,
-    oe_socklen_t* addrlen)
+    socklen_t* addrlen)
 {
     int ret = -1;
     sock_t* sock = _cast_sock(sock_);
-    oe_socklen_t addrlen_in = 0;
+    socklen_t addrlen_in = 0;
 
     errno = 0;
 

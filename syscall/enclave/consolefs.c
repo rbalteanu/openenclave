@@ -311,9 +311,9 @@ done:
     return ret;
 }
 
-static oe_off_t _consolefs_lseek(oe_fd_t* file_, oe_off_t offset, int whence)
+static off_t _consolefs_lseek(oe_fd_t* file_, off_t offset, int whence)
 {
-    oe_off_t ret = -1;
+    off_t ret = -1;
 
     OE_UNUSED(file_);
     OE_UNUSED(offset);

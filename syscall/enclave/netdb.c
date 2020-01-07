@@ -102,11 +102,11 @@ done:
 
 int oe_getnameinfo(
     const struct oe_sockaddr* sa,
-    oe_socklen_t salen,
+    socklen_t salen,
     char* host,
-    oe_socklen_t hostlen,
+    socklen_t hostlen,
     char* serv,
-    oe_socklen_t servlen,
+    socklen_t servlen,
     int flags)
 {
     ssize_t ret = EAI_FAIL;

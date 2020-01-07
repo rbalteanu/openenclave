@@ -149,59 +149,59 @@ unsigned int oe_sleep(unsigned int seconds)
     return (oe_sleep_msec(msec) == 0) ? 0 : seconds;
 }
 
-oe_pid_t oe_getpid(void)
+pid_t oe_getpid(void)
 {
-    oe_pid_t ret = 0;
+    pid_t ret = 0;
     oe_syscall_getpid_ocall(&ret);
     return ret;
 }
 
-oe_pid_t oe_getppid(void)
+pid_t oe_getppid(void)
 {
-    oe_pid_t ret = 0;
+    pid_t ret = 0;
     oe_syscall_getppid_ocall(&ret);
     return ret;
 }
 
-oe_pid_t oe_getpgrp(void)
+pid_t oe_getpgrp(void)
 {
-    oe_pid_t ret = 0;
+    pid_t ret = 0;
     oe_syscall_getpgrp_ocall(&ret);
     return ret;
 }
 
-oe_uid_t oe_getuid(void)
+uid_t oe_getuid(void)
 {
-    oe_uid_t ret = 0;
+    uid_t ret = 0;
     oe_syscall_getuid_ocall(&ret);
     return ret;
 }
 
-oe_uid_t oe_geteuid(void)
+uid_t oe_geteuid(void)
 {
-    oe_uid_t ret = 0;
+    uid_t ret = 0;
     oe_syscall_geteuid_ocall(&ret);
     return ret;
 }
 
-oe_gid_t oe_getgid(void)
+gid_t oe_getgid(void)
 {
-    oe_gid_t ret = 0;
+    gid_t ret = 0;
     oe_syscall_getgid_ocall(&ret);
     return ret;
 }
 
-oe_gid_t oe_getegid(void)
+gid_t oe_getegid(void)
 {
-    oe_gid_t ret = 0;
+    gid_t ret = 0;
     oe_syscall_getegid_ocall(&ret);
     return ret;
 }
 
-oe_pid_t oe_getpgid(oe_pid_t pid)
+pid_t oe_getpgid(pid_t pid)
 {
-    oe_pid_t ret = -1;
-    oe_pid_t retval = -1;
+    pid_t ret = -1;
+    pid_t retval = -1;
 
     if (oe_syscall_getpgid_ocall(&retval, pid) != OE_OK)
     {
@@ -215,7 +215,7 @@ done:
     return ret;
 }
 
-int oe_getgroups(int size, oe_gid_t list[])
+int oe_getgroups(int size, gid_t list[])
 {
     int ret = -1;
     int retval = -1;
@@ -453,7 +453,7 @@ done:
     return ret;
 }
 
-int oe_truncate(const char* pathname, oe_off_t length)
+int oe_truncate(const char* pathname, off_t length)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
@@ -468,7 +468,7 @@ done:
     return ret;
 }
 
-int oe_truncate_d(uint64_t devid, const char* path, oe_off_t length)
+int oe_truncate_d(uint64_t devid, const char* path, off_t length)
 {
     int ret = -1;
 
@@ -490,9 +490,9 @@ done:
     return ret;
 }
 
-oe_off_t oe_lseek(int fd, oe_off_t offset, int whence)
+off_t oe_lseek(int fd, off_t offset, int whence)
 {
-    oe_off_t ret = -1;
+    off_t ret = -1;
     oe_fd_t* file;
 
     if (!(file = oe_fdtable_get(fd, OE_FD_TYPE_FILE)))
