@@ -281,7 +281,7 @@ static int _hostfs_clone(oe_device_t* device, oe_device_t** new_device)
     if (!fs || !new_device)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    if (!(new_fs = oe_calloc(1, sizeof(device_t))))
+    if (!(new_fs = calloc(1, sizeof(device_t))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     *new_fs = *fs;
@@ -302,7 +302,7 @@ static int _hostfs_release(oe_device_t* device)
     if (!fs)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_free(fs);
+    free(fs);
     ret = 0;
 
 done:
@@ -331,7 +331,7 @@ static oe_fd_t* _hostfs_open_file(
 
     /* Create new file struct. */
     {
-        if (!(file = oe_calloc(1, sizeof(file_t))))
+        if (!(file = calloc(1, sizeof(file_t))))
             OE_RAISE_ERRNO(OE_ENOMEM);
 
         file->base.type = OE_FD_TYPE_FILE;
@@ -359,7 +359,7 @@ static oe_fd_t* _hostfs_open_file(
 done:
 
     if (file)
-        oe_free(file);
+        free(file);
 
     return ret;
 }
@@ -388,7 +388,7 @@ static oe_fd_t* _hostfs_open_directory(
 
     /* Allocate and initialize the file struct. */
     {
-        if (!(file = oe_calloc(1, sizeof(file_t))))
+        if (!(file = calloc(1, sizeof(file_t))))
             OE_RAISE_ERRNO(OE_ENOMEM);
 
         file->base.type = OE_FD_TYPE_FILE;
@@ -405,7 +405,7 @@ static oe_fd_t* _hostfs_open_directory(
 done:
 
     if (file)
-        oe_free(file);
+        free(file);
 
     if (dir)
         _hostfs_closedir(dir);
@@ -447,7 +447,7 @@ static int _hostfs_dup(oe_fd_t* desc, oe_fd_t** new_file_out)
 
     /* Create and initialize the new file structure. */
     {
-        if (!(new_file = oe_calloc(1, sizeof(file_t))))
+        if (!(new_file = calloc(1, sizeof(file_t))))
             OE_RAISE_ERRNO(oe_errno);
 
         new_file->base.type = OE_FD_TYPE_FILE;
@@ -475,7 +475,7 @@ static int _hostfs_dup(oe_fd_t* desc, oe_fd_t** new_file_out)
 done:
 
     if (new_file)
-        oe_free(new_file);
+        free(new_file);
 
     return ret;
 }
@@ -591,7 +591,7 @@ static ssize_t _hostfs_readv(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -623,7 +623,7 @@ static ssize_t _hostfs_writev(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -709,7 +709,7 @@ static int _hostfs_close_file(oe_fd_t* desc)
     if (retval == -1)
         OE_RAISE_ERRNO(oe_errno);
 
-    oe_free(file);
+    free(file);
 
     ret = retval;
 
@@ -732,7 +732,7 @@ static int _hostfs_close_directory(oe_fd_t* desc)
         OE_RAISE_ERRNO(oe_errno);
 
     /* Release the file object. */
-    oe_free(file);
+    free(file);
 
     ret = 0;
 
@@ -870,7 +870,7 @@ static oe_fd_t* _hostfs_opendir(oe_device_t* device, const char* name)
     if (_make_host_path(fs, name, host_name) != 0)
         OE_RAISE_ERRNO_MSG(oe_errno, "name=%s", name);
 
-    if (!(dir = oe_calloc(1, sizeof(dir_t))))
+    if (!(dir = calloc(1, sizeof(dir_t))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     if (oe_syscall_opendir_ocall(&retval, host_name) != OE_OK)
@@ -890,7 +890,7 @@ static oe_fd_t* _hostfs_opendir(oe_device_t* device, const char* name)
 done:
 
     if (dir)
-        oe_free(dir);
+        free(dir);
 
     return ret;
 }
@@ -943,7 +943,7 @@ static int _hostfs_closedir(oe_fd_t* desc)
     if (oe_syscall_closedir_ocall(&retval, dir->host_dir) != OE_OK)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_free(dir);
+    free(dir);
 
     ret = retval;
 

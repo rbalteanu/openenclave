@@ -46,7 +46,7 @@ static sock_t* _new_sock(void)
 {
     sock_t* sock = NULL;
 
-    if (!(sock = oe_calloc(1, sizeof(sock_t))))
+    if (!(sock = calloc(1, sizeof(sock_t))))
         return NULL;
 
     sock->base.type = OE_FD_TYPE_SOCKET;
@@ -120,7 +120,7 @@ static oe_fd_t* _hostsock_device_socket(
 done:
 
     if (new_sock)
-        oe_free(new_sock);
+        free(new_sock);
 
     return ret;
 }
@@ -180,10 +180,10 @@ static ssize_t _hostsock_device_socketpair(
 done:
 
     if (pair[0])
-        oe_free(pair[0]);
+        free(pair[0]);
 
     if (pair[1])
-        oe_free(pair[1]);
+        free(pair[1]);
 
     return ret;
 }
@@ -291,7 +291,7 @@ static oe_fd_t* _hostsock_accept(
 done:
 
     if (new_sock)
-        oe_free(new_sock);
+        free(new_sock);
 
     return ret;
 }
@@ -452,7 +452,7 @@ static ssize_t _hostsock_recvmsg(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -549,7 +549,7 @@ static ssize_t _hostsock_sendmsg(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -568,7 +568,7 @@ static int _hostsock_close(oe_fd_t* sock_)
         OE_RAISE_ERRNO(OE_EINVAL);
 
     if (ret == 0)
-        oe_free(sock);
+        free(sock);
 
 done:
 
@@ -672,7 +672,7 @@ static int _hostsock_dup(oe_fd_t* sock_, oe_fd_t** new_sock_out)
 done:
 
     if (new_sock)
-        oe_free(new_sock);
+        free(new_sock);
 
     return ret;
 }
@@ -861,7 +861,7 @@ static ssize_t _hostsock_readv(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -893,7 +893,7 @@ static ssize_t _hostsock_writev(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }

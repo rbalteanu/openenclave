@@ -6,6 +6,7 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
+#include <stdlib.h>
 #include "mount.h"
 
 int oe_rename(const char* oldpath, const char* newpath)
@@ -20,7 +21,7 @@ int oe_rename(const char* oldpath, const char* newpath)
     } variables_t;
     variables_t* v = NULL;
 
-    if (!(v = oe_malloc(sizeof(variables_t))))
+    if (!(v = malloc(sizeof(variables_t))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     if (!(fs = oe_mount_resolve(oldpath, v->filepath)))
@@ -37,7 +38,7 @@ int oe_rename(const char* oldpath, const char* newpath)
 done:
 
     if (v)
-        oe_free(v);
+        free(v);
 
     return ret;
 }

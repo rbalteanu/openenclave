@@ -104,7 +104,7 @@ static int _map_reserve(epoll_t* epoll, size_t new_capacity)
         const size_t n = new_capacity;
 
         /* Reallocate the table. */
-        if (!(p = oe_realloc(epoll->map, n * sizeof(mapping_t))))
+        if (!(p = realloc(epoll->map, n * sizeof(mapping_t))))
             goto done;
 
         /* Zero-fill the unused portion. */
@@ -156,7 +156,7 @@ static oe_fd_t* _epoll_create1(oe_device_t* device_, int32_t flags)
     if (!device)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    if (!(epoll = oe_calloc(1, sizeof(epoll_t))))
+    if (!(epoll = calloc(1, sizeof(epoll_t))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     if (oe_syscall_epoll_create1_ocall(&retval, flags) != OE_OK)
@@ -177,7 +177,7 @@ static oe_fd_t* _epoll_create1(oe_device_t* device_, int32_t flags)
 done:
 
     if (epoll)
-        oe_free(epoll);
+        free(epoll);
 
     return ret;
 }
@@ -520,11 +520,11 @@ static int _epoll_close(oe_fd_t* epoll_)
         OE_RAISE_ERRNO(oe_errno);
 
     if (epoll->map)
-        oe_free(epoll->map);
+        free(epoll->map);
 
     pthread_mutex_destroy(&epoll->lock);
 
-    oe_free(epoll);
+    free(epoll);
 
     ret = 0;
 
@@ -542,7 +542,7 @@ static int _epoll_release(oe_device_t* device_)
     if (!device)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_free(device);
+    free(device);
 
     ret = 0;
 
@@ -718,7 +718,7 @@ static ssize_t _epoll_readv(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -750,7 +750,7 @@ static ssize_t _epoll_writev(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -782,7 +782,7 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
 
     /* Create the new epoll object. */
     {
-        if (!(new_epoll = oe_calloc(1, sizeof(epoll_t))))
+        if (!(new_epoll = calloc(1, sizeof(epoll_t))))
             OE_RAISE_ERRNO(oe_errno);
 
         new_epoll->base.type = OE_FD_TYPE_EPOLL;
@@ -795,7 +795,7 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
         {
             mapping_t* map;
 
-            if (!(map = oe_calloc(epoll->map_size, sizeof(mapping_t))))
+            if (!(map = calloc(epoll->map_size, sizeof(mapping_t))))
                 OE_RAISE_ERRNO(OE_ENOMEM);
 
             memcpy(map, epoll->map, epoll->map_size * sizeof(mapping_t));
@@ -812,7 +812,7 @@ static int _epoll_dup(oe_fd_t* epoll_, oe_fd_t** new_epoll_out)
 done:
 
     if (new_epoll)
-        oe_free(new_epoll);
+        free(new_epoll);
 
     return ret;
 }

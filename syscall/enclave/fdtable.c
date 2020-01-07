@@ -14,6 +14,7 @@
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/syscall/fs.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include "consolefs.h"
 
 /*
@@ -54,7 +55,7 @@ static void _atexit_handler(void)
             desc->ops.fd.close(desc);
     }
 
-    oe_free(_table);
+    free(_table);
 }
 
 static int _resize_table(size_t new_size)
@@ -77,7 +78,7 @@ static int _resize_table(size_t new_size)
         size_t n = new_size;
 
         /* Reallocate the table. */
-        if (!(p = oe_realloc(_table, n * sizeof(entry_t))))
+        if (!(p = realloc(_table, n * sizeof(entry_t))))
             goto done;
 
         /* Zero-fill the unused portion. */

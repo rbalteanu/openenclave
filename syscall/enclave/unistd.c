@@ -69,7 +69,7 @@ char* oe_getcwd(char* buf, size_t size)
     if (!buf)
     {
         n = OE_PATH_MAX;
-        p = oe_malloc(n);
+        p = malloc(n);
 
         if (!p)
             OE_RAISE_ERRNO(OE_ENOMEM);
@@ -95,7 +95,7 @@ done:
         pthread_spin_unlock(&_cwd_lock);
 
     if (p && p != buf)
-        oe_free(p);
+        free(p);
 
     return ret;
 }

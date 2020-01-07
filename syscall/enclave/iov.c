@@ -11,6 +11,7 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/types.h>
+#include <stdlib.h>
 
 int oe_iov_pack(
     const struct oe_iovec* iov,
@@ -38,7 +39,7 @@ int oe_iov_pack(
     {
         if (iov)
         {
-            if (!(buf = oe_calloc(1, sizeof(uint64_t))))
+            if (!(buf = calloc(1, sizeof(uint64_t))))
                 goto done;
 
             buf_size = sizeof(uint64_t);
@@ -59,7 +60,7 @@ int oe_iov_pack(
     buf_size = (sizeof(struct oe_iovec) * (size_t)iovcnt) + data_size;
 
     /* Allocate the output buffer. */
-    if (!(buf = oe_calloc(1, buf_size)))
+    if (!(buf = calloc(1, buf_size)))
         goto done;
 
     /* Initialize the array elements. */
@@ -102,7 +103,7 @@ int oe_iov_pack(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }

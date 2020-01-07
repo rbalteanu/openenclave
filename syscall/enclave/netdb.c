@@ -8,6 +8,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 static oe_resolver_t* _resolver;
 static pthread_spinlock_t _lock;
@@ -139,9 +140,9 @@ void oe_freeaddrinfo(struct oe_addrinfo* res)
     {
         struct oe_addrinfo* next = p->ai_next;
 
-        oe_free(p->ai_addr);
-        oe_free(p->ai_canonname);
-        oe_free(p);
+        free(p->ai_addr);
+        free(p->ai_canonname);
+        free(p);
 
         p = next;
     }

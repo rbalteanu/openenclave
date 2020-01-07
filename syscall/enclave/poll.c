@@ -20,7 +20,7 @@ int oe_poll(struct oe_pollfd* fds, oe_nfds_t nfds, int timeout)
     if (!fds || nfds == 0)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    if (!(host_fds = oe_calloc(nfds, sizeof(struct oe_host_pollfd))))
+    if (!(host_fds = calloc(nfds, sizeof(struct oe_host_pollfd))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     /* Convert enclave fds to host fds. */
@@ -53,7 +53,7 @@ int oe_poll(struct oe_pollfd* fds, oe_nfds_t nfds, int timeout)
 done:
 
     if (host_fds)
-        oe_free(host_fds);
+        free(host_fds);
 
     return ret;
 }

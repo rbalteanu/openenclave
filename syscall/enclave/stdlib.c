@@ -9,6 +9,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <stdlib.h>
 #include <string.h>
 
 char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
@@ -29,7 +30,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
         OE_RAISE_ERRNO(OE_EINVAL);
 
     /* Allocate variables on the heap since too big for the stack. */
-    if (!(v = oe_calloc(1, sizeof(variables_t))))
+    if (!(v = calloc(1, sizeof(variables_t))))
         OE_RAISE_ERRNO(OE_ENOMEM);
 
     if (path[0] == '/')
@@ -126,7 +127,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 done:
 
     if (v)
-        oe_free(v);
+        free(v);
 
     return ret;
 }

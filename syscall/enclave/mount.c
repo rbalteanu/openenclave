@@ -16,6 +16,7 @@
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <pthread.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define MAX_MOUNT_TABLE_SIZE 64
 
@@ -41,7 +42,7 @@ static bool _installed_free_mount_table = false;
 static void _free_mount_table(void)
 {
     for (size_t i = 0; i < _mount_table_size; i++)
-        oe_free(_mount_table[i].path);
+        free(_mount_table[i].path);
 }
 
 oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
@@ -237,7 +238,7 @@ int oe_mount(
 done:
 
     if (mount_point.path)
-        oe_free(mount_point.path);
+        free(mount_point.path);
 
     if (locked)
         pthread_spin_unlock(&_lock);
@@ -293,7 +294,7 @@ int oe_umount2(const char* target, int flags)
     {
         oe_device_t* fs = _mount_table[index].fs;
 
-        oe_free(_mount_table[index].path);
+        free(_mount_table[index].path);
         _mount_table[index] = _mount_table[_mount_table_size - 1];
         _mount_table_size--;
 

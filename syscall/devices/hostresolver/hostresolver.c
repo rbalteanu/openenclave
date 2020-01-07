@@ -118,7 +118,7 @@ static int _hostresolver_getaddrinfo(
         int retval = 0;
         size_t canonnamelen = 0;
 
-        if (!(p = oe_calloc(1, sizeof(struct oe_addrinfo))))
+        if (!(p = calloc(1, sizeof(struct oe_addrinfo))))
         {
             ret = OE_EAI_MEMORY;
             goto done;
@@ -154,13 +154,13 @@ static int _hostresolver_getaddrinfo(
             OE_RAISE_ERRNO(oe_errno);
         }
 
-        if (p->ai_addrlen && !(p->ai_addr = oe_calloc(1, p->ai_addrlen)))
+        if (p->ai_addrlen && !(p->ai_addr = calloc(1, p->ai_addrlen)))
         {
             ret = OE_EAI_MEMORY;
             goto done;
         }
 
-        if (canonnamelen && !(p->ai_canonname = oe_calloc(1, canonnamelen)))
+        if (canonnamelen && !(p->ai_canonname = calloc(1, canonnamelen)))
         {
             ret = OE_EAI_MEMORY;
             goto done;

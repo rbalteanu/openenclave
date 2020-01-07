@@ -10,6 +10,7 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <stdlib.h>
 
 #define DIR_MAGIC 0x09180827
 
@@ -23,7 +24,7 @@ struct _OE_DIR
 OE_DIR* oe_opendir_d(uint64_t devid, const char* pathname)
 {
     OE_DIR* ret = NULL;
-    OE_DIR* dir = oe_calloc(1, sizeof(OE_DIR));
+    OE_DIR* dir = calloc(1, sizeof(OE_DIR));
     int fd = -1;
     const int flags = OE_O_RDONLY | OE_O_DIRECTORY | OE_O_CLOEXEC;
 
@@ -43,7 +44,7 @@ OE_DIR* oe_opendir_d(uint64_t devid, const char* pathname)
 done:
 
     if (dir)
-        oe_free(dir);
+        free(dir);
 
     if (fd >= 0)
         oe_close(fd);
@@ -87,7 +88,7 @@ int oe_closedir(OE_DIR* dir)
 
     ret = oe_close(dir->fd);
 
-    oe_free(dir);
+    free(dir);
 
 done:
 

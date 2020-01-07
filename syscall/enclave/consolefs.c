@@ -14,6 +14,7 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include "syscall_t.h"
 
@@ -52,7 +53,7 @@ static int _consolefs_dup(oe_fd_t* file_, oe_fd_t** new_file_out)
 
     /* Allocate and initialize a new file structure. */
     {
-        if (!(new_file = oe_calloc(1, sizeof(file_t))))
+        if (!(new_file = calloc(1, sizeof(file_t))))
             OE_RAISE_ERRNO(OE_ENOMEM);
 
         new_file->base.type = OE_FD_TYPE_FILE;
@@ -81,7 +82,7 @@ static int _consolefs_dup(oe_fd_t* file_, oe_fd_t** new_file_out)
 done:
 
     if (new_file)
-        oe_free(new_file);
+        free(new_file);
 
     return ret;
 }
@@ -260,7 +261,7 @@ static ssize_t _consolefs_readv(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -292,7 +293,7 @@ static ssize_t _consolefs_writev(
 done:
 
     if (buf)
-        oe_free(buf);
+        free(buf);
 
     return ret;
 }
@@ -342,7 +343,7 @@ static int _consolefs_close(oe_fd_t* file_)
     }
 
     /* Free the file structure. */
-    oe_free(file);
+    free(file);
 
 done:
     return ret;
@@ -393,7 +394,7 @@ static oe_fd_t* _new_file(uint32_t fileno)
 
     /* Create the file struct. */
     {
-        if (!(file = oe_calloc(1, sizeof(file_t))))
+        if (!(file = calloc(1, sizeof(file_t))))
             goto done;
 
         file->base.type = OE_FD_TYPE_FILE;
@@ -420,7 +421,7 @@ static oe_fd_t* _new_file(uint32_t fileno)
 done:
 
     if (file)
-        oe_free(file);
+        free(file);
 
     return ret;
 }

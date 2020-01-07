@@ -12,6 +12,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -42,7 +43,7 @@ static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
 
 static void _atexit_handler(void)
 {
-    oe_free(_table);
+    free(_table);
 }
 
 static int _resize_table(size_t new_size)
@@ -64,7 +65,7 @@ static int _resize_table(size_t new_size)
         size_t n = new_size;
 
         /* Reallocate the table. */
-        if (!(p = oe_realloc(_table, n * sizeof(entry_t))))
+        if (!(p = realloc(_table, n * sizeof(entry_t))))
             goto done;
 
         /* Zero-fill the unused portion. */
