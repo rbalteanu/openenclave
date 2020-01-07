@@ -26,7 +26,7 @@ OE_DIR* oe_opendir_d(uint64_t devid, const char* pathname)
     OE_DIR* ret = NULL;
     OE_DIR* dir = calloc(1, sizeof(OE_DIR));
     int fd = -1;
-    const int flags = OE_O_RDONLY | OE_O_DIRECTORY | OE_O_CLOEXEC;
+    const int flags = O_RDONLY | O_DIRECTORY | O_CLOEXEC;
 
     if (!dir)
         OE_RAISE_ERRNO(EINVAL);

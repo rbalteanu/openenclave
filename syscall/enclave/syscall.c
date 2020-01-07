@@ -49,7 +49,7 @@ static long _syscall(
         {
             const char* pathname = (const char*)arg1;
             oe_mode_t mode = (oe_mode_t)arg2;
-            int flags = (OE_O_CREAT | OE_O_WRONLY | OE_O_TRUNC);
+            int flags = (O_CREAT | O_WRONLY | O_TRUNC);
 
             ret = oe_open(pathname, flags, mode);
 
@@ -87,7 +87,7 @@ static long _syscall(
             int flags = (int)arg3;
             uint32_t mode = (uint32_t)arg4;
 
-            if (dirfd != OE_AT_FDCWD)
+            if (dirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -199,7 +199,7 @@ static long _syscall(
             struct oe_stat* buf = (struct oe_stat*)arg3;
             int flags = (int)arg4;
 
-            if (dirfd != OE_AT_FDCWD)
+            if (dirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -231,13 +231,13 @@ static long _syscall(
             const char* newpath = (const char*)arg4;
             int flags = (int)arg5;
 
-            if (olddirfd != OE_AT_FDCWD)
+            if (olddirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
             }
 
-            if (newdirfd != OE_AT_FDCWD)
+            if (newdirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -267,19 +267,19 @@ static long _syscall(
             const char* pathname = (const char*)arg2;
             int flags = (int)arg3;
 
-            if (dirfd != OE_AT_FDCWD)
+            if (dirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
             }
 
-            if (flags != OE_AT_REMOVEDIR && flags != 0)
+            if (flags != AT_REMOVEDIR && flags != 0)
             {
                 errno = EINVAL;
                 goto done;
             }
 
-            if (flags == OE_AT_REMOVEDIR)
+            if (flags == AT_REMOVEDIR)
                 ret = oe_rmdir(pathname);
             else
                 ret = oe_unlink(pathname);
@@ -304,13 +304,13 @@ static long _syscall(
             const char* newpath = (const char*)arg4;
             int flags = (int)arg5;
 
-            if (olddirfd != OE_AT_FDCWD)
+            if (olddirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
             }
 
-            if (newdirfd != OE_AT_FDCWD)
+            if (newdirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -349,7 +349,7 @@ static long _syscall(
             const char* pathname = (const char*)arg2;
             uint32_t mode = (uint32_t)arg3;
 
-            if (dirfd != OE_AT_FDCWD)
+            if (dirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -383,7 +383,7 @@ static long _syscall(
             int mode = (int)arg3;
             int flags = (int)arg4;
 
-            if (dirfd != OE_AT_FDCWD)
+            if (dirfd != AT_FDCWD)
             {
                 errno = EBADF;
                 goto done;
@@ -423,7 +423,7 @@ static long _syscall(
             int fd = (int)arg1;
             int cmd = (int)arg2;
             uint64_t arg = (uint64_t)arg3;
-            ret = oe_fcntl(fd, cmd, arg);
+            ret = __oe_fcntl(fd, cmd, arg);
             goto done;
         }
         case OE_SYS_mount:

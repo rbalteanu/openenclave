@@ -588,39 +588,39 @@ static int _hostsock_fcntl(oe_fd_t* sock_, int cmd, uint64_t arg)
 
     switch (cmd)
     {
-        case OE_F_GETFD:
-        case OE_F_SETFD:
-        case OE_F_GETFL:
-        case OE_F_SETFL:
+        case F_GETFD:
+        case F_SETFD:
+        case F_GETFL:
+        case F_SETFL:
             break;
 
         default:
-        case OE_F_DUPFD:
-        case OE_F_GETLK64:
-        case OE_F_OFD_GETLK:
-        case OE_F_SETLK64:
-        case OE_F_SETLKW64:
-        case OE_F_OFD_SETLK:
-        case OE_F_OFD_SETLKW:
+        case F_DUPFD:
+        case F_GETLK64:
+        case F_OFD_GETLK:
+        case F_SETLK64:
+        case F_SETLKW64:
+        case F_OFD_SETLK:
+        case F_OFD_SETLKW:
             OE_RAISE_ERRNO(EINVAL);
             break;
 
         // for sockets
-        case OE_F_GETSIG: // Returns in return value
-        case OE_F_SETSIG: // arg is data value
+        case F_GETSIG: // Returns in return value
+        case F_SETSIG: // arg is data value
             break;
 
-        case OE_F_GETOWN: // Returns in return value
-        case OE_F_SETOWN: // arg is data value
+        case F_GETOWN: // Returns in return value
+        case F_SETOWN: // arg is data value
             break;
 
-        case OE_F_SETOWN_EX:
-        case OE_F_GETOWN_EX:
+        case F_SETOWN_EX:
+        case F_GETOWN_EX:
             argsize = sizeof(struct oe_f_owner_ex);
             argout = (void*)arg;
             break;
 
-        case OE_F_GETOWNER_UIDS:
+        case F_GETOWNER_UIDS:
             argsize = sizeof(oe_uid_t[2]);
             argout = (void*)arg;
             break;

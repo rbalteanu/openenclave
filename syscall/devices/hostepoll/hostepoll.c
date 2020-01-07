@@ -600,20 +600,20 @@ static int _epoll_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
 
     switch (cmd)
     {
-        case OE_F_GETFD:
-        case OE_F_SETFD:
-        case OE_F_GETFL:
-        case OE_F_SETFL:
+        case F_GETFD:
+        case F_SETFD:
+        case F_GETFL:
+        case F_SETFL:
             break;
 
-        case OE_F_GETLK64:
-        case OE_F_OFD_GETLK:
+        case F_GETLK64:
+        case F_OFD_GETLK:
             argsize = sizeof(struct oe_flock);
             argout = (void*)arg;
             break;
 
-        case OE_F_SETLKW64:
-        case OE_F_SETLK64:
+        case F_SETLKW64:
+        case F_SETLK64:
         {
             void* srcp = (void*)arg;
             argsize = sizeof(struct oe_flock64);
@@ -622,8 +622,8 @@ static int _epoll_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
             break;
         }
 
-        case OE_F_OFD_SETLK:
-        case OE_F_OFD_SETLKW:
+        case F_OFD_SETLK:
+        case F_OFD_SETLKW:
         {
             void* srcp = (void*)arg;
             argsize = sizeof(struct oe_flock64);
@@ -634,14 +634,14 @@ static int _epoll_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
 
         // for sockets
         default:
-        case OE_F_DUPFD: // Should be handled in posix layer
-        case OE_F_SETOWN:
-        case OE_F_GETOWN:
-        case OE_F_SETSIG:
-        case OE_F_GETSIG:
-        case OE_F_SETOWN_EX:
-        case OE_F_GETOWN_EX:
-        case OE_F_GETOWNER_UIDS:
+        case F_DUPFD: // Should be handled in posix layer
+        case F_SETOWN:
+        case F_GETOWN:
+        case F_SETSIG:
+        case F_GETSIG:
+        case F_SETOWN_EX:
+        case F_GETOWN_EX:
+        case F_GETOWNER_UIDS:
             OE_RAISE_ERRNO(EINVAL);
     }
 

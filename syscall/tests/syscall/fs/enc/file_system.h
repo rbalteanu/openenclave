@@ -307,20 +307,20 @@ class stream_file_system
 
         switch ((flags & 0x00000003))
         {
-            case OE_O_RDONLY:
+            case O_RDONLY:
             {
                 fopen_mode = "r";
                 break;
             }
-            case OE_O_RDWR:
+            case O_RDWR:
             {
-                if (flags & OE_O_CREAT)
+                if (flags & O_CREAT)
                 {
-                    if (flags & OE_O_TRUNC)
+                    if (flags & O_TRUNC)
                     {
                         fopen_mode = "w+";
                     }
-                    else if (flags & OE_O_APPEND)
+                    else if (flags & O_APPEND)
                     {
                         fopen_mode = "a+";
                     }
@@ -336,15 +336,15 @@ class stream_file_system
                 }
                 break;
             }
-            case OE_O_WRONLY:
+            case O_WRONLY:
             {
-                if (flags & OE_O_CREAT)
+                if (flags & O_CREAT)
                 {
-                    if (flags & OE_O_TRUNC)
+                    if (flags & O_TRUNC)
                     {
                         fopen_mode = "w";
                     }
-                    else if (flags & OE_O_APPEND)
+                    else if (flags & O_APPEND)
                     {
                         fopen_mode = "a";
                     }

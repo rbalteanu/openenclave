@@ -97,7 +97,7 @@ static void test_create_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Open the file for output. */
     {
-        const int flags = OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY;
+        const int flags = O_CREAT | O_TRUNC | O_WRONLY;
         OE_TEST(file = fs.open(path, flags, MODE));
     }
 
@@ -124,7 +124,7 @@ static void test_read_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Open the file for input. */
     {
-        const int flags = OE_O_RDONLY;
+        const int flags = O_RDONLY;
         file = fs.open(path, flags, 0);
         OE_TEST(file);
     }
@@ -510,7 +510,7 @@ extern "C" void test_dup_case1(const char* tmp_dir)
     {
         char path[OE_PATH_MAX];
         mkpath(path, tmp_dir, "dummy");
-        fd = open(path, OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY, MODE);
+        fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, MODE);
         OE_TEST(fd >= 0);
         OE_TEST(close(fd) == 0);
     }
@@ -535,7 +535,7 @@ extern "C" void test_dup_case2(const char* tmp_dir)
 
     /* Create a file named "STDOUT" */
     mkpath(path, tmp_dir, "STDOUT");
-    fd = open(path, OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY, MODE);
+    fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, MODE);
     OE_TEST(fd >= 0);
 
     /* Close standard output. */
@@ -632,7 +632,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
     {
         char path[OE_PATH_MAX];
         mkpath(path, tmp_dir, "somefile");
-        const int flags = OE_O_CREAT | OE_O_TRUNC | OE_O_WRONLY;
+        const int flags = O_CREAT | O_TRUNC | O_WRONLY;
 
         OE_TEST(
             oe_mount(

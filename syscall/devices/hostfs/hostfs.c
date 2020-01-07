@@ -17,6 +17,8 @@
 **==============================================================================
 */
 
+#define _GNU_SOURCE
+
 // clang-format off
 #include <openenclave/enclave.h>
 // clang-format on
@@ -325,7 +327,7 @@ static oe_fd_t* _hostfs_open_file(
         OE_RAISE_ERRNO(EINVAL);
 
     /* Fail if attempting to write to a read-only file system. */
-    if (_is_read_only(fs) && (flags & ACCESS_MODE_MASK) != OE_O_RDONLY)
+    if (_is_read_only(fs) && (flags & ACCESS_MODE_MASK) != O_RDONLY)
         OE_RAISE_ERRNO(EPERM);
 
     /* Create new file struct. */
@@ -374,11 +376,11 @@ static oe_fd_t* _hostfs_open_directory(
     oe_fd_t* dir = NULL;
 
     /* Check parameters */
-    if (!fs || !pathname || !(flags & OE_O_DIRECTORY))
+    if (!fs || !pathname || !(flags & O_DIRECTORY))
         OE_RAISE_ERRNO(EINVAL);
 
     /* Directories can only be opened for read access. */
-    if ((flags & ACCESS_MODE_MASK) != OE_O_RDONLY)
+    if ((flags & ACCESS_MODE_MASK) != O_RDONLY)
         OE_RAISE_ERRNO(EACCES);
 
     /* Attempt to open the directory. */
@@ -418,7 +420,7 @@ static oe_fd_t* _hostfs_open(
     int flags,
     oe_mode_t mode)
 {
-    if ((flags & OE_O_DIRECTORY))
+    if ((flags & O_DIRECTORY))
     {
         /* Only existing directories can be opened, so mode is ignored. */
         return _hostfs_open_directory(fs, pathname, flags);
@@ -801,20 +803,20 @@ static int _hostfs_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
 
     switch (cmd)
     {
-        case OE_F_GETFD:
-        case OE_F_SETFD:
-        case OE_F_GETFL:
-        case OE_F_SETFL:
+        case F_GETFD:
+        case F_SETFD:
+        case F_GETFL:
+        case F_SETFL:
             break;
 
-        case OE_F_GETLK64:
-        case OE_F_OFD_GETLK:
+        case F_GETLK64:
+        case F_OFD_GETLK:
             argsize = sizeof(struct oe_flock);
             argout = (void*)arg;
             break;
 
-        case OE_F_SETLKW64:
-        case OE_F_SETLK64:
+        case F_SETLKW64:
+        case F_SETLK64:
         {
             void* srcp = (void*)arg;
             argsize = sizeof(struct oe_flock64);
@@ -823,8 +825,8 @@ static int _hostfs_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
             break;
         }
 
-        case OE_F_OFD_SETLK:
-        case OE_F_OFD_SETLKW:
+        case F_OFD_SETLK:
+        case F_OFD_SETLKW:
         {
             void* srcp = (void*)arg;
             argsize = sizeof(struct oe_flock64);
@@ -835,14 +837,14 @@ static int _hostfs_fcntl(oe_fd_t* desc, int cmd, uint64_t arg)
 
         // for sockets
         default:
-        case OE_F_DUPFD: // Should be handled in posix layer
-        case OE_F_SETOWN:
-        case OE_F_GETOWN:
-        case OE_F_SETSIG:
-        case OE_F_GETSIG:
-        case OE_F_SETOWN_EX:
-        case OE_F_GETOWN_EX:
-        case OE_F_GETOWNER_UIDS:
+        case F_DUPFD: // Should be handled in posix layer
+        case F_SETOWN:
+        case F_GETOWN:
+        case F_SETSIG:
+        case F_GETSIG:
+        case F_SETOWN_EX:
+        case F_GETOWN_EX:
+        case F_GETOWNER_UIDS:
             OE_RAISE_ERRNO(EINVAL);
     }
 
