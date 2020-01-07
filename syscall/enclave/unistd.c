@@ -13,6 +13,7 @@
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <pthread.h>
 #include "mount.h"
 #include "syscall_t.h"
 
@@ -48,7 +49,12 @@ done:
 }
 
 static char _cwd[OE_PATH_MAX] = "/";
-static oe_spinlock_t _cwd_lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _cwd_lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_cwd_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 char* oe_getcwd(char* buf, size_t size)
 {
@@ -74,7 +80,7 @@ char* oe_getcwd(char* buf, size_t size)
         p = buf;
     }
 
-    oe_spin_lock(&_cwd_lock);
+    pthread_spin_lock(&_cwd_lock);
     locked = true;
 
     if (oe_strlcpy(p, _cwd, n) >= n)
@@ -86,7 +92,7 @@ char* oe_getcwd(char* buf, size_t size)
 done:
 
     if (locked)
-        oe_spin_unlock(&_cwd_lock);
+        pthread_spin_unlock(&_cwd_lock);
 
     if (p && p != buf)
         oe_free(p);
@@ -120,7 +126,7 @@ int oe_chdir(const char* path)
     }
 
     /* Set the _cwd global. */
-    oe_spin_lock(&_cwd_lock);
+    pthread_spin_lock(&_cwd_lock);
     locked = true;
 
     if (oe_strlcpy(_cwd, real_path.buf, OE_PATH_MAX) >= OE_PATH_MAX)
@@ -131,7 +137,7 @@ int oe_chdir(const char* path)
 done:
 
     if (locked)
-        oe_spin_unlock(&_cwd_lock);
+        pthread_spin_unlock(&_cwd_lock);
 
     return ret;
 }

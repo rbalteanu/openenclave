@@ -14,9 +14,6 @@
 OE_EXTERNC_BEGIN
 
 #define OE_ONCE_INITIALIZER 0
-#define OE_SPINLOCK_INITIALIZER 0
-
-typedef volatile uint32_t oe_spinlock_t;
 
 typedef uint32_t oe_once_t;
 
@@ -52,10 +49,6 @@ typedef oe_result_t (*oe_syscall_hook_t)(
     long* ret);
 
 void oe_register_syscall_hook(oe_syscall_hook_t hook);
-
-oe_result_t oe_spin_lock(oe_spinlock_t* spinlock);
-
-oe_result_t oe_spin_unlock(oe_spinlock_t* spinlock);
 
 oe_result_t oe_once(oe_once_t* once, void (*func)(void));
 

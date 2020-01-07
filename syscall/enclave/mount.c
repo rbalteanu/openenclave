@@ -14,6 +14,7 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
+#include <pthread.h>
 
 #define MAX_MOUNT_TABLE_SIZE 64
 
@@ -27,7 +28,12 @@ typedef struct _mount_point
 
 static mount_point_t _mount_table[MAX_MOUNT_TABLE_SIZE];
 size_t _mount_table_size = 0;
-static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 static bool _installed_free_mount_table = false;
 
@@ -74,7 +80,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
     if (!oe_realpath(path, &realpath))
         OE_RAISE_ERRNO(oe_errno);
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     /* Find the longest binding point that contains this path. */
@@ -111,7 +117,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
 
     if (locked)
     {
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
         locked = false;
     }
 
@@ -121,7 +127,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -180,7 +186,7 @@ int oe_mount(
     }
 
     /* Lock the mount table. */
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     /* Install _free_mount_table() if not already installed. */
@@ -233,7 +239,7 @@ done:
         oe_free(mount_point.path);
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     if (new_device)
         new_device->ops.device.release(new_device);
@@ -265,7 +271,7 @@ int oe_umount2(const char* target, int flags)
     if (!(device = oe_mount_resolve(target, suffix)))
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     /* Find and remove this device. */
@@ -301,7 +307,7 @@ int oe_umount2(const char* target, int flags)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }

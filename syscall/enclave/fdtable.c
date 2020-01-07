@@ -13,6 +13,7 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/syscall/fs.h>
+#include <pthread.h>
 #include "consolefs.h"
 
 /*
@@ -30,7 +31,12 @@
 typedef oe_fd_t* entry_t;
 static entry_t* _table;
 static size_t _table_size;
-static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
 {
@@ -217,7 +223,7 @@ int oe_fdtable_assign(oe_fd_t* desc)
     if (!desc)
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (_initialize() != 0)
@@ -247,7 +253,7 @@ int oe_fdtable_assign(oe_fd_t* desc)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -256,7 +262,7 @@ int oe_fdtable_release(int fd)
 {
     int ret = -1;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
 
     if (_initialize() != 0)
         OE_RAISE_ERRNO(oe_errno);
@@ -275,7 +281,7 @@ int oe_fdtable_release(int fd)
 
 done:
 
-    oe_spin_unlock(&_lock);
+    pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -294,7 +300,7 @@ int oe_fdtable_reassign(int fd, oe_fd_t* new_desc, oe_fd_t** old_desc)
 
     *old_desc = NULL;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (_initialize() != 0)
@@ -316,7 +322,7 @@ int oe_fdtable_reassign(int fd, oe_fd_t* new_desc, oe_fd_t** old_desc)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -325,7 +331,7 @@ static oe_fd_t* _get_fd(int fd)
 {
     oe_fd_t* ret = NULL;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
 
     if (_initialize() != 0)
         OE_RAISE_ERRNO(oe_errno);
@@ -340,7 +346,7 @@ static oe_fd_t* _get_fd(int fd)
 
 done:
 
-    oe_spin_unlock(&_lock);
+    pthread_spin_unlock(&_lock);
 
     return ret;
 }

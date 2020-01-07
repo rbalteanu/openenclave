@@ -10,22 +10,28 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
+#include <pthread.h>
 
 static uint64_t _default_socket_devid = OE_DEVID_NONE;
-static oe_spinlock_t _default_socket_devid_lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _default_socket_devid_lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_default_socket_devid_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 void oe_set_default_socket_devid(uint64_t devid)
 {
-    oe_spin_lock(&_default_socket_devid_lock);
+    pthread_spin_lock(&_default_socket_devid_lock);
     _default_socket_devid = devid;
-    oe_spin_unlock(&_default_socket_devid_lock);
+    pthread_spin_unlock(&_default_socket_devid_lock);
 }
 
 uint64_t oe_get_default_socket_devid()
 {
-    oe_spin_lock(&_default_socket_devid_lock);
+    pthread_spin_lock(&_default_socket_devid_lock);
     uint64_t ret = _default_socket_devid;
-    oe_spin_unlock(&_default_socket_devid_lock);
+    pthread_spin_unlock(&_default_socket_devid_lock);
     return ret;
 }
 

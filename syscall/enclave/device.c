@@ -11,6 +11,7 @@
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
+#include <pthread.h>
 
 /*
 **==============================================================================
@@ -25,8 +26,13 @@
 typedef oe_device_t* entry_t;
 static entry_t* _table;
 static size_t _table_size;
-static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _lock;
 static bool _installed_atexit_handler;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 static uint64_t _round_up_to_multiple(uint64_t x, uint64_t m)
 {
@@ -147,7 +153,7 @@ int oe_device_table_set(uint64_t devid, oe_device_t* device)
     _assert_device(device);
 #endif
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (_resize_table(devid + 1) != 0)
@@ -163,7 +169,7 @@ int oe_device_table_set(uint64_t devid, oe_device_t* device)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -192,9 +198,9 @@ oe_device_t* oe_device_table_get(uint64_t devid, oe_device_type_t type)
 {
     oe_device_t* ret;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     ret = _get_device(devid, type);
-    oe_spin_unlock(&_lock);
+    pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -209,7 +215,7 @@ oe_device_t* oe_device_table_find(const char* name, oe_device_type_t type)
     if (!name)
         goto done;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     for (i = 0; i < _table_size; i++)
@@ -231,7 +237,7 @@ oe_device_t* oe_device_table_find(const char* name, oe_device_type_t type)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -242,7 +248,7 @@ int oe_device_table_remove(uint64_t devid)
     oe_device_t* device;
     bool locked = false;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (!(device = _get_device(devid, OE_DEVICE_TYPE_ANY)))
@@ -255,7 +261,7 @@ int oe_device_table_remove(uint64_t devid)
 
     if (locked)
     {
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
         locked = false;
     }
 
@@ -267,7 +273,7 @@ int oe_device_table_remove(uint64_t devid)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }

@@ -17,6 +17,7 @@
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/syscall/module.h>
+#include <pthread.h>
 #include "syscall_t.h"
 
 /* The map allocation grows in multiples of the chunk size. */
@@ -850,13 +851,19 @@ static device_t _device =
 };
 // clang-format on
 
+static pthread_spinlock_t _lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
+
 oe_result_t oe_load_module_host_epoll(void)
 {
     oe_result_t result = OE_UNEXPECTED;
-    static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
     static bool _loaded = false;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
 
     if (!_loaded)
     {
@@ -882,7 +889,7 @@ oe_result_t oe_load_module_host_epoll(void)
     result = OE_OK;
 
 done:
-    oe_spin_unlock(&_lock);
+    pthread_spin_unlock(&_lock);
 
     return result;
 }

@@ -35,6 +35,7 @@
 #include <openenclave/internal/syscall/iov.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
+#include <pthread.h>
 
 #include "syscall_t.h"
 
@@ -1246,13 +1247,19 @@ oe_device_t* oe_get_hostfs_device(void)
     return &_hostfs.base;
 }
 
+static pthread_spinlock_t _lock;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
+
 oe_result_t oe_load_module_host_file_system(void)
 {
     oe_result_t result = OE_UNEXPECTED;
-    static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
     static bool _loaded = false;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
 
     if (!_loaded)
     {
@@ -1278,7 +1285,7 @@ oe_result_t oe_load_module_host_file_system(void)
     result = OE_OK;
 
 done:
-    oe_spin_unlock(&_lock);
+    pthread_spin_unlock(&_lock);
 
     return result;
 }

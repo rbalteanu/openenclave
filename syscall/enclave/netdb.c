@@ -7,10 +7,16 @@
 #include <openenclave/internal/syscall/resolver.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
+#include <pthread.h>
 
 static oe_resolver_t* _resolver;
-static oe_spinlock_t _lock = OE_SPINLOCK_INITIALIZER;
+static pthread_spinlock_t _lock;
 static bool _installed_atexit_handler = false;
+
+static __attribute__((constructor)) void _init_lock(void)
+{
+    pthread_spin_init(&_lock, PTHREAD_PROCESS_PRIVATE);
+}
 
 static void _atexit_handler(void)
 {
@@ -31,7 +37,7 @@ int oe_register_resolver(oe_resolver_t* resolver)
         OE_RAISE_ERRNO(OE_EINVAL);
     }
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     /* This function can be called only once. */
@@ -51,7 +57,7 @@ int oe_register_resolver(oe_resolver_t* resolver)
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -71,7 +77,7 @@ int oe_getaddrinfo(
     else
         OE_RAISE_ERRNO(OE_EINVAL);
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (!_resolver)
@@ -88,7 +94,7 @@ int oe_getaddrinfo(
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return ret;
 }
@@ -105,7 +111,7 @@ int oe_getnameinfo(
     ssize_t ret = OE_EAI_FAIL;
     bool locked = false;
 
-    oe_spin_lock(&_lock);
+    pthread_spin_lock(&_lock);
     locked = true;
 
     if (!_resolver)
@@ -120,7 +126,7 @@ int oe_getnameinfo(
 done:
 
     if (locked)
-        oe_spin_unlock(&_lock);
+        pthread_spin_unlock(&_lock);
 
     return (int)ret;
 }
