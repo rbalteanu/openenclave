@@ -182,7 +182,7 @@ int oe_mount(
         if ((retval = oe_stat(target, &buf)) != 0)
             OE_RAISE_ERRNO(errno);
 
-        if (!OE_S_ISDIR(buf.st_mode))
+        if (!S_ISDIR(buf.st_mode))
             OE_RAISE_ERRNO(ENOTDIR);
     }
 

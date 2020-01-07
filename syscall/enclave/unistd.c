@@ -118,7 +118,7 @@ int oe_chdir(const char* path)
     }
 
     /* Fail if path not a directory. */
-    if (!OE_S_ISDIR(st.st_mode))
+    if (!S_ISDIR(st.st_mode))
     {
         errno = ENOTDIR;
         return -1;

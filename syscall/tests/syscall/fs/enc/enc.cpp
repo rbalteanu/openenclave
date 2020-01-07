@@ -173,11 +173,11 @@ static void test_stat_file(FILE_SYSTEM& fs, const char* tmp_dir)
 
     /* Check stats. */
     OE_TEST(buf.st_size == sizeof(ALPHABET));
-    OE_TEST(OE_S_ISREG(buf.st_mode));
+    OE_TEST(S_ISREG(buf.st_mode));
     /* windows cannot return the whole mode in stat bits */
     OE_TEST(
-        (buf.st_mode & ((OE_S_IFREG | MODE) & (OE_S_IRUSR | OE_S_IWUSR))) ==
-        ((OE_S_IFREG | MODE) & (OE_S_IRUSR | OE_S_IWUSR)));
+        (buf.st_mode & ((S_IFREG | MODE) & (S_IRUSR | S_IWUSR))) ==
+        ((S_IFREG | MODE) & (S_IRUSR | S_IWUSR)));
 }
 
 template <class FILE_SYSTEM>
@@ -203,7 +203,7 @@ static void test_readdir(FILE_SYSTEM& fs, const char* tmp_dir)
     {
         typename FILE_SYSTEM::stat_type buf;
         OE_TEST(fs.stat(mkpath(path, tmp_dir, "dir1"), &buf) == 0);
-        OE_TEST(OE_S_ISDIR(buf.st_mode));
+        OE_TEST(S_ISDIR(buf.st_mode));
     }
 
     /* Remove directory "dir2". */
