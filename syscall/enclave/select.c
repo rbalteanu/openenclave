@@ -7,7 +7,6 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
-#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/select.h>
 #include <stdlib.h>
 

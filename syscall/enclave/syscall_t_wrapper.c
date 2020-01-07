@@ -7,7 +7,6 @@
 #include <openenclave/internal/syscall/bits/calls.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
-#include <openenclave/internal/syscall/string.h>
 #include <pthread.h>
 
 /* Rename the ecalls table. */

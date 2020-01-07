@@ -14,7 +14,6 @@
 #include <openenclave/internal/syscall/iov.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
-#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/syscall/module.h>
 #include <pthread.h>

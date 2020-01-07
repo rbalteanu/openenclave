@@ -16,7 +16,6 @@
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
-#include <openenclave/internal/syscall/string.h>
 #include <openenclave/syscall/module.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <pthread.h>

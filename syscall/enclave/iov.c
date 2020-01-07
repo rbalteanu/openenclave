@@ -8,7 +8,6 @@
 #include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
-#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/types.h>
 #include <stdlib.h>

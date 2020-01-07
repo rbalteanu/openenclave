@@ -9,7 +9,6 @@
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
-#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/syscall/fs.h>
 #include <pthread.h>
