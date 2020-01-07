@@ -18,6 +18,7 @@
 #include <openenclave/internal/syscall/sys/syscall.h>
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
+#include <openenclave/internal/syscall/time.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <stdarg.h>
 

@@ -44,7 +44,7 @@ static void _free_mount_table(void)
         free(_mount_table[i].path);
 }
 
-oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
+oe_device_t* oe_mount_resolve(const char* path, char suffix[PATH_MAX])
 {
     oe_device_t* ret = NULL;
     size_t match_len = 0;
@@ -69,7 +69,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
             }
 
             /* Use this device. */
-            if (strlcpy(suffix, path, OE_PATH_MAX) >= OE_PATH_MAX)
+            if (strlcpy(suffix, path, PATH_MAX) >= PATH_MAX)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
             ret = device;
@@ -94,7 +94,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
         {
             if (len > match_len)
             {
-                strlcpy(suffix, realpath.buf, OE_PATH_MAX);
+                strlcpy(suffix, realpath.buf, PATH_MAX);
                 match_len = len;
                 ret = _mount_table[i].fs;
             }
@@ -105,10 +105,10 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
         {
             if (len > match_len)
             {
-                strlcpy(suffix, realpath.buf + len, OE_PATH_MAX);
+                strlcpy(suffix, realpath.buf + len, PATH_MAX);
 
                 if (*suffix == '\0')
-                    strlcpy(suffix, "/", OE_PATH_MAX);
+                    strlcpy(suffix, "/", PATH_MAX);
 
                 match_len = len;
                 ret = _mount_table[i].fs;
@@ -252,7 +252,7 @@ int oe_umount2(const char* target, int flags)
 {
     int ret = -1;
     size_t index = (size_t)-1;
-    char suffix[OE_PATH_MAX];
+    char suffix[PATH_MAX];
     oe_device_t* device;
     bool locked = false;
     oe_syscall_path_t target_path;

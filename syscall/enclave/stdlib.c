@@ -15,10 +15,10 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     char* ret = NULL;
     typedef struct _variables
     {
-        char buf[OE_PATH_MAX];
-        const char* in[OE_PATH_MAX];
-        const char* out[OE_PATH_MAX];
-        char resolved[OE_PATH_MAX];
+        char buf[PATH_MAX];
+        const char* in[PATH_MAX];
+        const char* out[PATH_MAX];
+        char resolved[PATH_MAX];
     } variables_t;
     variables_t* v = NULL;
     size_t nin = 0;
@@ -38,7 +38,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     }
     else
     {
-        char cwd[OE_PATH_MAX];
+        char cwd[PATH_MAX];
 
         if (!oe_getcwd(cwd, sizeof(cwd)))
             OE_RAISE_ERRNO(EINVAL);
@@ -91,12 +91,12 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
         for (size_t i = 0; i < nout; i++)
         {
-            if (strlcat(v->resolved, v->out[i], OE_PATH_MAX) >= OE_PATH_MAX)
+            if (strlcat(v->resolved, v->out[i], PATH_MAX) >= PATH_MAX)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
             if (i != 0 && i + 1 != nout)
             {
-                if (strlcat(v->resolved, "/", OE_PATH_MAX) >= OE_PATH_MAX)
+                if (strlcat(v->resolved, "/", PATH_MAX) >= PATH_MAX)
                     OE_RAISE_ERRNO(ENAMETOOLONG);
             }
         }
@@ -104,8 +104,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
     if (resolved_path)
     {
-        if (strlcpy(resolved_path->buf, v->resolved, OE_PATH_MAX) >=
-            OE_PATH_MAX)
+        if (strlcpy(resolved_path->buf, v->resolved, PATH_MAX) >= PATH_MAX)
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
         ret = resolved_path->buf;

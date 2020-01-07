@@ -23,11 +23,11 @@ using namespace std;
 static const char ALPHABET[] = "abcdefghijklmnopqrstuvwxyz";
 static const mode_t MODE = 0644;
 
-const char* mkpath(char buf[OE_PATH_MAX], const char* target, const char* path)
+const char* mkpath(char buf[PATH_MAX], const char* target, const char* path)
 {
-    strlcpy(buf, target, OE_PATH_MAX);
-    strlcat(buf, "/", OE_PATH_MAX);
-    strlcat(buf, path, OE_PATH_MAX);
+    strlcpy(buf, target, PATH_MAX);
+    strlcat(buf, "/", PATH_MAX);
+    strlcat(buf, path, PATH_MAX);
     return buf;
 }
 
@@ -186,7 +186,7 @@ static void test_readdir(FILE_SYSTEM& fs, const char* tmp_dir)
     typename FILE_SYSTEM::dir_handle dir;
     typename FILE_SYSTEM::dirent_type* ent;
     size_t count = 0;
-    char path[OE_PATH_MAX];
+    char path[PATH_MAX];
 
     printf("--- %s()\n", __FUNCTION__);
 
@@ -394,11 +394,11 @@ void _create_cpio_archive(const char* dirname, const char* archive)
 
 void _test_mount(const char* tmp_dir)
 {
-    char target[OE_PATH_MAX];
-    char source[OE_PATH_MAX];
-    char path[OE_PATH_MAX];
-    char pack_cpio[OE_PATH_MAX];
-    char unpack_dir[OE_PATH_MAX];
+    char target[PATH_MAX];
+    char source[PATH_MAX];
+    char path[PATH_MAX];
+    char pack_cpio[PATH_MAX];
+    char unpack_dir[PATH_MAX];
 
     mkpath(source, tmp_dir, "source");
     mkpath(target, tmp_dir, "target");
@@ -452,9 +452,9 @@ static void test_realpath(const char* tmp_dir)
     OE_TEST(oe_realpath("/../../..", &buf));
     OE_TEST(strcmp(buf.buf, "/") == 0);
 
-    char path_a[OE_PATH_MAX];
-    char path_a_b[OE_PATH_MAX];
-    char path_a_b_c[OE_PATH_MAX];
+    char path_a[PATH_MAX];
+    char path_a_b[PATH_MAX];
+    char path_a_b_c[PATH_MAX];
 
     mkpath(path_a, tmp_dir, "a");
     mkpath(path_a_b, tmp_dir, "a/b");
@@ -508,7 +508,7 @@ extern "C" void test_dup_case1(const char* tmp_dir)
     /* Create and close a file. */
     int fd;
     {
-        char path[OE_PATH_MAX];
+        char path[PATH_MAX];
         mkpath(path, tmp_dir, "dummy");
         fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, MODE);
         OE_TEST(fd >= 0);
@@ -526,7 +526,7 @@ extern "C" void test_dup_case1(const char* tmp_dir)
 
 extern "C" void test_dup_case2(const char* tmp_dir)
 {
-    char path[OE_PATH_MAX];
+    char path[PATH_MAX];
     int fd;
 
     printf("--- %s()\n", __FUNCTION__);
@@ -630,7 +630,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
 
     /* Test writing to a read-only mounted file system. */
     {
-        char path[OE_PATH_MAX];
+        char path[PATH_MAX];
         mkpath(path, tmp_dir, "somefile");
         const int flags = O_CREAT | O_TRUNC | O_WRONLY;
 
@@ -662,7 +662,7 @@ void test_fs(const char* src_dir, const char* tmp_dir)
 
     /* Test getcwd() */
     {
-        char buf[OE_PATH_MAX];
+        char buf[PATH_MAX];
         OE_TEST(oe_getcwd(buf, sizeof(buf)));
         OE_TEST(strcmp(buf, "/") == 0);
     }

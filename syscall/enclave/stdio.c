@@ -16,8 +16,8 @@ int oe_rename(const char* oldpath, const char* newpath)
     oe_device_t* newfs = NULL;
     typedef struct _variables
     {
-        char filepath[OE_PATH_MAX];
-        char newfilepath[OE_PATH_MAX];
+        char filepath[PATH_MAX];
+        char newfilepath[PATH_MAX];
     } variables_t;
     variables_t* v = NULL;
 

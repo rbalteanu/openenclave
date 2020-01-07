@@ -47,7 +47,7 @@ done:
     return ret;
 }
 
-static char _cwd[OE_PATH_MAX] = "/";
+static char _cwd[PATH_MAX] = "/";
 static pthread_spinlock_t _cwd_lock;
 
 static __attribute__((constructor)) void _init_lock(void)
@@ -67,7 +67,7 @@ char* oe_getcwd(char* buf, size_t size)
 
     if (!buf)
     {
-        n = OE_PATH_MAX;
+        n = PATH_MAX;
         p = malloc(n);
 
         if (!p)
@@ -128,7 +128,7 @@ int oe_chdir(const char* path)
     pthread_spin_lock(&_cwd_lock);
     locked = true;
 
-    if (strlcpy(_cwd, real_path.buf, OE_PATH_MAX) >= OE_PATH_MAX)
+    if (strlcpy(_cwd, real_path.buf, PATH_MAX) >= PATH_MAX)
         OE_RAISE_ERRNO(ENAMETOOLONG);
 
     ret = 0;
@@ -338,7 +338,7 @@ int oe_rmdir(const char* pathname)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char filepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);
@@ -376,8 +376,8 @@ int oe_link(const char* oldpath, const char* newpath)
     int ret = -1;
     oe_device_t* fs = NULL;
     oe_device_t* newfs = NULL;
-    char filepath[OE_PATH_MAX] = {0};
-    char newfilepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
+    char newfilepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(oldpath, filepath)))
         OE_RAISE_ERRNO(errno);
@@ -420,7 +420,7 @@ int oe_unlink(const char* pathname)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char filepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);
@@ -457,7 +457,7 @@ int oe_truncate(const char* pathname, oe_off_t length)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char filepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);
@@ -537,7 +537,7 @@ int oe_access(const char* pathname, int mode)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char suffix[OE_PATH_MAX];
+    char suffix[PATH_MAX];
 
     if (!(fs = oe_mount_resolve(pathname, suffix)))
         OE_RAISE_ERRNO(errno);
