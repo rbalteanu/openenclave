@@ -129,7 +129,7 @@ done:
     return ret;
 }
 
-OE_NO_RETURN void oe_exit(int status)
+_Noreturn void oe_exit(int status)
 {
     OE_UNUSED(status);
 
