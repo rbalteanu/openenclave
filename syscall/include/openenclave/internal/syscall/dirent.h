@@ -4,9 +4,9 @@
 #ifndef _OE_SYSCALL_DIRENT_H
 #define _OE_SYSCALL_DIRENT_H
 
+#include <limits.h>
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/internal/syscall/limits.h>
 
 OE_EXTERNC_BEGIN
 

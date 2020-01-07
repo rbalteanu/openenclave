@@ -1,9 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+#include <limits.h>
 #include <openenclave/host.h>
 #include <openenclave/internal/syscall/bits/tests.h>
-#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/syscall/module.h>
 #include <stdio.h>
 #if defined(_MSC_VER)
@@ -68,7 +68,7 @@ int main(int argc, const char* argv[])
     /* Ask enclvae to run the test. */
     {
 #if defined(__linux__)
-        gid_t list[OE_NGROUPS_MAX] = {0};
+        gid_t list[NGROUPS_MAX] = {0};
         int required_size;
         int size;
 

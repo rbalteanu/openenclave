@@ -7,12 +7,12 @@
 // clang-format on
 
 #include <openenclave/internal/syscall/stdlib.h>
-#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
+#include <limits.h>
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>

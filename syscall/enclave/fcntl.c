@@ -1,10 +1,10 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+#include <limits.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/fdtable.h>
-#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include "mount.h"
@@ -35,7 +35,7 @@ int oe_open(const char* pathname, int flags, oe_mode_t mode)
     int fd;
     oe_device_t* fs;
     oe_fd_t* file = NULL;
-    char filepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);

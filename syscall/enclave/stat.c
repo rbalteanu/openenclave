@@ -10,7 +10,7 @@ int oe_stat(const char* pathname, struct oe_stat* buf)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char filepath[OE_PATH_MAX];
+    char filepath[PATH_MAX];
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);
@@ -47,7 +47,7 @@ int oe_mkdir(const char* pathname, oe_mode_t mode)
 {
     int ret = -1;
     oe_device_t* fs = NULL;
-    char filepath[OE_PATH_MAX] = {0};
+    char filepath[PATH_MAX] = {0};
 
     if (!(fs = oe_mount_resolve(pathname, filepath)))
         OE_RAISE_ERRNO(errno);

@@ -69,7 +69,7 @@ int oe_getaddrinfo(
     const struct oe_addrinfo* hints,
     struct oe_addrinfo** res_out)
 {
-    int ret = OE_EAI_FAIL;
+    int ret = EAI_FAIL;
     struct oe_addrinfo* res;
     bool locked = false;
 
@@ -83,7 +83,7 @@ int oe_getaddrinfo(
 
     if (!_resolver)
     {
-        ret = OE_EAI_SYSTEM;
+        ret = EAI_SYSTEM;
         OE_RAISE_ERRNO(EINVAL);
     }
 
@@ -109,7 +109,7 @@ int oe_getnameinfo(
     oe_socklen_t servlen,
     int flags)
 {
-    ssize_t ret = OE_EAI_FAIL;
+    ssize_t ret = EAI_FAIL;
     bool locked = false;
 
     pthread_spin_lock(&_lock);
@@ -117,7 +117,7 @@ int oe_getnameinfo(
 
     if (!_resolver)
     {
-        ret = OE_EAI_SYSTEM;
+        ret = EAI_SYSTEM;
         OE_RAISE_ERRNO(EINVAL);
     }
 

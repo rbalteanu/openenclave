@@ -5,7 +5,6 @@
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/syscall/module.h>

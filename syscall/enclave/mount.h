@@ -4,14 +4,14 @@
 #ifndef _OE_SYSCALL_MOUNT_H
 #define _OE_SYSCALL_MOUNT_H
 
+#include <limits.h>
 #include <openenclave/bits/defs.h>
 #include <openenclave/internal/syscall/device.h>
-#include <openenclave/internal/syscall/limits.h>
 
 OE_EXTERNC_BEGIN
 
 /* Use mounter to resolve this path to a target path. */
-oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX]);
+oe_device_t* oe_mount_resolve(const char* path, char suffix[PATH_MAX]);
 
 OE_EXTERNC_END
 

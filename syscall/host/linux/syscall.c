@@ -1,12 +1,13 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+#define _GNU_SOURCE
+
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <netdb.h>
-#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/types.h>
 #include <pthread.h>
@@ -83,7 +84,7 @@ ssize_t oe_syscall_readv_ocall(
 
     errno = 0;
 
-    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
     {
         errno = EINVAL;
         goto done;
@@ -124,7 +125,7 @@ ssize_t oe_syscall_writev_ocall(
 
     errno = 0;
 
-    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
     {
         errno = EINVAL;
         goto done;
@@ -572,7 +573,7 @@ ssize_t oe_syscall_recvv_ocall(
 
     errno = 0;
 
-    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
     {
         errno = EINVAL;
         goto done;
@@ -613,7 +614,7 @@ ssize_t oe_syscall_sendv_ocall(
 
     errno = 0;
 
-    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if ((!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
     {
         errno = EINVAL;
         goto done;
@@ -1365,13 +1366,13 @@ int oe_syscall_uname_ocall(struct oe_utsname* buf)
 
         /* domainname: */
         {
-            if (strlen(uts.__domainname) >= sizeof(buf->domainname))
+            if (strlen(uts.domainname) >= sizeof(buf->domainname))
             {
                 errno = ENAMETOOLONG;
                 goto done;
             }
 
-            strcpy(buf->domainname, uts.__domainname);
+            strcpy(buf->domainname, uts.domainname);
         }
     }
 

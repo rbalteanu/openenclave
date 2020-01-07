@@ -61,8 +61,8 @@ typedef struct _device
     struct
     {
         unsigned long flags;
-        char source[OE_PATH_MAX];
-        char target[OE_PATH_MAX];
+        char source[PATH_MAX];
+        char target[PATH_MAX];
     } mount;
 } device_t;
 
@@ -160,27 +160,27 @@ done:
 static int _make_host_path(
     const device_t* fs,
     const char* enclave_path,
-    char host_path[OE_PATH_MAX])
+    char host_path[PATH_MAX])
 {
-    const size_t n = OE_PATH_MAX;
+    const size_t n = PATH_MAX;
     int ret = -1;
 
     if (strcmp(fs->mount.source, "/") == 0)
     {
-        if (strlcpy(host_path, enclave_path, OE_PATH_MAX) >= n)
+        if (strlcpy(host_path, enclave_path, PATH_MAX) >= n)
             OE_RAISE_ERRNO(ENAMETOOLONG);
     }
     else
     {
-        if (strlcpy(host_path, fs->mount.source, OE_PATH_MAX) >= n)
+        if (strlcpy(host_path, fs->mount.source, PATH_MAX) >= n)
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
         if (strcmp(enclave_path, "/") != 0)
         {
-            if (strlcat(host_path, "/", OE_PATH_MAX) >= n)
+            if (strlcat(host_path, "/", PATH_MAX) >= n)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
-            if (strlcat(host_path, enclave_path, OE_PATH_MAX) >= n)
+            if (strlcat(host_path, enclave_path, PATH_MAX) >= n)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
         }
     }
@@ -317,7 +317,7 @@ static oe_fd_t* _hostfs_open_file(
     oe_fd_t* ret = NULL;
     device_t* fs = _cast_device(device);
     file_t* file = NULL;
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     oe_host_fd_t retval = -1;
 
     /* Fail if any required parameters are null. */
@@ -566,7 +566,7 @@ static ssize_t _hostfs_readv(
     void* buf = NULL;
     size_t buf_size = 0;
 
-    if (!file || (!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if (!file || (!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
         OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
@@ -605,7 +605,7 @@ static ssize_t _hostfs_writev(
     void* buf = NULL;
     size_t buf_size = 0;
 
-    if (!file || !iov || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if (!file || !iov || iovcnt < 0 || iovcnt > IOV_MAX)
         OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
@@ -860,7 +860,7 @@ static oe_fd_t* _hostfs_opendir(oe_device_t* device, const char* name)
     oe_fd_t* ret = NULL;
     device_t* fs = _cast_device(device);
     dir_t* dir = NULL;
-    char host_name[OE_PATH_MAX];
+    char host_name[PATH_MAX];
     uint64_t retval = 0;
 
     if (!fs || !name)
@@ -958,7 +958,7 @@ static int _hostfs_stat(
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     int retval = -1;
 
     if (buf)
@@ -984,7 +984,7 @@ static int _hostfs_access(oe_device_t* device, const char* pathname, int mode)
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     const uint32_t MASK = (OE_R_OK | OE_W_OK | OE_X_OK);
     int retval = -1;
 
@@ -1011,8 +1011,8 @@ static int _hostfs_link(
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_oldpath[OE_PATH_MAX];
-    char host_newpath[OE_PATH_MAX];
+    char host_oldpath[PATH_MAX];
+    char host_newpath[PATH_MAX];
     int retval = -1;
 
     if (!fs || !oldpath || !newpath)
@@ -1042,7 +1042,7 @@ static int _hostfs_unlink(oe_device_t* device, const char* pathname)
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     int retval = -1;
 
     if (!fs)
@@ -1072,8 +1072,8 @@ static int _hostfs_rename(
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_oldpath[OE_PATH_MAX];
-    char host_newpath[OE_PATH_MAX];
+    char host_oldpath[PATH_MAX];
+    char host_newpath[PATH_MAX];
     int retval = -1;
 
     if (!fs || !oldpath || !newpath)
@@ -1105,7 +1105,7 @@ static int _hostfs_truncate(
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     int retval = -1;
 
     if (!fs)
@@ -1134,7 +1134,7 @@ static int _hostfs_mkdir(
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     int retval = -1;
 
     if (!fs)
@@ -1161,7 +1161,7 @@ static int _hostfs_rmdir(oe_device_t* device, const char* pathname)
 {
     int ret = -1;
     device_t* fs = _cast_device(device);
-    char host_path[OE_PATH_MAX];
+    char host_path[PATH_MAX];
     int retval = -1;
 
     if (!fs)

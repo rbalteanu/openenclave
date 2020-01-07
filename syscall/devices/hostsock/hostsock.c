@@ -836,7 +836,7 @@ static ssize_t _hostsock_readv(
     void* buf = NULL;
     size_t buf_size = 0;
 
-    if (!sock || (!iov && iovcnt) || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if (!sock || (!iov && iovcnt) || iovcnt < 0 || iovcnt > IOV_MAX)
         OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
@@ -875,7 +875,7 @@ static ssize_t _hostsock_writev(
     void* buf = NULL;
     size_t buf_size = 0;
 
-    if (!sock || !iov || iovcnt < 0 || iovcnt > OE_IOV_MAX)
+    if (!sock || !iov || iovcnt < 0 || iovcnt > IOV_MAX)
         OE_RAISE_ERRNO(EINVAL);
 
     /* Flatten the IO vector into contiguous heap memory. */
