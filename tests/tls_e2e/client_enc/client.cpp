@@ -1,11 +1,11 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
+#include <arpa/inet.h>
 #include <openenclave/edger8r/enclave.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/report.h>
-#include <openenclave/internal/syscall/arpa/inet.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/netinet/in.h>
