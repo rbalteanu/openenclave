@@ -36,6 +36,7 @@
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <pthread.h>
+#include <string.h>
 
 #include "syscall_t.h"
 
@@ -165,7 +166,7 @@ static int _make_host_path(
     const size_t n = OE_PATH_MAX;
     int ret = -1;
 
-    if (oe_strcmp(fs->mount.source, "/") == 0)
+    if (strcmp(fs->mount.source, "/") == 0)
     {
         if (oe_strlcpy(host_path, enclave_path, OE_PATH_MAX) >= n)
             OE_RAISE_ERRNO(OE_ENAMETOOLONG);
@@ -175,7 +176,7 @@ static int _make_host_path(
         if (oe_strlcpy(host_path, fs->mount.source, OE_PATH_MAX) >= n)
             OE_RAISE_ERRNO(OE_ENAMETOOLONG);
 
-        if (oe_strcmp(enclave_path, "/") != 0)
+        if (strcmp(enclave_path, "/") != 0)
         {
             if (oe_strlcat(host_path, "/", OE_PATH_MAX) >= n)
                 OE_RAISE_ERRNO(OE_ENAMETOOLONG);
@@ -212,7 +213,7 @@ static int _hostfs_mount(
         OE_RAISE_ERRNO(OE_EBUSY);
 
     /* Cross check the file system type. */
-    if (oe_strcmp(filesystemtype, OE_DEVICE_NAME_HOST_FILE_SYSTEM) != 0)
+    if (strcmp(filesystemtype, OE_DEVICE_NAME_HOST_FILE_SYSTEM) != 0)
         OE_RAISE_ERRNO(OE_EINVAL);
 
     /* The data parameter is not supported for host file systems. */
@@ -255,7 +256,7 @@ static int _hostfs_umount2(oe_device_t* device, const char* target, int flags)
         OE_RAISE_ERRNO(OE_EINVAL);
 
     /* Cross check target parameter with the one passed to mount(). */
-    if (oe_strcmp(target, fs->mount.target) != 0)
+    if (strcmp(target, fs->mount.target) != 0)
         OE_RAISE_ERRNO(OE_ENOENT);
 
     /* Clear the cached mount parameters. */

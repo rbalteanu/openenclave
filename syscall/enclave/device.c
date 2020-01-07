@@ -12,6 +12,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <pthread.h>
+#include <string.h>
 
 /*
 **==============================================================================
@@ -222,7 +223,7 @@ oe_device_t* oe_device_table_find(const char* name, oe_device_type_t type)
     {
         oe_device_t* p = _table[i];
 
-        if (p && oe_strcmp(p->name, name) == 0)
+        if (p && strcmp(p->name, name) == 0)
         {
             device = p;
             break;

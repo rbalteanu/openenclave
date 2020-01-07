@@ -46,6 +46,7 @@ typedef oe_result_t (*oe_syscall_hook_t)(
 
 void oe_register_syscall_hook(oe_syscall_hook_t hook);
 
+#if 0
 int memcmp(const void* vl, const void* vr, size_t n);
 
 void* memcpy(void* dest, const void* src, size_t n);
@@ -61,6 +62,7 @@ int oe_strncmp(const char* s1, const char* s2, size_t n);
 size_t oe_strlen(const char* s);
 
 char* oe_strdup(const char* s);
+#endif
 
 size_t oe_strlcpy(char* dest, const char* src, size_t size);
 

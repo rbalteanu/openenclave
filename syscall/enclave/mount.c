@@ -15,6 +15,7 @@
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <pthread.h>
+#include <string.h>
 
 #define MAX_MOUNT_TABLE_SIZE 64
 
@@ -86,7 +87,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
     /* Find the longest binding point that contains this path. */
     for (size_t i = 0; i < _mount_table_size; i++)
     {
-        size_t len = oe_strlen(_mount_table[i].path);
+        size_t len = strlen(_mount_table[i].path);
         const char* mpath = _mount_table[i].path;
 
         if (mpath[0] == '/' && mpath[1] == '\0')
@@ -99,7 +100,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
             }
         }
         else if (
-            oe_strncmp(mpath, realpath.buf, len) == 0 &&
+            strncmp(mpath, realpath.buf, len) == 0 &&
             (realpath.buf[len] == '/' || realpath.buf[len] == '\0'))
         {
             if (len > match_len)
@@ -173,7 +174,7 @@ int oe_mount(
         OE_RAISE_ERRNO_MSG(OE_ENODEV, "filesystemtype=%s", filesystemtype);
 
     /* Be sure the full_target directory exists (if not root). */
-    if (oe_strcmp(target, "/") != 0)
+    if (strcmp(target, "/") != 0)
     {
         struct oe_stat buf;
         int retval = -1;
@@ -203,7 +204,7 @@ int oe_mount(
     /* Reject duplicate mount paths. */
     for (size_t i = 0; i < _mount_table_size; i++)
     {
-        if (oe_strcmp(_mount_table[i].path, target) == 0)
+        if (strcmp(_mount_table[i].path, target) == 0)
             OE_RAISE_ERRNO(OE_EEXIST);
     }
 
@@ -213,10 +214,10 @@ int oe_mount(
 
     /* Assign and initialize new mount point. */
     {
-        if (!(mount_point.path = oe_strdup(target)))
+        if (!(mount_point.path = strdup(target)))
             OE_RAISE_ERRNO(OE_ENOMEM);
 
-        mount_point.path_size = oe_strlen(target) + 1;
+        mount_point.path_size = strlen(target) + 1;
         mount_point.fs = new_device;
         mount_point.flags = 0;
     }
@@ -277,7 +278,7 @@ int oe_umount2(const char* target, int flags)
     /* Find and remove this device. */
     for (size_t i = 0; i < _mount_table_size; i++)
     {
-        if (oe_strcmp(_mount_table[i].path, target) == 0)
+        if (strcmp(_mount_table[i].path, target) == 0)
         {
             index = i;
             break;

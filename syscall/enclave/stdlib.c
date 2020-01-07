@@ -9,6 +9,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <string.h>
 
 char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 {
@@ -71,11 +72,11 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     for (size_t i = 0; i < nin; i++)
     {
         /* Skip "." elements. */
-        if (oe_strcmp(v->in[i], ".") == 0)
+        if (strcmp(v->in[i], ".") == 0)
             continue;
 
         /* If "..", remove previous element. */
-        if (oe_strcmp(v->in[i], "..") == 0)
+        if (strcmp(v->in[i], "..") == 0)
         {
             if (nout > 1)
                 nout--;
@@ -113,7 +114,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
     }
     else
     {
-        char* p = oe_strdup(v->resolved);
+        char* p = strdup(v->resolved);
 
         if (!p)
             OE_RAISE_ERRNO(OE_ENOMEM);
