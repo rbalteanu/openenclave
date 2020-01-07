@@ -45,8 +45,8 @@ static long _syscall(
     /* Handle the software system call. */
     switch (num)
     {
-#if defined(OE_SYS_creat)
-        case OE_SYS_creat:
+#if defined(SYS_creat)
+        case SYS_creat:
         {
             const char* pathname = (const char*)arg1;
             oe_mode_t mode = (oe_mode_t)arg2;
@@ -66,8 +66,8 @@ static long _syscall(
             goto done;
         }
 #endif
-#if defined(OE_SYS_open)
-        case OE_SYS_open:
+#if defined(SYS_open)
+        case SYS_open:
         {
             const char* pathname = (const char*)arg1;
             int flags = (int)arg2;
@@ -81,7 +81,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_openat:
+        case SYS_openat:
         {
             int dirfd = (int)arg1;
             const char* pathname = (const char*)arg2;
@@ -101,7 +101,7 @@ static long _syscall(
 
             goto done;
         }
-        case OE_SYS_lseek:
+        case SYS_lseek:
         {
             int fd = (int)arg1;
             ssize_t off = (ssize_t)arg2;
@@ -109,7 +109,7 @@ static long _syscall(
             ret = oe_lseek(fd, off, whence);
             goto done;
         }
-        case OE_SYS_readv:
+        case SYS_readv:
         {
             int fd = (int)arg1;
             const struct oe_iovec* iov = (const struct oe_iovec*)arg2;
@@ -118,7 +118,7 @@ static long _syscall(
             ret = oe_readv(fd, iov, iovcnt);
             goto done;
         }
-        case OE_SYS_writev:
+        case SYS_writev:
         {
             int fd = (int)arg1;
             const struct oe_iovec* iov = (const struct oe_iovec*)arg2;
@@ -127,7 +127,7 @@ static long _syscall(
             ret = oe_writev(fd, iov, iovcnt);
             goto done;
         }
-        case OE_SYS_read:
+        case SYS_read:
         {
             int fd = (int)arg1;
             void* buf = (void*)arg2;
@@ -136,7 +136,7 @@ static long _syscall(
             ret = oe_read(fd, buf, count);
             goto done;
         }
-        case OE_SYS_write:
+        case SYS_write:
         {
             int fd = (int)arg1;
             const void* buf = (void*)arg2;
@@ -145,22 +145,22 @@ static long _syscall(
             ret = oe_write(fd, buf, count);
             goto done;
         }
-        case OE_SYS_close:
+        case SYS_close:
         {
             int fd = (int)arg1;
 
             ret = oe_close(fd);
             goto done;
         }
-        case OE_SYS_dup:
+        case SYS_dup:
         {
             int fd = (int)arg1;
 
             ret = oe_dup(fd);
             goto done;
         }
-#if defined(OE_SYS_dup2)
-        case OE_SYS_dup2:
+#if defined(SYS_dup2)
+        case SYS_dup2:
         {
             int oldfd = (int)arg1;
             int newfd = (int)arg2;
@@ -169,7 +169,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_dup3:
+        case SYS_dup3:
         {
             int oldfd = (int)arg1;
             int newfd = (int)arg2;
@@ -184,8 +184,8 @@ static long _syscall(
             ret = oe_dup2(oldfd, newfd);
             goto done;
         }
-#if defined(OE_SYS_stat)
-        case OE_SYS_stat:
+#if defined(SYS_stat)
+        case SYS_stat:
         {
             const char* pathname = (const char*)arg1;
             struct oe_stat* buf = (struct oe_stat*)arg2;
@@ -193,7 +193,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_newfstatat:
+        case SYS_newfstatat:
         {
             int dirfd = (int)arg1;
             const char* pathname = (const char*)arg2;
@@ -215,8 +215,8 @@ static long _syscall(
             ret = oe_stat(pathname, buf);
             goto done;
         }
-#if defined(OE_SYS_link)
-        case OE_SYS_link:
+#if defined(SYS_link)
+        case SYS_link:
         {
             const char* oldpath = (const char*)arg1;
             const char* newpath = (const char*)arg2;
@@ -224,7 +224,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_linkat:
+        case SYS_linkat:
         {
             int olddirfd = (int)arg1;
             const char* oldpath = (const char*)arg2;
@@ -253,8 +253,8 @@ static long _syscall(
             ret = oe_link(oldpath, newpath);
             goto done;
         }
-#if defined(OE_SYS_unlink)
-        case OE_SYS_unlink:
+#if defined(SYS_unlink)
+        case SYS_unlink:
         {
             const char* pathname = (const char*)arg1;
 
@@ -262,7 +262,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_unlinkat:
+        case SYS_unlinkat:
         {
             int dirfd = (int)arg1;
             const char* pathname = (const char*)arg2;
@@ -287,8 +287,8 @@ static long _syscall(
 
             goto done;
         }
-#if defined(OE_SYS_rename)
-        case OE_SYS_rename:
+#if defined(SYS_rename)
+        case SYS_rename:
         {
             const char* oldpath = (const char*)arg1;
             const char* newpath = (const char*)arg2;
@@ -297,7 +297,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_renameat:
+        case SYS_renameat:
         {
             int olddirfd = (int)arg1;
             const char* oldpath = (const char*)arg2;
@@ -326,7 +326,7 @@ static long _syscall(
             ret = oe_rename(oldpath, newpath);
             goto done;
         }
-        case OE_SYS_truncate:
+        case SYS_truncate:
         {
             const char* path = (const char*)arg1;
             ssize_t length = (ssize_t)arg2;
@@ -334,8 +334,8 @@ static long _syscall(
             ret = oe_truncate(path, length);
             goto done;
         }
-#if defined(OE_SYS_mkdir)
-        case OE_SYS_mkdir:
+#if defined(SYS_mkdir)
+        case SYS_mkdir:
         {
             const char* pathname = (const char*)arg1;
             uint32_t mode = (uint32_t)arg2;
@@ -344,7 +344,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_mkdirat:
+        case SYS_mkdirat:
         {
             int dirfd = (int)arg1;
             const char* pathname = (const char*)arg2;
@@ -359,16 +359,16 @@ static long _syscall(
             ret = oe_mkdir(pathname, mode);
             goto done;
         }
-#if defined(OE_SYS_rmdir)
-        case OE_SYS_rmdir:
+#if defined(SYS_rmdir)
+        case SYS_rmdir:
         {
             const char* pathname = (const char*)arg1;
             ret = oe_rmdir(pathname);
             goto done;
         }
 #endif
-#if defined(OE_SYS_access)
-        case OE_SYS_access:
+#if defined(SYS_access)
+        case SYS_access:
         {
             const char* pathname = (const char*)arg1;
             int mode = (int)arg2;
@@ -377,7 +377,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_faccessat:
+        case SYS_faccessat:
         {
             int dirfd = (int)arg1;
             const char* pathname = (const char*)arg2;
@@ -399,7 +399,7 @@ static long _syscall(
             ret = oe_access(pathname, mode);
             goto done;
         }
-        case OE_SYS_getdents64:
+        case SYS_getdents64:
         {
             unsigned int fd = (unsigned int)arg1;
             struct oe_dirent* ent = (struct oe_dirent*)arg2;
@@ -407,7 +407,7 @@ static long _syscall(
             ret = oe_getdents64(fd, ent, count);
             goto done;
         }
-        case OE_SYS_ioctl:
+        case SYS_ioctl:
         {
             int fd = (int)arg1;
             unsigned long request = (unsigned long)arg2;
@@ -419,7 +419,7 @@ static long _syscall(
             ret = oe_ioctl(fd, request, p1, p2, p3, p4);
             goto done;
         }
-        case OE_SYS_fcntl:
+        case SYS_fcntl:
         {
             int fd = (int)arg1;
             int cmd = (int)arg2;
@@ -427,7 +427,7 @@ static long _syscall(
             ret = __oe_fcntl(fd, cmd, arg);
             goto done;
         }
-        case OE_SYS_mount:
+        case SYS_mount:
         {
             const char* source = (const char*)arg1;
             const char* target = (const char*)arg2;
@@ -438,7 +438,7 @@ static long _syscall(
             ret = oe_mount(source, target, fstype, flags, data);
             goto done;
         }
-        case OE_SYS_umount2:
+        case SYS_umount2:
         {
             const char* target = (const char*)arg1;
             int flags = (int)arg2;
@@ -448,7 +448,7 @@ static long _syscall(
             ret = oe_umount(target);
             goto done;
         }
-        case OE_SYS_getcwd:
+        case SYS_getcwd:
         {
             char* buf = (char*)arg1;
             size_t size = (size_t)arg2;
@@ -464,14 +464,14 @@ static long _syscall(
 
             goto done;
         }
-        case OE_SYS_chdir:
+        case SYS_chdir:
         {
             char* path = (char*)arg1;
 
             ret = oe_chdir(path);
             goto done;
         }
-        case OE_SYS_socket:
+        case SYS_socket:
         {
             int domain = (int)arg1;
             int type = (int)arg2;
@@ -479,7 +479,7 @@ static long _syscall(
             ret = oe_socket(domain, type, protocol);
             goto done;
         }
-        case OE_SYS_connect:
+        case SYS_connect:
         {
             int sd = (int)arg1;
             const struct oe_sockaddr* addr = (const struct oe_sockaddr*)arg2;
@@ -487,7 +487,7 @@ static long _syscall(
             ret = oe_connect(sd, addr, addrlen);
             goto done;
         }
-        case OE_SYS_setsockopt:
+        case SYS_setsockopt:
         {
             int sockfd = (int)arg1;
             int level = (int)arg2;
@@ -497,7 +497,7 @@ static long _syscall(
             ret = oe_setsockopt(sockfd, level, optname, optval, optlen);
             goto done;
         }
-        case OE_SYS_getsockopt:
+        case SYS_getsockopt:
         {
             int sockfd = (int)arg1;
             int level = (int)arg2;
@@ -507,7 +507,7 @@ static long _syscall(
             ret = oe_getsockopt(sockfd, level, optname, optval, optlen);
             goto done;
         }
-        case OE_SYS_getpeername:
+        case SYS_getpeername:
         {
             int sockfd = (int)arg1;
             struct sockaddr* addr = (struct sockaddr*)arg2;
@@ -515,7 +515,7 @@ static long _syscall(
             ret = oe_getpeername(sockfd, (struct oe_sockaddr*)addr, addrlen);
             goto done;
         }
-        case OE_SYS_getsockname:
+        case SYS_getsockname:
         {
             int sockfd = (int)arg1;
             struct sockaddr* addr = (struct sockaddr*)arg2;
@@ -523,7 +523,7 @@ static long _syscall(
             ret = oe_getsockname(sockfd, (struct oe_sockaddr*)addr, addrlen);
             goto done;
         }
-        case OE_SYS_bind:
+        case SYS_bind:
         {
             int sockfd = (int)arg1;
             struct oe_sockaddr* addr = (struct oe_sockaddr*)arg2;
@@ -531,14 +531,14 @@ static long _syscall(
             ret = oe_bind(sockfd, addr, addrlen);
             goto done;
         }
-        case OE_SYS_listen:
+        case SYS_listen:
         {
             int sockfd = (int)arg1;
             int backlog = (int)arg2;
             ret = oe_listen(sockfd, backlog);
             goto done;
         }
-        case OE_SYS_accept:
+        case SYS_accept:
         {
             int sockfd = (int)arg1;
             struct oe_sockaddr* addr = (struct oe_sockaddr*)arg2;
@@ -546,7 +546,7 @@ static long _syscall(
             ret = oe_accept(sockfd, addr, addrlen);
             goto done;
         }
-        case OE_SYS_sendto:
+        case SYS_sendto:
         {
             int sockfd = (int)arg1;
             const void* buf = (void*)arg2;
@@ -559,7 +559,7 @@ static long _syscall(
             ret = oe_sendto(sockfd, buf, len, flags, dest_add, addrlen);
             goto done;
         }
-        case OE_SYS_recvfrom:
+        case SYS_recvfrom:
         {
             int sockfd = (int)arg1;
             void* buf = (void*)arg2;
@@ -572,7 +572,7 @@ static long _syscall(
             ret = oe_recvfrom(sockfd, buf, len, flags, dest_add, addrlen);
             goto done;
         }
-        case OE_SYS_sendmsg:
+        case SYS_sendmsg:
         {
             int sockfd = (int)arg1;
             struct msghdr* buf = (struct msghdr*)arg2;
@@ -581,7 +581,7 @@ static long _syscall(
             ret = oe_sendmsg(sockfd, (struct oe_msghdr*)buf, flags);
             goto done;
         }
-        case OE_SYS_recvmsg:
+        case SYS_recvmsg:
         {
             int sockfd = (int)arg1;
             struct msghdr* buf = (struct msghdr*)arg2;
@@ -590,7 +590,7 @@ static long _syscall(
             ret = oe_recvmsg(sockfd, (struct oe_msghdr*)buf, flags);
             goto done;
         }
-        case OE_SYS_socketpair:
+        case SYS_socketpair:
         {
             int domain = (int)arg1;
             int type = (int)arg2;
@@ -600,21 +600,21 @@ static long _syscall(
             ret = oe_socketpair(domain, type, protocol, sv);
             goto done;
         }
-        case OE_SYS_shutdown:
+        case SYS_shutdown:
         {
             int sockfd = (int)arg1;
             int how = (int)arg2;
             ret = oe_shutdown(sockfd, how);
             goto done;
         }
-        case OE_SYS_uname:
+        case SYS_uname:
         {
             struct oe_utsname* buf = (struct oe_utsname*)arg1;
             ret = oe_uname(buf);
             goto done;
         }
-#if defined(OE_SYS_select)
-        case OE_SYS_select:
+#if defined(SYS_select)
+        case SYS_select:
         {
             int nfds = (int)arg1;
             oe_fd_set* readfds = (oe_fd_set*)arg2;
@@ -625,7 +625,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_pselect6:
+        case SYS_pselect6:
         {
             int nfds = (int)arg1;
             oe_fd_set* readfds = (oe_fd_set*)arg2;
@@ -645,8 +645,8 @@ static long _syscall(
             ret = oe_select(nfds, readfds, writefds, exceptfds, tv);
             goto done;
         }
-#if defined(OE_SYS_poll)
-        case OE_SYS_poll:
+#if defined(SYS_poll)
+        case SYS_poll:
         {
             struct oe_pollfd* fds = (struct oe_pollfd*)arg1;
             oe_nfds_t nfds = (oe_nfds_t)arg2;
@@ -655,7 +655,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_ppoll:
+        case SYS_ppoll:
         {
             struct oe_pollfd* fds = (struct oe_pollfd*)arg1;
             oe_nfds_t nfds = (oe_nfds_t)arg2;
@@ -701,22 +701,22 @@ static long _syscall(
             ret = oe_poll(fds, nfds, timeout);
             goto done;
         }
-#if defined(OE_SYS_epoll_create)
-        case OE_SYS_epoll_create:
+#if defined(SYS_epoll_create)
+        case SYS_epoll_create:
         {
             int size = (int)arg1;
             ret = oe_epoll_create(size);
             goto done;
         }
 #endif
-        case OE_SYS_epoll_create1:
+        case SYS_epoll_create1:
         {
             int flags = (int)arg1;
             ret = oe_epoll_create1(flags);
             goto done;
         }
-#if defined(OE_SYS_epoll_wait)
-        case OE_SYS_epoll_wait:
+#if defined(SYS_epoll_wait)
+        case SYS_epoll_wait:
         {
             int epfd = (int)arg1;
             struct oe_epoll_event* events = (struct oe_epoll_event*)arg2;
@@ -726,7 +726,7 @@ static long _syscall(
             goto done;
         }
 #endif
-        case OE_SYS_epoll_pwait:
+        case SYS_epoll_pwait:
         {
             int epfd = (int)arg1;
             struct oe_epoll_event* events = (struct oe_epoll_event*)arg2;
@@ -736,7 +736,7 @@ static long _syscall(
             ret = oe_epoll_pwait(epfd, events, maxevents, timeout, sigmask);
             goto done;
         }
-        case OE_SYS_epoll_ctl:
+        case SYS_epoll_ctl:
         {
             int epfd = (int)arg1;
             int op = (int)arg2;
@@ -745,62 +745,62 @@ static long _syscall(
             ret = oe_epoll_ctl(epfd, op, fd, event);
             goto done;
         }
-        case OE_SYS_exit_group:
+        case SYS_exit_group:
         {
             ret = 0;
             goto done;
         }
-        case OE_SYS_exit:
+        case SYS_exit:
         {
             int status = (int)arg1;
             oe_exit(status);
             goto done;
         }
-        case OE_SYS_getpid:
+        case SYS_getpid:
         {
             ret = (long)oe_getpid();
             goto done;
         }
-        case OE_SYS_getuid:
+        case SYS_getuid:
         {
             ret = (long)oe_getuid();
             goto done;
         }
-        case OE_SYS_geteuid:
+        case SYS_geteuid:
         {
             ret = (long)oe_geteuid();
             goto done;
         }
-        case OE_SYS_getgid:
+        case SYS_getgid:
         {
             ret = (long)oe_getgid();
             goto done;
         }
-        case OE_SYS_getpgid:
+        case SYS_getpgid:
         {
             int pid = (int)arg1;
             ret = (long)oe_getpgid(pid);
             goto done;
         }
-        case OE_SYS_getgroups:
+        case SYS_getgroups:
         {
             int size = (int)arg1;
             oe_gid_t* list = (oe_gid_t*)arg2;
             ret = (long)oe_getgroups(size, list);
             goto done;
         }
-        case OE_SYS_getegid:
+        case SYS_getegid:
         {
             ret = (long)oe_getegid();
             goto done;
         }
-        case OE_SYS_getppid:
+        case SYS_getppid:
         {
             ret = (long)oe_getppid();
             goto done;
         }
-#if defined(OE_SYS_getpgrp)
-        case OE_SYS_getpgrp:
+#if defined(SYS_getpgrp)
+        case SYS_getpgrp:
         {
             ret = (long)oe_getpgrp();
             goto done;

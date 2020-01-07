@@ -79,7 +79,7 @@ static oe_result_t _syscall_hook(
 
             _stat_to_oe_stat(stat, &oe_stat);
             x2 = (long)&oe_stat;
-            *ret = oe_syscall(OE_SYS_stat, x1, x2, x3, x4, x5, x6);
+            *ret = oe_syscall(SYS_stat, x1, x2, x3, x4, x5, x6);
 
             if (*ret == ENOSYS)
                 goto done;
@@ -95,7 +95,7 @@ static oe_result_t _syscall_hook(
 
             _stat_to_oe_stat(stat, &oe_stat);
             x3 = (long)&oe_stat;
-            *ret = oe_syscall(OE_SYS_newfstatat, x1, x2, x3, x4, x5, x6);
+            *ret = oe_syscall(SYS_newfstatat, x1, x2, x3, x4, x5, x6);
 
             if (*ret == ENOSYS)
                 goto done;
