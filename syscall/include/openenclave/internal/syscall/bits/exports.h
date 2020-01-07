@@ -13,10 +13,6 @@
 
 OE_EXTERNC_BEGIN
 
-#define OE_ONCE_INITIALIZER 0
-
-typedef uint32_t oe_once_t;
-
 typedef struct _oe_table_id
 {
     uint64_t d1;
@@ -49,8 +45,6 @@ typedef oe_result_t (*oe_syscall_hook_t)(
     long* ret);
 
 void oe_register_syscall_hook(oe_syscall_hook_t hook);
-
-oe_result_t oe_once(oe_once_t* once, void (*func)(void));
 
 int memcmp(const void* vl, const void* vr, size_t n);
 

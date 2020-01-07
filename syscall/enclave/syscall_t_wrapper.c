@@ -8,6 +8,7 @@
 #include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/string.h>
+#include <pthread.h>
 
 /* Rename the ecalls table. */
 #define __oe_ecalls_table __oe_syscall_ecalls_table
@@ -40,7 +41,7 @@ static oe_result_t _call_host_function(
 
 #include "syscall_t.c"
 
-static oe_once_t _once = OE_ONCE_INITIALIZER;
+static pthread_once_t _once = PTHREAD_ONCE_INIT;
 
 static void _once_function(void)
 {
@@ -61,5 +62,5 @@ static void _once_function(void)
 
 void oe_register_syscall_ecall_function_table(void)
 {
-    oe_once(&_once, _once_function);
+    pthread_once(&_once, _once_function);
 }
