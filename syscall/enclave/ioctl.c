@@ -4,8 +4,8 @@
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/fdtable.h>
 #include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/stdarg.h>
 #include <openenclave/internal/syscall/stdio.h>
+#include <stdarg.h>
 
 int __oe_ioctl(int fd, unsigned long request, uint64_t arg)
 {
@@ -23,9 +23,9 @@ done:
 
 int oe_ioctl(int fd, unsigned long request, ...)
 {
-    oe_va_list ap;
-    oe_va_start(ap, request);
-    int r = __oe_ioctl(fd, request, oe_va_arg(ap, uint64_t));
-    oe_va_end(ap);
+    va_list ap;
+    va_start(ap, request);
+    int r = __oe_ioctl(fd, request, va_arg(ap, uint64_t));
+    va_end(ap);
     return r;
 }

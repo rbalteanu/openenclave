@@ -7,7 +7,6 @@
 #include <openenclave/internal/syscall/dirent.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/raise.h>
-#include <openenclave/internal/syscall/stdarg.h>
 #include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
@@ -20,6 +19,7 @@
 #include <openenclave/internal/syscall/sys/uio.h>
 #include <openenclave/internal/syscall/sys/utsname.h>
 #include <openenclave/internal/syscall/unistd.h>
+#include <stdarg.h>
 
 typedef int (*ioctl_proc)(
     int fd,
@@ -822,16 +822,16 @@ long oe_syscall(long number, ...)
 {
     long ret;
 
-    oe_va_list ap;
-    oe_va_start(ap, number);
-    long arg1 = oe_va_arg(ap, long);
-    long arg2 = oe_va_arg(ap, long);
-    long arg3 = oe_va_arg(ap, long);
-    long arg4 = oe_va_arg(ap, long);
-    long arg5 = oe_va_arg(ap, long);
-    long arg6 = oe_va_arg(ap, long);
+    va_list ap;
+    va_start(ap, number);
+    long arg1 = va_arg(ap, long);
+    long arg2 = va_arg(ap, long);
+    long arg3 = va_arg(ap, long);
+    long arg4 = va_arg(ap, long);
+    long arg5 = va_arg(ap, long);
+    long arg6 = va_arg(ap, long);
     ret = _syscall(number, arg1, arg2, arg3, arg4, arg5, arg6);
-    oe_va_end(ap);
+    va_end(ap);
 
     return ret;
 }

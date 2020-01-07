@@ -6,7 +6,9 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/internal/syscall/bits/types.h>
-#include <openenclave/internal/syscall/stdarg.h>
+#include <stdarg.h>
+
+OE_EXTERNC_BEGIN
 
 struct oe_flock
 {
@@ -24,8 +26,6 @@ struct oe_f_owner_ex
     int type;
     oe_pid_t pid;
 };
-
-OE_EXTERNC_BEGIN
 
 // clang-format off
 #define OE_O_RDONLY        000000000
@@ -89,10 +89,10 @@ int __oe_fcntl(int fd, int cmd, uint64_t arg);
 #if !defined(WIN32) /* __feature_io__ */
 OE_INLINE int oe_fcntl(int fd, int cmd, ...)
 {
-    oe_va_list ap;
-    oe_va_start(ap, cmd);
-    int r = __oe_fcntl(fd, cmd, oe_va_arg(ap, uint64_t));
-    oe_va_end(ap);
+    va_list ap;
+    va_start(ap, cmd);
+    int r = __oe_fcntl(fd, cmd, va_arg(ap, uint64_t));
+    va_end(ap);
 
     return r;
 }
