@@ -1,10 +1,11 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdlib.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/netdb.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/internal/syscall/resolver.h>
+#include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/trace.h>

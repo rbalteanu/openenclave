@@ -7,12 +7,12 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/syscall/dirent.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fcntl.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/mount.h>
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/unistd.h>

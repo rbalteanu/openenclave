@@ -1,11 +1,11 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdlib.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall/device.h>
+#include <openenclave/internal/syscall/limits.h>
+#include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/tests.h>
 #include <openenclave/syscall/module.h>

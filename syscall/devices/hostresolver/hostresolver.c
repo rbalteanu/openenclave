@@ -17,10 +17,11 @@
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/thread.h>
 #include <openenclave/internal/print.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/syscall/module.h>
 #include <openenclave/internal/trace.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include "syscall_t.h"
 
 #define RESOLV_MAGIC 0x536f636b

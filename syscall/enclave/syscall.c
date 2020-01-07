@@ -2,17 +2,16 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safemath.h>
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/setjmp.h>
-#include <openenclave/corelibc/stdarg.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/dirent.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/raise.h>
+#include <openenclave/internal/syscall/stdarg.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/stdlib.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/ioctl.h>
 #include <openenclave/internal/syscall/sys/mount.h>
 #include <openenclave/internal/syscall/sys/poll.h>

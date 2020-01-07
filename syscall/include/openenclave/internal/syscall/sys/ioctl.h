@@ -6,7 +6,7 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/stdarg.h>
+#include <openenclave/internal/syscall/stdarg.h>
 
 OE_EXTERNC_BEGIN
 

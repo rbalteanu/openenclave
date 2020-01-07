@@ -4,7 +4,7 @@
 #ifndef _OE_HOST_SOCKET_H
 #define _OE_HOST_SOCKET_H
 
-#include <openenclave/corelibc/errno.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/types.h>
 #include <stdint.h>

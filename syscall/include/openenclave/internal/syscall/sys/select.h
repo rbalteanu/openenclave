@@ -6,8 +6,8 @@
 
 #include <openenclave/bits/defs.h>
 #include <openenclave/bits/types.h>
-#include <openenclave/corelibc/time.h>
 #include <openenclave/internal/syscall/sys/time.h>
+#include <openenclave/internal/syscall/time.h>
 #include <openenclave/internal/syscall/unistd.h>
 
 OE_EXTERNC_BEGIN

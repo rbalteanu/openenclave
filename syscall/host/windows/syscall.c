@@ -26,7 +26,7 @@
 #include <VersionHelpers.h>
 // clang-format on
 
-#include <openenclave/corelibc/errno.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/atomic.h>
 #include <openenclave/internal/syscall/fcntl.h>
 #include <openenclave/internal/syscall/dirent.h>

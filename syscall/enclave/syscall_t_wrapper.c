@@ -3,11 +3,12 @@
 
 #include <openenclave/enclave.h>
 
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/string.h>
 #include <openenclave/edger8r/enclave.h>
 #include <openenclave/internal/calls.h>
 #include <openenclave/internal/syscall/bits/calls.h>
+#include <openenclave/internal/syscall/bits/exports.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/thread.h>
 
 /* Rename the ecalls table. */
@@ -52,7 +53,7 @@ static void _once_function(void)
             __oe_syscall_ecalls_table,
             __oe_syscall_ecalls_table_size) != OE_OK)
     {
-        oe_printf(
+        oe_host_printf(
             "%s(%u): failed to register syscall function table\n",
             __FILE__,
             __LINE__);

@@ -1,8 +1,9 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/stdio.h>
 #include <openenclave/enclave.h>
+#include <openenclave/internal/syscall/bits/exports.h>
+#include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/sys/select.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/tests.h>
@@ -322,7 +323,7 @@ extern "C" void test_fd_set(void)
         }
     }
 
-    oe_printf("==== passed %s\n", __FUNCTION__);
+    oe_host_printf("==== passed %s\n", __FUNCTION__);
 }
 
 OE_SET_ENCLAVE_SGX(

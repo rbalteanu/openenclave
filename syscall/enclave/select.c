@@ -2,14 +2,12 @@
 // Licensed under the MIT License.
 
 #include <openenclave/bits/safecrt.h>
-#include <openenclave/corelibc/assert.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
-#include <openenclave/corelibc/time.h>
 #include <openenclave/internal/print.h>
 #include <openenclave/internal/syscall/poll.h>
 #include <openenclave/internal/syscall/raise.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/stdlib.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/select.h>
 #include <openenclave/internal/trace.h>
 
@@ -191,7 +189,8 @@ void OE_FD_CLR(int fd, oe_fd_set* set)
     }
     else
     {
-        oe_assert("OE_FD_SET: out of bounds" == NULL);
+        oe_host_printf("OE_FD_SET: out of bounds");
+        oe_abort();
     }
 }
 
@@ -207,7 +206,8 @@ int OE_FD_ISSET(int fd, oe_fd_set* set)
     }
     else
     {
-        oe_assert("OE_FD_ISSET: out of bounds" == NULL);
+        oe_host_printf("OE_FD_ISSET: out of bounds");
+        oe_abort();
         return 0;
     }
 }
@@ -224,7 +224,8 @@ void OE_FD_SET(int fd, oe_fd_set* set)
     }
     else
     {
-        oe_assert("OE_FD_SET: out of bounds" == NULL);
+        oe_host_printf("OE_FD_SET: out of bounds");
+        oe_abort();
     }
 }
 

@@ -5,8 +5,8 @@
 #include <openenclave/internal/time.h>
 
 // enclave.h must come before socket.h
-#include <openenclave/corelibc/errno.h>
 #include <openenclave/internal/syscall/arpa/inet.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>
 #include <openenclave/internal/syscall/unistd.h>

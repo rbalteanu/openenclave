@@ -5,8 +5,8 @@
 #define _OE_SYSCALL_FCNTL_H
 
 #include <openenclave/bits/defs.h>
-#include <openenclave/corelibc/bits/types.h>
-#include <openenclave/corelibc/stdarg.h>
+#include <openenclave/internal/syscall/bits/types.h>
+#include <openenclave/internal/syscall/stdarg.h>
 
 struct oe_flock
 {

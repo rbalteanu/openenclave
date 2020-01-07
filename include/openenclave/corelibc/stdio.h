@@ -53,10 +53,6 @@ OE_INLINE int oe_fprintf(OE_FILE* stream, const char* format, ...)
     return r;
 }
 
-int oe_rename(const char* oldpath, const char* newpath);
-
-int oe_rename_d(uint64_t devid, const char* oldpath, const char* newpath);
-
 OE_FILE* oe_fopen(const char* path, const char* mode);
 
 int oe_fflush(OE_FILE* stream);
@@ -168,11 +164,6 @@ OE_INLINE int fprintf(FILE* stream, const char* format, ...)
 OE_INLINE int vfprintf(FILE* stream, const char* format, va_list ap)
 {
     return oe_vfprintf((OE_FILE*)stream, format, ap);
-}
-
-OE_INLINE int rename(const char* oldpath, const char* newpath)
-{
-    return oe_rename(oldpath, newpath);
 }
 
 typedef OE_FILE FILE;

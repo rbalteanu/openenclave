@@ -5,9 +5,8 @@
 #define _OE_SYSCALL_UNISTD_H
 
 #include <openenclave/bits/defs.h>
-#include <openenclave/bits/types.h>
-#include <openenclave/corelibc/bits/types.h>
-#include <openenclave/corelibc/stdarg.h>
+#include <openenclave/internal/syscall/bits/types.h>
+#include <openenclave/internal/syscall/stdarg.h>
 #include <openenclave/internal/syscall/unistd.h>
 
 OE_EXTERNC_BEGIN

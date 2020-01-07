@@ -3,8 +3,8 @@
 
 /* Integration with MUSL C library */
 
-#include <openenclave/corelibc/errno.h>
 #include <openenclave/internal/syscall.h>
+#include <openenclave/internal/syscall/errno.h>
 #include <openenclave/internal/syscall/sys/stat.h>
 #include <openenclave/internal/syscall/sys/syscall.h>
 #include <openenclave/syscall/fs.h>

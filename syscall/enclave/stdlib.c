@@ -1,12 +1,13 @@
 // Copyright (c) Open Enclave SDK contributors.
 // Licensed under the MIT License.
 
-#include <openenclave/corelibc/errno.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdio.h>
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/syscall/bits/exports.h>
+#include <openenclave/internal/syscall/errno.h>
+#include <openenclave/internal/syscall/limits.h>
 #include <openenclave/internal/syscall/raise.h>
+#include <openenclave/internal/syscall/stdio.h>
+#include <openenclave/internal/syscall/stdlib.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <openenclave/internal/trace.h>
 
@@ -134,7 +135,7 @@ OE_NO_RETURN void oe_exit(int status)
 {
     OE_UNUSED(status);
 
-    oe_printf("oe_exit() panic");
+    oe_host_printf("oe_exit() panic");
     oe_abort();
 
     /* Never return. */

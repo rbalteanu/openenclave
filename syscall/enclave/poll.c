@@ -3,9 +3,10 @@
 
 #include <openenclave/enclave.h>
 
-#include <openenclave/corelibc/stdlib.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/fdtable.h>
 #include <openenclave/internal/syscall/raise.h>
+#include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/sys/poll.h>
 #include "syscall_t.h"
 

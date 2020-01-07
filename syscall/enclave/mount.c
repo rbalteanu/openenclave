@@ -6,14 +6,15 @@
 #include <openenclave/internal/thread.h>
 // clang-format on
 
-#include <openenclave/corelibc/stdlib.h>
-#include <openenclave/corelibc/string.h>
+#include <openenclave/internal/syscall/stdlib.h>
+#include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/trace.h>
-#include <openenclave/corelibc/limits.h>
-#include <openenclave/corelibc/stdio.h>
+#include <openenclave/internal/syscall/limits.h>
+#include <openenclave/internal/syscall/stdio.h>
 #include <openenclave/internal/syscall/device.h>
 #include <openenclave/internal/syscall/raise.h>
 #include <openenclave/bits/safecrt.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 
 #define MAX_MOUNT_TABLE_SIZE 64
 
