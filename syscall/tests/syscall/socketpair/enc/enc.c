@@ -6,6 +6,7 @@
 // enclave.h must come before socket.h
 #include <arpa/inet.h>
 #include <errno.h>
+#include <openenclave/internal/syscall/bits/exports.h>
 #include <openenclave/internal/syscall/bits/tests.h>
 #include <openenclave/internal/syscall/netinet/in.h>
 #include <openenclave/internal/syscall/sys/socket.h>

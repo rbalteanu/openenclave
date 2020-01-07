@@ -46,6 +46,7 @@ add_library(oesyscall STATIC
     stdlib.c
     stub.c
     syscall.c
+    tests.c
     unistd.c
     syscall_t_wrapper.c
     utsname.c)

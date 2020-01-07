@@ -29,6 +29,7 @@ set(TARGET oesyscallhost)
 
 add_library(${TARGET} STATIC
     syscall_u_wrapper.c
+    tests.c
     linux/syscall.c)
 
 maybe_build_using_clangw(${TARGET})
