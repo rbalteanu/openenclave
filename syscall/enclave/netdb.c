@@ -49,7 +49,7 @@ int oe_register_resolver(oe_resolver_t* resolver)
 
     if (!_installed_atexit_handler)
     {
-        oe_atexit(_atexit_handler);
+        atexit(_atexit_handler);
         _installed_atexit_handler = true;
     }
 

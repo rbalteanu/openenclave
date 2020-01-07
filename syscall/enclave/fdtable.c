@@ -141,7 +141,7 @@ static int _initialize(void)
         }
 
         /* Install the atexit handler that will release the table. */
-        oe_atexit(_atexit_handler);
+        atexit(_atexit_handler);
 
         _initialized = true;
     }

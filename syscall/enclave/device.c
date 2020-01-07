@@ -51,7 +51,7 @@ static int _resize_table(size_t new_size)
 
     if (!_installed_atexit_handler)
     {
-        oe_atexit(_atexit_handler);
+        atexit(_atexit_handler);
         _installed_atexit_handler = true;
     }
 

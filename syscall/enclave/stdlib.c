@@ -34,7 +34,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
     if (path[0] == '/')
     {
-        if (oe_strlcpy(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
+        if (strlcpy(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
             OE_RAISE_ERRNO(ENAMETOOLONG);
     }
     else
@@ -44,13 +44,13 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
         if (!oe_getcwd(cwd, sizeof(cwd)))
             OE_RAISE_ERRNO(EINVAL);
 
-        if (oe_strlcpy(v->buf, cwd, sizeof(v->buf)) >= sizeof(v->buf))
+        if (strlcpy(v->buf, cwd, sizeof(v->buf)) >= sizeof(v->buf))
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
-        if (oe_strlcat(v->buf, "/", sizeof(v->buf)) >= sizeof(v->buf))
+        if (strlcat(v->buf, "/", sizeof(v->buf)) >= sizeof(v->buf))
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
-        if (oe_strlcat(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
+        if (strlcat(v->buf, path, sizeof(v->buf)) >= sizeof(v->buf))
             OE_RAISE_ERRNO(ENAMETOOLONG);
     }
 
@@ -92,12 +92,12 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
         for (size_t i = 0; i < nout; i++)
         {
-            if (oe_strlcat(v->resolved, v->out[i], OE_PATH_MAX) >= OE_PATH_MAX)
+            if (strlcat(v->resolved, v->out[i], OE_PATH_MAX) >= OE_PATH_MAX)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
             if (i != 0 && i + 1 != nout)
             {
-                if (oe_strlcat(v->resolved, "/", OE_PATH_MAX) >= OE_PATH_MAX)
+                if (strlcat(v->resolved, "/", OE_PATH_MAX) >= OE_PATH_MAX)
                     OE_RAISE_ERRNO(ENAMETOOLONG);
             }
         }
@@ -105,7 +105,7 @@ char* oe_realpath(const char* path, oe_syscall_path_t* resolved_path)
 
     if (resolved_path)
     {
-        if (oe_strlcpy(resolved_path->buf, v->resolved, OE_PATH_MAX) >=
+        if (strlcpy(resolved_path->buf, v->resolved, OE_PATH_MAX) >=
             OE_PATH_MAX)
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
@@ -136,7 +136,7 @@ OE_NO_RETURN void oe_exit(int status)
     OE_UNUSED(status);
 
     oe_host_printf("oe_exit() panic");
-    oe_abort();
+    abort();
 
     /* Never return. */
     for (;;)

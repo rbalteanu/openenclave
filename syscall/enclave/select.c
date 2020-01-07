@@ -9,6 +9,7 @@
 #include <openenclave/internal/syscall/stdlib.h>
 #include <openenclave/internal/syscall/string.h>
 #include <openenclave/internal/syscall/sys/select.h>
+#include <stdlib.h>
 
 typedef struct _poll_fds
 {
@@ -189,7 +190,7 @@ void OE_FD_CLR(int fd, oe_fd_set* set)
     else
     {
         oe_host_printf("OE_FD_SET: out of bounds");
-        oe_abort();
+        abort();
     }
 }
 
@@ -206,7 +207,7 @@ int OE_FD_ISSET(int fd, oe_fd_set* set)
     else
     {
         oe_host_printf("OE_FD_ISSET: out of bounds");
-        oe_abort();
+        abort();
         return 0;
     }
 }
@@ -224,7 +225,7 @@ void OE_FD_SET(int fd, oe_fd_set* set)
     else
     {
         oe_host_printf("OE_FD_SET: out of bounds");
-        oe_abort();
+        abort();
     }
 }
 

@@ -13,6 +13,7 @@
 #include <openenclave/internal/syscall/sys/utsname.h>
 #include <openenclave/internal/syscall/unistd.h>
 #include <pthread.h>
+#include <string.h>
 #include "mount.h"
 #include "syscall_t.h"
 
@@ -24,7 +25,7 @@ int oe_gethostname(char* name, size_t len)
     if ((ret = oe_uname(&uts)) != 0)
         OE_RAISE_ERRNO(errno);
 
-    oe_strlcpy(name, uts.nodename, len);
+    strlcpy(name, uts.nodename, len);
     ret = 0;
 
 done:
@@ -39,7 +40,7 @@ int oe_getdomainname(char* name, size_t len)
     if ((ret = oe_uname(&uts)) != 0)
         OE_RAISE_ERRNO(errno);
 
-    oe_strlcpy(name, uts.domainname, len);
+    strlcpy(name, uts.domainname, len);
 
     ret = 0;
 
@@ -82,7 +83,7 @@ char* oe_getcwd(char* buf, size_t size)
     pthread_spin_lock(&_cwd_lock);
     locked = true;
 
-    if (oe_strlcpy(p, _cwd, n) >= n)
+    if (strlcpy(p, _cwd, n) >= n)
         OE_RAISE_ERRNO(ERANGE);
 
     ret = p;
@@ -128,7 +129,7 @@ int oe_chdir(const char* path)
     pthread_spin_lock(&_cwd_lock);
     locked = true;
 
-    if (oe_strlcpy(_cwd, real_path.buf, OE_PATH_MAX) >= OE_PATH_MAX)
+    if (strlcpy(_cwd, real_path.buf, OE_PATH_MAX) >= OE_PATH_MAX)
         OE_RAISE_ERRNO(ENAMETOOLONG);
 
     ret = 0;

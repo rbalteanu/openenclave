@@ -13,6 +13,14 @@
 
 OE_EXTERNC_BEGIN
 
+/*
+**==============================================================================
+**
+** OE function table:
+**
+**==============================================================================
+*/
+
 typedef struct _oe_table_id
 {
     uint64_t d1;
@@ -34,6 +42,14 @@ oe_result_t oe_register_ecall_function_table(
     const oe_ecall_func_t* ecalls,
     size_t num_ecalls);
 
+/*
+**==============================================================================
+**
+** oelibc syscall hooks:
+**
+**==============================================================================
+*/
+
 typedef oe_result_t (*oe_syscall_hook_t)(
     long number,
     long arg1,
@@ -44,19 +60,15 @@ typedef oe_result_t (*oe_syscall_hook_t)(
     long arg6,
     long* ret);
 
-////////////////////////////////////////////////////////////////////////////////
-
 void oe_register_syscall_hook(oe_syscall_hook_t hook);
 
-////////////////////////////////////////////////////////////////////////////////
-
-size_t oe_strlcpy(char* dest, const char* src, size_t size);
-
-size_t oe_strlcat(char* dest, const char* src, size_t size);
-
-void oe_abort(void);
-
-int oe_atexit(void (*function)(void));
+/*
+**==============================================================================
+**
+** miscellaneous
+**
+**==============================================================================
+*/
 
 int oe_host_printf(const char* fmt, ...);
 

@@ -168,20 +168,20 @@ static int _make_host_path(
 
     if (strcmp(fs->mount.source, "/") == 0)
     {
-        if (oe_strlcpy(host_path, enclave_path, OE_PATH_MAX) >= n)
+        if (strlcpy(host_path, enclave_path, OE_PATH_MAX) >= n)
             OE_RAISE_ERRNO(ENAMETOOLONG);
     }
     else
     {
-        if (oe_strlcpy(host_path, fs->mount.source, OE_PATH_MAX) >= n)
+        if (strlcpy(host_path, fs->mount.source, OE_PATH_MAX) >= n)
             OE_RAISE_ERRNO(ENAMETOOLONG);
 
         if (strcmp(enclave_path, "/") != 0)
         {
-            if (oe_strlcat(host_path, "/", OE_PATH_MAX) >= n)
+            if (strlcat(host_path, "/", OE_PATH_MAX) >= n)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
-            if (oe_strlcat(host_path, enclave_path, OE_PATH_MAX) >= n)
+            if (strlcat(host_path, enclave_path, OE_PATH_MAX) >= n)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
         }
     }
@@ -225,10 +225,10 @@ static int _hostfs_mount(
         fs->mount.flags = flags;
 
     /* Save the source parameter (will be needed to form host paths). */
-    oe_strlcpy(fs->mount.source, source, sizeof(fs->mount.source));
+    strlcpy(fs->mount.source, source, sizeof(fs->mount.source));
 
     /* Save the target parameter (checked by the umount2() function). */
-    oe_strlcpy(fs->mount.target, target, sizeof(fs->mount.target));
+    strlcpy(fs->mount.target, target, sizeof(fs->mount.target));
 
     /* Set the flag indicating that this file system is mounted. */
     fs->is_mounted = true;

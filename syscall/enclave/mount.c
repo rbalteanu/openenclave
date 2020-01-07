@@ -70,7 +70,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
             }
 
             /* Use this device. */
-            if (oe_strlcpy(suffix, path, OE_PATH_MAX) >= OE_PATH_MAX)
+            if (strlcpy(suffix, path, OE_PATH_MAX) >= OE_PATH_MAX)
                 OE_RAISE_ERRNO(ENAMETOOLONG);
 
             ret = device;
@@ -95,7 +95,7 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
         {
             if (len > match_len)
             {
-                oe_strlcpy(suffix, realpath.buf, OE_PATH_MAX);
+                strlcpy(suffix, realpath.buf, OE_PATH_MAX);
                 match_len = len;
                 ret = _mount_table[i].fs;
             }
@@ -106,10 +106,10 @@ oe_device_t* oe_mount_resolve(const char* path, char suffix[OE_PATH_MAX])
         {
             if (len > match_len)
             {
-                oe_strlcpy(suffix, realpath.buf + len, OE_PATH_MAX);
+                strlcpy(suffix, realpath.buf + len, OE_PATH_MAX);
 
                 if (*suffix == '\0')
-                    oe_strlcpy(suffix, "/", OE_PATH_MAX);
+                    strlcpy(suffix, "/", OE_PATH_MAX);
 
                 match_len = len;
                 ret = _mount_table[i].fs;
@@ -194,7 +194,7 @@ int oe_mount(
     /* Install _free_mount_table() if not already installed. */
     if (_installed_free_mount_table == false)
     {
-        oe_atexit(_free_mount_table);
+        atexit(_free_mount_table);
         _installed_free_mount_table = true;
     }
 
